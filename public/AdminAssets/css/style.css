@@ -1,0 +1,228 @@
+
+@import url('https://v1.fontapi.ir/css/Vazir');
+
+:root {
+    --primary-color: #1b5e20;
+    --secondary-color: #43a047;
+    --accent-color: #d81b60;
+    --light-bg: #f8f1e9;
+    --text-color: #2d2d2d;
+    --gold-accent: #d4a373;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Vazir', sans-serif;
+    line-height: 1.8;
+    color: var(--text-color);
+    background-color: var(--light-bg);
+    overflow-x: hidden;
+    direction: rtl;
+}
+
+.admin-container {
+    display: flex;
+    min-height: 100vh;
+}
+
+.sidebar {
+    width: 280px;
+    background: linear-gradient(180deg, var(--primary-color), var(--secondary-color));
+    color: white;
+    padding: 2rem;
+    position: fixed;
+    height: 100%;
+    box-shadow: -2px 0 10px rgba(0, 0, 0, 0.2);
+}
+
+.sidebar h2 {
+    font-family: 'Vazir', sans-serif;
+    font-size: 1.8rem;
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+.sidebar ul {
+    list-style: none;
+}
+
+.sidebar ul li {
+    margin: 1.5rem 0;
+}
+
+.sidebar ul li a {
+    color: white;
+    text-decoration: none;
+    font-size: 1.1rem;
+    display: block;
+    padding: 0.75rem;
+    border-radius: 8px;
+    transition: background 0.3s ease, color 0.3s ease;
+}
+
+.sidebar ul li a:hover, .sidebar ul li a.active {
+    background: var(--gold-accent);
+    color: var(--primary-color);
+}
+
+.main-content {
+    margin-right: 280px;
+    padding: 3rem;
+    flex: 1;
+}
+
+.header {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 15px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.header h1 {
+    font-family: 'Vazir', sans-serif;
+    font-size: 2.5rem;
+    color: var(--primary-color);
+}
+
+.header .user-info {
+    font-family: 'Vazir', sans-serif;
+    font-size: 1rem;
+}
+
+.header .user-info a {
+    color: var(--accent-color);
+    text-decoration: none;
+}
+
+.dashboard {
+    display: flex !important;
+    flex-wrap: wrap;
+    gap: 10px;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-bottom: 3rem;
+    width:100% ;
+
+}
+
+.card {
+    width: 48%;
+    background: white;
+    border-radius: 15px;
+    padding: 2rem;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    transition: transform 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
+
+.card h3 {
+    font-family: 'Vazir', sans-serif;
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+}
+
+.card p {
+    font-size: 2rem;
+    color: var(--accent-color);
+}
+
+.table-section {
+    background: white;
+    border-radius: 15px;
+    padding: 2rem;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+}
+
+.table-section h2 {
+    font-family: 'Vazir', sans-serif;
+    color: var(--primary-color);
+    margin-bottom: 1.5rem;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: 'Vazir', sans-serif;
+}
+
+th, td {
+    padding: 1rem;
+    text-align: right;
+    border-bottom: 1px solid #ddd;
+}
+
+th {
+    background: var(--secondary-color);
+    color: white;
+    font-family: 'Vazir', sans-serif;
+}
+
+tr:hover {
+    background: #f5f5f5;
+}
+
+.action-buttons button {
+    background: var(--accent-color);
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-left: 0.5rem;
+    transition: background 0.3s ease;
+}
+
+.action-buttons button:hover {
+    background: var(--secondary-color);
+}
+
+.add-item {
+    margin-bottom: 2rem;
+}
+
+.add-item button {
+    background: var(--accent-color);
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 25px;
+    cursor: pointer;
+    font-family: 'Vazir', sans-serif;
+    transition: background 0.3s ease;
+}
+
+.add-item button:hover {
+    background: var(--secondary-color);
+}
+
+@media (max-width: 768px) {
+    .sidebar {
+        width: 100%;
+        height: auto;
+        position: relative;
+        padding: 1rem;
+    }
+
+    .main-content {
+        margin-right: 0;
+        padding: 1.5rem;
+    }
+
+    .dashboard {
+        grid-template-columns: 1fr;
+    }
+}
+
