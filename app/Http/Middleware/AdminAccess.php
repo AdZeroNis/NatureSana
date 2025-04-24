@@ -6,7 +6,7 @@ use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class IsAdmin
+class AdminAccess
 {
     /**
      * Handle an incoming request.
@@ -15,11 +15,10 @@ class IsAdmin
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (Auth::check() && Auth::user()->role) {
-            return $next($request);
+        if (!auth()->check() || !in_array(auth()->user()->role, ['admin', 'super_admin'])) {
+            return redirect()->route('home')->with('error', 'شما دسترسی به این بخش را ندارید.');
         }
 
-
-        return redirect()->route('home')->with('error', 'شما دسترسی به این بخش ندارید.');
+        return $next($request);
     }
 }

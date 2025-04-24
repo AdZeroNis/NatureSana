@@ -3,12 +3,12 @@
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
-
+use App\Http\Controllers\Admin\StoreController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Home\HomeController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\CategoryController;
-
+use App\Http\Middleware\AdminAccess;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -26,6 +26,9 @@ Route::namespace("home")->group(function () {
     Route::get('/articles', [HomeController::class, "listArticles"])->name('article.index');
     Route::get('/articles/{id}', [HomeController::class, "showArticle"])->name('article.show');
     Route::get('/search', [HomeController::class, 'search'])->name('search');
+    Route::post('/store/register', [StoreController::class, 'create'])->name('store.register');
+    Route::get('/stores', [StoreController::class, 'index'])->name('store.index');
+    
 });
 
 // ------------------------
@@ -45,30 +48,23 @@ Route::namespace("auth")->group(function () {
 });
 
 // ------------------------
-// 📧 تأیید ایمیل
+// 📧 تأیید کد
 // ------------------------
 Route::middleware('auth')->group(function () {
-    Route::get('/email/verify', function () {
-        return view('Auth.verify-email');
-    })->name('verification.notice');
-
-    Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
-        $request->fulfill();
-        return redirect()->route('home')->with('success', 'ایمیل شما با موفقیت تایید شد');
-    })->middleware('signed')->name('verification.verify');
-
-    Route::post('/email/verification-notification', function (Request $request) {
-        $request->user()->sendEmailVerificationNotification();
-        return back()->with('message', 'لینک تأیید جدید ارسال شد!');
-    })->middleware('throttle:6,1')->name('verification.send');
+    Route::get('/verify-code', [AuthController::class, 'showVerificationForm'])->name('verification.notice');
+    Route::post('/verify-code', [AuthController::class, 'verifyCode'])->name('verification.verify-code');
+    Route::post('/resend-code', [AuthController::class, 'resendCode'])
+        ->middleware('throttle:6,1')
+        ->name('verification.resend-code');
 });
 
 // ------------------------
 // 🛠️ پنل مدیریت (فقط برای کاربران احراز هویت‌شده و ایمیل‌تأیید‌شده)
 // ------------------------
-Route::prefix('panel')->middleware(['auth', 'verified'])->group(function () {
+Route::prefix('panel')->middleware(['auth', AdminAccess::class])->group(function () {
     // داشبورد
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('panel.dashboard.index');
+
 
     // دسته‌بندی‌ها
     Route::prefix('category')->group(function () {
@@ -80,4 +76,10 @@ Route::prefix('panel')->middleware(['auth', 'verified'])->group(function () {
         Route::delete('/delete/{id}', [CategoryController::class, 'destroy'])->name('panel.category.delete');
         Route::get('/search', [CategoryController::class, 'filter'])->name('panel.category.filter');
     });
+
+    Route::prefix('store')->group(function () {
+        Route::post('/stores/{id}/approve', [StoreController::class, 'approve'])->name('store.approve');
+        Route::post('/stores/{id}/reject', [StoreController::class, 'reject'])->name('store.reject');
+    });
+
 });

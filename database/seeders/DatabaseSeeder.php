@@ -18,20 +18,12 @@ class DatabaseSeeder extends Seeder
 
         $admin = User::factory()->create([
             'name' => 'shaghayegh',
-            'email' => 'shaghayegh@gmail.com',
+            'email' => 'shaghayeghk2001@gmail.com',
             'phone' => '09336892362',
             'address' => '123 Main St',
             'status' => 1,
             'role' => 'super_admin',
             'password' => 123456,
-        ]);
-
-        Store::create([
-            'name' => 'فروشگاه اصلی',
-            'address' => 'تهران، خیابان ولیعصر',
-            'phone_number' => '02112345678',
-            'admin_id' => $admin->id,
-            'image' => 'default-store.jpg',
         ]);
     }
 }
