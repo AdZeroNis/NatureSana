@@ -1,0 +1,145 @@
+
+@import url('https://v1.fontapi.ir/css/Vazir');
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap');
+
+:root {
+    --primary-color: #1b5e20;
+    --secondary-color: #43a047;
+    --accent-color: #d81b60;
+    --light-bg: #f8f1e9;
+    --text-color: #2d2d2d;
+    --gold-accent: #d4a373;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Vazir', sans-serif;
+    line-height: 1.8;
+    color: var(--text-color);
+    background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://images.unsplash.com/photo-1512621776951-a57141f2eefd') no-repeat center center/cover;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    direction: rtl;
+}
+
+.auth-container {
+    max-width: 450px;
+    width: 90%;
+    background: white;
+    border-radius: 20px;
+    padding: 3rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    position: relative;
+    overflow: hidden;
+}
+
+.auth-toggle {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 2rem;
+}
+
+.auth-toggle button {
+    background: none;
+    border: none;
+    padding: 0.75rem 2rem;
+    font-family: 'Vazir', sans-serif;
+    font-size: 1.1rem;
+    color: var(--text-color);
+    cursor: pointer;
+    transition: color 0.3s ease, background 0.3s ease;
+}
+
+.auth-toggle button.active {
+    background: var(--secondary-color);
+    color: white;
+    border-radius: 25px;
+}
+
+.auth-form {
+    display: none;
+    text-align: center;
+}
+
+.auth-form.active {
+    display: block;
+}
+
+.auth-form h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.5rem;
+    color: var(--primary-color);
+    margin-bottom: 1.5rem;
+}
+
+.auth-form input {
+    width: 100%;
+    padding: 0.75rem;
+    margin: 0.5rem 0;
+    border: 1px solid #ddd;
+    border-radius: 25px;
+    font-family: 'Vazir', sans-serif;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+}
+
+.auth-form input:focus {
+    outline: none;
+    border-color: var(--secondary-color);
+    box-shadow: 0 0 5px rgba(67, 160, 71, 0.3);
+}
+
+.auth-form button {
+    background: var(--accent-color);
+    color: white;
+    border: none;
+    padding: 0.75rem 2rem;
+    border-radius: 25px;
+    font-family: 'Vazir', sans-serif;
+    font-size: 1rem;
+    cursor: pointer;
+    margin-top: 1rem;
+    transition: background 0.3s ease;
+}
+
+.auth-form button:hover {
+    background: var(--secondary-color);
+}
+
+.auth-form .forgot-password {
+    margin-top: 1rem;
+    font-size: 0.9rem;
+}
+
+.auth-form .forgot-password a {
+    color: var(--accent-color);
+    text-decoration: none;
+    font-weight: bold;
+    transition: color 0.3s ease;
+}
+
+.auth-form .forgot-password a:hover {
+    color: var(--gold-accent);
+}
+
+@media (max-width: 768px) {
+    .auth-container {
+        padding: 2rem;
+    }
+
+    .auth-form h2 {
+        font-size: 2rem;
+    }
+
+    .auth-toggle button {
+        padding: 0.5rem 1.5rem;
+        font-size: 1rem;
+    }
+}

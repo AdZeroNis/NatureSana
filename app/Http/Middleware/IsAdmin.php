@@ -20,6 +20,6 @@ class IsAdmin
         }
 
 
-        return redirect()->route('Home')->with('error', 'شما دسترسی به این بخش ندارید.');
+        return redirect()->route('home')->with('error', 'شما دسترسی به این بخش ندارید.');
     }
 }
