@@ -18,7 +18,7 @@
                         @elseif(auth()->user()->role == 'admin')
                             <li><a href="#">پروفایل</a></li>
                             <li><a href="#">سفارشات</a></li>
-                            <li><a href="">مغازه</a></li>
+                            <li><a href="{{ route('panel.dashboard.index') }}">مغازه</a></il>
                         @else
                             <li><a href="#">پروفایل</a></li>
                             <li><a href="#">سفارشات</a></li>

@@ -1,7 +1,8 @@
 @extends('Auth.layouts.master')
 
 @section('content')
-<div class="auth-toggle">
+<div class="auth-container">
+         <div class="auth-toggle">
             <button class="active" onclick="showLogin()">ورود</button>
             <button onclick="showRegister()">ثبت‌نام</button>
         </div>
@@ -51,4 +52,6 @@
                 <button type="submit">ثبت‌نام</button>
             </form>
         </div>
+  </div>
+</div>
 @endsection

@@ -10,7 +10,14 @@ class CategoryController extends Controller
 {
     public function index()
     {
-        $categories = Category::all();
+        $user = Auth::user();
+    
+        if ($user->role == 'super_admin') {
+            $categories = Category::all();
+        } else {
+            $categories = Category::where('store_id', $user->store_id)->get();
+        }
+    
         return view('Admin.Category.index', compact('categories'));
     }
 
@@ -27,27 +34,16 @@ class CategoryController extends Controller
         ]);
         Category::create([
             'name' => $request->input('name'),
-            // 'store_id' => Auth::user()->store_id,
+            'store_id' => Auth::user()->store_id,
         ]);
 
         return redirect()->route('panel.category.index')
             ->with('success', 'دسته بندی با موفقیت اضافه شد');
     }
 
-    public function Categories()
-    {
-        $user = Auth::user();
-    // Fetch all categories if the user is a super admin, otherwise only categories for their store
-    if ($user->role == 'super_admin') {
-        $categories = Category::all();
-    } else {
-        $categories = Category::where('store_id', $user->store_id)->get();
-    }
 
-    return view('Admin.Category.index', compact('categories'));
-     }
-
-  public function edit($id){
+  public function edit($id)
+  {
         $category=Category::find($id);
         return view("Admin.Category.edit",compact("category"));
 }
@@ -75,30 +71,35 @@ public function update(Request $request, $id) {
          ->with('success', 'دسته‌بندی با موفقیت حذف شد');
     }
     public function filter(Request $request)
-{
-    $query = Category::query();
-
-    if ($request->has('search') && $request->search != '') {
-        $query->where('name', 'like', '%' . $request->search . '%');
-    }
-
-
-    if ($request->has('status') && $request->status !== '') {
-
-        if ($request->status == 'active') {
-            $query->where('status', 1);
-        } elseif ($request->status == 'inactive') {
-            $query->where('status', 0);
+    {
+        $user = Auth::user();
+    
+        $query = Category::query();
+    
+        // فقط دسته‌بندی‌های مرتبط با فروشگاه خودش (مگر اینکه سوپر ادمین باشد)
+        if ($user->role != 'super_admin') {
+            $query->where('store_id', $user->store_id);
         }
+    
+        if ($request->filled('search')) {
+            $query->where('name', 'like', '%' . $request->search . '%');
+        }
+    
+        if ($request->filled('status')) {
+            if ($request->status == 'active') {
+                $query->where('status', 1);
+            } elseif ($request->status == 'inactive') {
+                $query->where('status', 0);
+            }
+        }
+    
+        $categories = $query->get();
+    
+        return view('Admin.Category.index', [
+            'categories' => $categories,
+            'search' => $request->search,
+            'status' => $request->status
+        ]);
     }
-
-    $categories = $query->get();
-
-
-    return view('Admin.Category.index', [
-        'categories' => $categories,
-        'search' => $request->search,
-        'status' => $request->status
-    ]);
-}
+    
 }

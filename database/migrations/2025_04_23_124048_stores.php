@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('phone_number');
             $table->string('status')->default(1);
             $table->foreignId('admin_id')->constrained('users')->cascadeOnDelete();
-            $table->timestamps();
+            $table->imestamps();
         });
     }
 

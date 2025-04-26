@@ -5,4 +5,6 @@
     <title>پنل مدیریت گیاهان دارویی</title>
    <link rel="stylesheet" href="{{asset('AdminAssets/css/style.css')}}">
    <link rel="stylesheet" href="{{asset('AdminAssets/css/style2.css')}}">
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
 </head>

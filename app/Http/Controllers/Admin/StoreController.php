@@ -6,30 +6,25 @@ use App\Http\Controllers\Controller;
 use App\Models\Store;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\File;
 
 class StoreController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Store::query();
+        $user = Auth::user();
 
-        // جستجو بر اساس نام
-        if ($request->has('search')) {
-            $query->where('name', 'like', '%' . $request->search . '%');
+        if ($user->role == 'super_admin') {
+
+            $stores = Store::all();
+
+        } else {
+
+            $storeId = $user->store_id;
+            $stores = Store::where('id', $storeId)->get();
+
         }
 
-        // فیلتر بر اساس وضعیت
-        if ($request->has('status')) {
-            if ($request->status === 'pending') {
-                $query->whereNull('is_approved');
-            } elseif ($request->status === 'active') {
-                $query->where('status', '1');
-            } elseif ($request->status === 'inactive') {
-                $query->where('status', '0');
-            }
-        }
-
-        $stores = $query->latest()->paginate(10);
         return view('Admin.Store.index', compact('stores'));
     }
     public function create(Request $request)
@@ -97,11 +92,107 @@ public function approve(Request $request, $id)
     
         return redirect()->back()->with('success', 'مغازه با موفقیت حذف شد.');
     }
-    
 
-    public function getUserStore()
+    public function edit($id)
     {
-        return Store::where('admin_id', Auth::id())->first();
+        $store = Store::find($id);
+
+        return view("Admin.Store.edit", compact('store'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        $store = Store::find($id);
+
+
+        $dataForm = $request->except('image');
+
+
+        if ($request->hasFile('image')) {
+            $imageName = time() . "." . $request->image->extension();
+            $request->image->move(public_path("AdminAssets/Store-image"), $imageName);
+            $dataForm['image'] = $imageName;
+
+
+            $picture = public_path("AdminAssets/Store-image/") . $store->image;
+            if (File::exists($picture)) {
+                File::delete($picture);
+            }
+        }
+
+        $store->update($dataForm);
+
+
+        return redirect()->route('store.index')->with('success', 'مغازه با موفقیت ویرایش شد');
+    }
+
+    public function show($id)
+    {
+        $currentUser = Auth::user();
+
+        if ($currentUser->role == 'super_admin') {
+
+            $store = Store::find($id);
+
+
+            return view('Admin.Store.show', compact( 'store'));
+        }
+
+        $store = $currentUser->store;
+
+        return view('Admin.Store.show', compact('store'));
+    }
+    public function destroy($id)
+    {
+        $store = Store::find($id);
+
+        // ابتدا کاربر را که به عنوان admin به این مغازه اختصاص داده شده است جدا می‌کنیم
+        $user = User::where('store_id', $store->id)->first();
+        if ($user) {
+            $user->store_id = null;  // جدا کردن store_id از کاربر
+            $user->role = 'user';    // اگر می‌خواهید نقش را به کاربر عادی تغییر دهید
+            $user->save();
+        }
+
+        // حذف تصویر قبلی اگر وجود داشت
+        $picture = public_path("AdminAssets/Store-image/") . $store->image;
+        if (File::exists($picture)) {
+            File::delete($picture);
+        }
+
+        // حذف مغازه
+        $store->delete();
+
+        // نمایش پیام موفقیت
+        return redirect()->route("store.index")->with('success', 'مغازه با موفقیت حذف شد');
+    }
+    public function filter(Request $request)
+    {
+        $query = Store::query();
+    
+        // جستجو بر اساس نام
+        if ($request->filled('search')) {
+            $query->where('name', 'like', '%' . $request->search . '%');
+        }
+    
+        // فیلتر بر اساس وضعیت فعال/غیرفعال
+        if ($request->filled('status')) {
+            if ($request->status === 'active') {
+                $query->where('status', 1);
+            } elseif ($request->status === 'inactive') {
+                $query->where('status', 0);
+            }
+        }
+
+    
+    
+        $stores = $query->latest()->paginate(10);
+    
+        return view('Admin.Store.index', [
+            'stores' => $stores,
+            'search' => $request->search,
+            'status' => $request->status,
+            'is_approved' => $request->is_approved
+        ]);
     }
 }
-

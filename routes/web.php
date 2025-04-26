@@ -80,6 +80,11 @@ Route::prefix('panel')->middleware(['auth', AdminAccess::class])->group(function
     Route::prefix('store')->group(function () {
         Route::post('/stores/{id}/approve', [StoreController::class, 'approve'])->name('store.approve');
         Route::post('/stores/{id}/reject', [StoreController::class, 'reject'])->name('store.reject');
-    });
+        Route::get('/edit/{id}', [StoreController::class, "edit"])->name('store.edit');
+        Route::post('/update/{id}', [StoreController::class, "update"])->name('store.update');
+        Route::get('/show/{id}', [StoreController::class, "show"])->name('store.show');
+        Route::delete('/delete/{id}', [StoreController::class, 'destroy'])->name('store.delete');
+        Route::get('/search', [StoreController::class, 'filter'])->name('store.filter');
+    }); 
 
 });
