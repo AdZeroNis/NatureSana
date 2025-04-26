@@ -1,56 +1,219 @@
 @extends('Admin.layouts.master')
- @section('content')
- <section class="table-section" id="products">
-    <h2>مدیریت محصولات</h2>
-    <div class="add-item">
-        <button>افزودن محصول جدید</button>
+
+@section('content')
+<section class="table-section" id="products">
+    <h2>مدیریت محصولات</h2>             
+
+    <!-- Search and Filter Form -->
+    <form method="GET" action="{{ route('panel.product.filter') }}" class="search-form mb-4">
+        <div class="form-row">
+            <div class="form-group">
+                <input type="text" name="search" class="form-control" placeholder="جستجو بر اساس نام دسته‌بندی" value="{{ request('search') }}">
+            </div>
+            <div class="form-group">
+                <select name="status" class="form-control">
+                    <option value="">تمام وضعیت‌ها</option>
+                    <option value="active" {{ request('status') == '1' ? 'selected' : '' }}>فعال</option>
+                    <option value="inactive" {{ request('status') == '0' ? 'selected' : '' }}>غیرفعال</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn btn-search">جستجو</button>
+            </div>
+        </div>
+    </form>
+
+    <div class="add-item my-3">
+        <a href="{{ route('panel.product.create') }}" class="btn btn-add">افزودن محصول جدید</a>
     </div>
-    <table>
+
+    <table class="table table-bordered">
         <thead>
             <tr>
                 <th>شناسه</th>
                 <th>نام</th>
-                <th>دسته‌بندی</th>
-                <th>قیمت</th>
-                <th>موجودی</th>
+                <th>وضعیت</th>
                 <th>عملیات</th>
             </tr>
         </thead>
         <tbody>
+            @forelse($products as $product)
             <tr>
-                <td>۰۰۱</td>
-                <td>اکیناسه</td>
-                <td>گیاهان دارویی</td>
-                <td>۱۹.۹۹ دلار</td>
-                <td>۱۰۰</td>
+                <td>{{ $product->id }}</td>
+                <td>{{ $product->name }}</td>
+                <td class="text-center">
+                    <span class="badge badge-{{ $product->status == '1' ? 'success' : 'danger' }}">
+                        {{ $product->status == '1' ? 'فعال' : 'غیرفعال' }}
+                    </span>
+                </td>
                 <td class="action-buttons">
-                    <button>ویرایش</button>
-                    <button>حذف</button>
+                    <a href="{{ route('panel.product.edit', $product->id) }}" class="btn btn-sm btn-edit">ویرایش</a>
+                    <form action="{{ route('panel.product.delete', $product->id) }}" method="POST" style="display: inline;">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="btn btn-sm btn-delete" onclick="return confirm('آیا از حذف این محصول مطمئن هستید؟')">حذف</button>
+                    </form>
                 </td>
             </tr>
+            @empty
             <tr>
-                <td>۰۰۲</td>
-                <td>ریشه زنجبیل</td>
-                <td>ریشه‌ها</td>
-                <td>۱۴.۹۹ دلار</td>
-                <td>۸۰</td>
-                <td class="action-buttons">
-                    <button>ویرایش</button>
-                    <button>حذف</button>
-                </td>
+                <td colspan="4" class="text-center">هیچ محصولی یافت نشد</td>
             </tr>
-            <tr>
-                <td>۰۰۳</td>
-                <td>آشواگاندا</td>
-                <td>مکمل‌ها</td>
-                <td>۲۴.۹۹ دلار</td>
-                <td>۵۰</td>
-                <td class="action-buttons">
-                    <button>ویرایش</button>
-                    <button>حذف</button>
-                </td>
-            </tr>
+            @endforelse
         </tbody>
     </table>
 </section>
- @endsection
+
+<style>
+    .table-section {
+        background: white;
+        border-radius: 15px;
+        padding: 2rem;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+        max-width: 1200px;
+        margin: 3rem auto;
+    }
+
+    .table-section h2 {
+        font-family: 'Vazir', sans-serif;
+        color: var(--primary-color);
+        margin-bottom: 1.5rem;
+        text-align: center;
+        font-size: 1.5rem;
+    }
+
+    .search-form .form-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        align-items: center;
+    }
+
+    .search-form .form-group {
+        flex: 1;
+        min-width: 200px; /* حداقل عرض برای جلوگیری از کوچک شدن بیش از حد */
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 0.75rem;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        font-family: 'Vazir', sans-serif;
+        font-size: 1rem;
+    }
+
+    .btn-search {
+        padding: 0.75rem 2rem;
+        background: var(--accent-color);
+        color: white;
+        border: none;
+        border-radius: 25px;
+        font-family: 'Vazir', sans-serif;
+        cursor: pointer;
+        transition: background 0.3s ease;
+    }
+
+    .btn-search:hover {
+        background: var(--secondary-color);
+    }
+
+    .btn-add {
+        padding: 0.75rem 2rem;
+        background: var(--primary-color);
+        color: white;
+        border: none;
+        border-radius: 25px;
+        font-family: 'Vazir', sans-serif;
+        text-decoration: none;
+        display: inline-block;
+        transition: background 0.3s ease;
+    }
+
+    .btn-add:hover {
+        background: var(--secondary-color);
+    }
+
+    .table {
+        width: 100%;
+        border-collapse: collapse;
+        font-family: 'Vazir', sans-serif;
+    }
+
+    .table th, .table td {
+        padding: 1rem;
+        text-align: center;
+        border: 1px solid #ddd;
+    }
+
+    .table th {
+        background: var(--primary-color);
+        color: white;
+    }
+
+    .badge {
+        padding: 0.5rem 1rem;
+        border-radius: 15px;
+        font-size: 0.9rem;
+    }
+
+    .badge-success {
+        background: #28a745;
+        color: white;
+    }
+
+    .badge-danger {
+        background: #dc3545;
+        color: white;
+    }
+
+    .action-buttons {
+        display: flex;
+        justify-content: center;
+        gap: 0.5rem;
+    }
+
+    .btn-sm {
+        padding: 0.25rem 1rem;
+        font-size: 0.9rem;
+        border-radius: 8px;
+        text-decoration: none;
+    }
+
+    .btn-edit {
+        background: #007bff;
+        color: white;
+    }
+
+    .btn-edit:hover {
+        background: #0056b3;
+    }
+
+    .btn-delete {
+        background: #dc3545;
+        color: white;
+        border: none;
+        cursor: pointer;
+    }
+
+    .btn-delete:hover {
+        background: #b02a37;
+    }
+
+    @media (max-width: 768px) {
+        .search-form .form-row {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .search-form .form-group {
+            min-width: 100%;
+        }
+
+        .table-section {
+            margin: 1rem;
+            padding: 1.5rem;
+        }
+    }
+</style>
+@endsection

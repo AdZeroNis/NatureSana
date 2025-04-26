@@ -8,6 +8,7 @@ use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Home\HomeController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\ProductController;
 use App\Http\Middleware\AdminAccess;
 /*
 |--------------------------------------------------------------------------
@@ -75,6 +76,17 @@ Route::prefix('panel')->middleware(['auth', AdminAccess::class])->group(function
         Route::post('/update/{id}', [CategoryController::class, 'update'])->name('panel.category.update');
         Route::delete('/delete/{id}', [CategoryController::class, 'destroy'])->name('panel.category.delete');
         Route::get('/search', [CategoryController::class, 'filter'])->name('panel.category.filter');
+    });
+
+    // محصولات
+    Route::prefix('product')->group(function () {
+        Route::get('/', [ProductController::class, 'index'])->name('panel.product.index');
+        Route::get('/create', [ProductController::class, 'create'])->name('panel.product.create');
+        Route::post('/store', [ProductController::class, 'store'])->name('panel.product.store');
+        Route::get('/edit/{id}', [ProductController::class, 'edit'])->name('panel.product.edit');
+        Route::post('/update/{id}', [ProductController::class, 'update'])->name('panel.product.update');
+        Route::delete('/delete/{id}', [ProductController::class, 'destroy'])->name('panel.product.delete');
+        Route::get('/search', [ProductController::class, 'filter'])->name('panel.product.filter');
     });
 
     Route::prefix('store')->group(function () {
