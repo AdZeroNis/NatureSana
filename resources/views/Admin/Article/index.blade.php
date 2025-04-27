@@ -1,14 +1,14 @@
 @extends('Admin.layouts.master')
 
 @section('content')
-<section class="table-section" id="products">
-    <h2>مدیریت محصولات</h2>             
+<section class="table-section" id="articles">
+    <h2>مدیریت مقالات</h2>
 
     <!-- Search and Filter Form -->
-    <form method="GET" action="{{ route('panel.product.filter') }}" class="search-form mb-4">
+    <form method="GET" action="{{ route('panel.article.filter') }}" class="search-form mb-4">
         <div class="form-row">
             <div class="form-group">
-                <input type="text" name="search" class="form-control" placeholder="جستجو بر اساس نام دسته‌بندی" value="{{ request('search') }}">
+                <input type="text" name="search" class="form-control" placeholder="جستجو بر اساس عنوان مقاله" value="{{ request('search') }}">
             </div>
             <div class="form-group">
                 <select name="status" class="form-control">
@@ -24,45 +24,44 @@
     </form>
 
     <div class="add-item my-3">
-        <a href="{{ route('panel.product.create') }}" class="btn btn-add">افزودن محصول جدید</a>
+        <a href="{{ route('panel.article.create') }}" class="btn btn-add">افزودن مقاله جدید</a>
     </div>
 
     <table class="table table-bordered">
         <thead>
             <tr>
                 <th>شناسه</th>
-                <th>نام</th>
+                <th>عنوان</th>
                 <th>وضعیت</th>
                 <th>عملیات</th>
             </tr>
         </thead>
         <tbody>
-            @forelse($products as $product)
+            @forelse($articles as $article)
             <tr>
-                <td>{{ $product->id }}</td>
-                <td>{{ $product->name }}</td>
+                <td>{{ $article->id }}</td>
+                <td>{{ $article->title }}</td>
                 <td class="text-center">
-                    <span class="badge badge-{{ $product->status == '1' ? 'success' : 'danger' }}">
-                        {{ $product->status == '1' ? 'فعال' : 'غیرفعال' }}
+                    <span class="badge badge-{{ $article->status == '1' ? 'success' : 'danger' }}">
+                        {{ $article->status == '1' ? 'فعال' : 'غیرفعال' }}
                     </span>
                 </td>
                 <td class="action-buttons">
-                <a href="{{ route('panel.product.show', $product->id) }}" class="btn btn-sm" style="color: #007bff;" title="جزئیات">
+                    <a href="{{ route('panel.article.show', $article->id) }}" class="btn btn-sm" style="color: #007bff;" title="جزئیات">
                         <i class="fas fa-eye"></i>
                     </a>
-                    <a href="{{ route('panel.product.edit', $product->id) }}" class="btn btn-sm" style="color: hotpink;" title="ویرایش">
+                    <a href="{{ route('panel.article.edit', $article->id) }}" class="btn btn-sm" style="color: hotpink;" title="ویرایش">
                         <i class="fas fa-edit"></i>
                     </a>
                     <a href="#" 
                        class="btn btn-sm" 
                        style="color: red;" 
                        title="حذف" 
-                       onclick="event.preventDefault(); if(confirm('آیا از حذف این محصول مطمئن هستید؟')) { 
-                           document.getElementById('delete-form-{{ $product->id }}').submit(); }">
+                       onclick="event.preventDefault(); if(confirm('آیا از حذف این مقاله مطمئن هستید؟')) { 
+                           document.getElementById('delete-form-{{ $article->id }}').submit(); }">
                         <i class="fas fa-trash-alt"></i>
                     </a>
-                 
-                    <form id="delete-form-{{ $product->id }}" action="{{ route('panel.product.delete', $product->id) }}" method="POST" style="display: none;">
+                    <form id="delete-form-{{ $article->id }}" action="{{ route('panel.article.delete', $article->id) }}" method="POST" style="display: none;">
                         @csrf
                         @method('DELETE')
                     </form>
@@ -70,7 +69,7 @@
             </tr>
             @empty
             <tr>
-                <td colspan="4" class="text-center">هیچ محصولی یافت نشد</td>
+                <td colspan="5" class="text-center">هیچ مقاله‌ای یافت نشد</td>
             </tr>
             @endforelse
         </tbody>
@@ -104,7 +103,7 @@
 
     .search-form .form-group {
         flex: 1;
-        min-width: 200px; /* حداقل عرض برای جلوگیری از کوچک شدن بیش از حد */
+        min-width: 200px;
     }
 
     .form-control {
@@ -187,30 +186,8 @@
     }
 
     .btn-sm {
-        padding: 0.25rem 1rem;
+        padding: 0.25rem 0.5rem;
         font-size: 0.9rem;
-        border-radius: 8px;
-        text-decoration: none;
-    }
-
-    .btn-edit {
-        background: #007bff;
-        color: white;
-    }
-
-    .btn-edit:hover {
-        background: #0056b3;
-    }
-
-    .btn-delete {
-        background: #dc3545;
-        color: white;
-        border: none;
-        cursor: pointer;
-    }
-
-    .btn-delete:hover {
-        background: #b02a37;
     }
 
     @media (max-width: 768px) {

@@ -11,13 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('comments', function (Blueprint $table) {
+        Schema::create('article_comments', function (Blueprint $table) {
             $table->engine = 'InnoDB';
             $table->id();
             $table->text('content');
             $table->foreignId('user_id')->constrained('users'); // کاربری که نظر داده
-            $table->foreignId('product_id')->nullable()->constrained('products'); // نظر درباره محصول
-            $table->foreignId('article_id')->nullable()->constrained('articles'); // نظر درباره مقاله
+            $table->foreignId('article_id')->constrained('articles'); // نظر درباره مقاله
             $table->timestamps();
         });
     }
@@ -27,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        //
+        Schema::dropIfExists('article_comments');
     }
 };

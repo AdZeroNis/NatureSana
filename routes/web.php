@@ -9,6 +9,7 @@ use App\Http\Controllers\Home\HomeController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\ProductController;
+use App\Http\Controllers\Admin\ArticleController;
 use App\Http\Middleware\AdminAccess;
 /*
 |--------------------------------------------------------------------------
@@ -87,6 +88,7 @@ Route::prefix('panel')->middleware(['auth', AdminAccess::class])->group(function
         Route::post('/update/{id}', [ProductController::class, 'update'])->name('panel.product.update');
         Route::delete('/delete/{id}', [ProductController::class, 'destroy'])->name('panel.product.delete');
         Route::get('/search', [ProductController::class, 'filter'])->name('panel.product.filter');
+        Route::get('/show/{id}', [ProductController::class, 'show'])->name('panel.product.show');
     });
 
     Route::prefix('store')->group(function () {
@@ -98,5 +100,15 @@ Route::prefix('panel')->middleware(['auth', AdminAccess::class])->group(function
         Route::delete('/delete/{id}', [StoreController::class, 'destroy'])->name('store.delete');
         Route::get('/search', [StoreController::class, 'filter'])->name('store.filter');
     }); 
+    Route::prefix('article')->group(function () {
+        Route::get('/', [ArticleController::class, 'index'])->name('panel.article.index');
+        Route::get('/create', [ArticleController::class, 'create'])->name('panel.article.create');
+        Route::post('/store', [ArticleController::class, 'store'])->name('panel.article.store');
+        Route::get('/edit/{id}', [ArticleController::class, 'edit'])->name('panel.article.edit');
+        Route::post('/update/{id}', [ArticleController::class, 'update'])->name('panel.article.update');
+        Route::delete('/delete/{id}', [ArticleController::class, 'destroy'])->name('panel.article.delete');
+        Route::get('/search', [ArticleController::class, 'filter'])->name('panel.article.filter');
+        Route::get('/show/{id}', [ArticleController::class, 'show'])->name('panel.article.show');
+    });
 
 });

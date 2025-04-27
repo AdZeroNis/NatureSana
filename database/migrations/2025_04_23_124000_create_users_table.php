@@ -18,7 +18,6 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->string('password');
             $table->string('phone');
-            $table->string('address');
             $table->string('role')->default('user');
             $table->string('status')->default(1);
             $table->unsignedBigInteger('store_id')->nullable();

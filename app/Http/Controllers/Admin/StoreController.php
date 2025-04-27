@@ -135,7 +135,7 @@ public function approve(Request $request, $id)
             $store = Store::find($id);
 
 
-            return view('Admin.Store.show', compact( 'store'));
+            return view('Admin.Store.show', compact('store'));
         }
 
         $store = $currentUser->store;
@@ -192,7 +192,6 @@ public function approve(Request $request, $id)
             'stores' => $stores,
             'search' => $request->search,
             'status' => $request->status,
-            'is_approved' => $request->is_approved
         ]);
     }
 }

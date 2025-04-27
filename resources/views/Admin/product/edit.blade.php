@@ -36,9 +36,9 @@
                     @enderror
                 </div>
                 <div class="form-group">
-                    <label for="quantity">تعداد محصول</label>
-                    <input type="number" name="quantity" id="quantity" class="form-control @error('quantity') is-invalid @enderror" value="{{ old('inventory', $product->inventory) }}" min="0" required>
-                    @error('quantity')
+                    <label for="inventory">تعداد محصول</label>
+                    <input type="number" name="inventory" id="inventory" class="form-control @error('inventory') is-invalid @enderror" value="{{ old('inventory', $product->inventory) }}" min="0" required>
+                    @error('inventory')
                         <span class="error">{{ $message }}</span>
                     @enderror
                 </div>

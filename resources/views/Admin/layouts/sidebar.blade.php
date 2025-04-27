@@ -6,5 +6,6 @@
         <li><a href="{{route('store.index')}}" class="{{ request()->routeIs('panel.store.index') ? 'active' : '' }}">مدیریت مغازه</a></li>
         <li><a href="{{route('panel.category.index')}}" class="{{ request()->routeIs('panel.category.index') ? 'active' : '' }}">دسته‌بندی</a></li>
         <li><a href="{{route('panel.product.index')}}" class="{{ request()->routeIs('panel.product.index') ? 'active' : '' }}">محصولات</a></li>
+        <li><a href="{{route('panel.article.index')}}" class="{{ request()->routeIs('panel.article.index') ? 'active' : '' }}">مقالات</a></li>
     </ul>
 </aside>

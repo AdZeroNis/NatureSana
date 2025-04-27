@@ -104,4 +104,46 @@ class ProductController extends Controller
      return redirect()->route("panel.product.index")->with('success', 'محصول با موفقیت حذف شد');;
 }
 
+   public function show($id)
+   {
+    $currentUser = Auth::user();
+
+    if ($currentUser->role == 'super_admin') {
+        $product = Product::find($id);
+    } else {
+        $product = Product::where('store_id', $currentUser->store_id)->find($id);
+    }
+    $store = $product->store;
+
+    return view('Admin.Product.show', compact('product', 'store'));
+   }
+
+   public function filter(Request $request)
+   {
+    $query = Product::query();
+    
+    // جستجو بر اساس نام
+    if ($request->filled('search')) {
+        $query->where('name', 'like', '%' . $request->search . '%');
+    }
+
+    // فیلتر بر اساس وضعیت فعال/غیرفعال
+    if ($request->filled('status')) {
+        if ($request->status === 'active') {
+            $query->where('status', 1);
+        } elseif ($request->status === 'inactive') {
+            $query->where('status', 0);
+        }
+    }
+
+
+
+    $products = $query->latest()->paginate(10);
+
+    return view('Admin.Product.index', [
+        'products' => $products,
+        'search' => $request->search,
+        'status' => $request->status,
+    ]);
+   }
 }
