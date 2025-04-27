@@ -9,6 +9,7 @@ use App\Http\Controllers\Home\HomeController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\ProductController;
+use App\Http\Controllers\Auth\PasswordResetController;
 use App\Http\Controllers\Admin\ArticleController;
 use App\Http\Middleware\AdminAccess;
 /*
@@ -47,7 +48,15 @@ Route::namespace("auth")->group(function () {
     Route::post('/login', [AuthController::class, "login"])->name('login.submit');
 
     // خروج
-    Route::post('/logout', [AuthController::class, "logout"])->name('logout');
+    Route::get('/logout', [AuthController::class, "logout"])->name('logout');
+
+    // Password Reset Routes
+    Route::get('/password/reset', [PasswordResetController::class, 'showRequestForm'])->name('password.request');
+    Route::post('/password/email', [PasswordResetController::class, 'sendResetCode'])->name('password.email');
+    Route::get('/password/verify', [PasswordResetController::class, 'showVerifyForm'])->name('password.verify');
+    Route::post('/password/verify', [PasswordResetController::class, 'verifyCode'])->name('password.verify.submit');
+    Route::get('/password/reset/{token}', [PasswordResetController::class, 'showResetForm'])->name('password.reset');
+    Route::post('/password/reset', [PasswordResetController::class, 'reset'])->name('password.update');
 });
 
 // ------------------------

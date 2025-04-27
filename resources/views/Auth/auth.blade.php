@@ -19,8 +19,8 @@
                 <input type="email" name="email" placeholder="ایمیل" required>
                 <input type="password" name="password" placeholder="رمز عبور" required>
                 <button type="submit">ورود</button>
-                <div class="forgot-password">
-                    <a href="">رمز عبور خود را فراموش کرده‌اید؟</a>
+                <div class="auth-links">
+                    <a href="{{ route('password.request') }}">فراموشی رمز عبور</a>
                 </div>
             </form>
         </div>
