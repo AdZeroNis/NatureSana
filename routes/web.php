@@ -25,11 +25,11 @@ Route::namespace("home")->group(function () {
     Route::get('/product/{id}', [HomeController::class, "showProduct"])->name('product.show');
     Route::get('/category/{id}/products', [HomeController::class, 'showCategoryProducts'])->name('category.products');
     Route::get('/store/{id}/products', [HomeController::class, 'showStoreProducts'])->name('store.products');
-    Route::get('/articles', [HomeController::class, "listArticles"])->name('article.index');
-    Route::get('/articles/{id}', [HomeController::class, "showArticle"])->name('article.show');
     Route::get('/search', [HomeController::class, 'search'])->name('search');
     Route::post('/store/register', [StoreController::class, 'create'])->name('store.register');
     Route::get('/stores', [StoreController::class, 'index'])->name('store.index');
+    Route::get('/articles', [HomeController::class, "articles"])->name('article.index');   
+    Route::get('/articles/{id}', [HomeController::class, "showArticle"])->name('article.show');
     
 });
 

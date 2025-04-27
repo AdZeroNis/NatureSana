@@ -1,16 +1,18 @@
-@extends('Home.layouts.master')
 
-@section('content')
-
+<!DOCTYPE html>
+<html lang="en">
+    @include('Home.layouts.head')
+<body>
+    @include('Home.layouts.header')
 <section class="shop-section" id="shop">
-    <h2>محصولات</h2>
+    <h2>مقالات</h2>
     <div class="product-grid">
-        @foreach ($latestItems['products'] as $product)
+        @foreach ($latestArticles as $article)
             <div class="product-card">
-                <img src="{{ asset('AdminAssets/Product-image/' . $product->image) }}" alt="{{ $product->name }}">
-                <h3>{{ $product->name }}</h3>
-                <p>{{ number_format($product->price, 0) }} تومان</p>
-                <form action="{{ route('product.show', $product->id) }}" method="GET">
+                <img src="{{ asset('AdminAssets/Article-image/' . $article->image) }}" alt="{{ $article->title }}">
+                <h3>{{ $article->title }}</h3>
+                <p>نویسنده: {{ $article->user->name }}</p>
+                <form action="{{ route('article.show', $article->id) }}" method="GET">
                     <button type="submit"> مشاهده </button>
                 </form>
             </div>
@@ -18,22 +20,10 @@
     </div>
 </section>
 
-<section class="stores-section" id="stores">
-    <h2>فروشگاه‌های ما</h2>
-    <div class="store-grid">
-        @foreach ($latestItems['stores'] as $store)
-            <div class="store-card">
-                <a href="">
-                    <img src="{{ asset('AdminAssets/Store-image/' . $store->image) }}" alt="{{ $store->name }}">
-                </a>
-                <h3>{{ $store->name }}</h3>
-            </div>
-        @endforeach
-    </div>
-</section>
+@include('Home.layouts.footer')
 
 <style>
-.shop-section, .stores-section {
+.shop-section {
     max-width: 1300px;
     margin: 3rem auto;
     padding: 0 1.5rem;
@@ -43,13 +33,6 @@
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 1.5rem;
-    direction: rtl; /* ترتیب از راست به چپ */
-}
-
-.store-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 0.2rem; /* فاصله‌ی کمتر */
     direction: rtl; /* ترتیب از راست به چپ */
 }
 
@@ -174,4 +157,5 @@
     }
 }
 </style>
-@endsection
+</body>
+</html>

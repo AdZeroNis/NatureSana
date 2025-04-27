@@ -1,0 +1,267 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+    @include('Home.layouts.head')
+<body>
+    @include('Home.layouts.header')
+<section class="single-article-section">
+    <div class="container">
+        <div class="article-header">
+            <h1>{{ $article->title }}</h1>
+        </div>
+
+        <div class="article-image">
+            @if($article->image)
+                <img src="{{ asset('AdminAssets/Article-image/' . $article->image) }}" alt="{{ $article->title }}">
+            @else
+                <div class="no-image">
+                    <i class="fas fa-file-alt"></i>
+                </div>
+            @endif
+        </div>
+        <div class="article-meta">
+                <span><i class="fas fa-user"></i> نویسنده: {{  $article->user->name}}</span>
+                <span><i class="fas fa-calendar-alt"></i> {{ $article->published_at ? \Morilog\Jalali\Jalalian::fromDateTime($article->published_at)->format('Y/m/d') : \Morilog\Jalali\Jalalian::fromDateTime($article->created_at)->format('Y/m/d') }}</span>
+                
+            </div>
+        <div class="article-content">
+            {!! $article->content !!}
+        </div>
+
+  
+    </div>
+</section>
+
+@include('Home.layouts.footer')
+
+<style>
+.single-article-section {
+    padding: 2rem 0;
+    background-color: var(--light-bg);
+    direction: rtl; /* جهت راست به چپ */
+}
+
+.container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+}
+
+.article-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.article-header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.5rem;
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+}
+
+.article-meta {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+    color: var(--text-color);
+    font-size: 0.95rem;
+}
+
+.article-meta span {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.article-meta i {
+    color: var(--accent-color);
+}
+
+.article-image {
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+.article-image img {
+    width: 100%;
+    max-height: 400px;
+    object-fit: cover;
+    border-radius: 15px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+}
+
+.no-image {
+    width: 100%;
+    height: 200px;
+    background-color: #e9ecef;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 15px;
+}
+
+.no-image i {
+    font-size: 4rem;
+    color: #adb5bd;
+}
+
+.article-content {
+    font-family: 'Arial', sans-serif;
+    line-height: 1.8;
+    color: var(--text-color);
+    margin-bottom: 3rem;
+}
+
+.article-content p {
+    margin-bottom: 1rem;
+}
+
+.article-content img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+}
+
+.article-content h1, .article-content h2, .article-content h3, .article-content h4, .article-content h5, .article-content h6 {
+    font-family: 'Playfair Display', serif;
+    margin-bottom: 0.75rem;
+    color: var(--primary-color);
+}
+
+.article-content ul, .article-content ol {
+    margin-bottom: 1rem;
+    padding-right: 1.5rem;
+}
+
+.article-content a {
+    color: var(--accent-color);
+    text-decoration: underline;
+}
+
+.article-content a:hover {
+    color: var(--secondary-color);
+}
+
+.comments-section {
+    margin-top: 3rem;
+}
+
+.comments-section h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.8rem;
+    color: var(--primary-color);
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+.comment-form {
+    margin-bottom: 2rem;
+}
+
+.comment-form textarea {
+    width: 100%;
+    min-height: 120px;
+    padding: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-family: 'Arial', sans-serif;
+    font-size: 1rem;
+    margin-bottom: 1rem;
+    resize: vertical;
+}
+
+.comment-form textarea:focus {
+    outline: none;
+    border-color: var(--accent-color);
+    box-shadow: 0 0 5px rgba(216, 27, 96, 0.3);
+}
+
+.comment-form button {
+    background: var(--accent-color);
+    color: white;
+    border: none;
+    padding: 0.75rem 2rem;
+    border-radius: 25px;
+    cursor: pointer;
+    font-family: 'Arial', sans-serif;
+    font-size: 1rem;
+    transition: background 0.3s ease;
+}
+
+.comment-form button:hover {
+    background: var(--secondary-color);
+}
+
+.login-message {
+    text-align: center;
+    font-size: 1rem;
+    color: var(--text-color);
+    margin-bottom: 2rem;
+}
+
+.login-message a {
+    color: var(--accent-color);
+    text-decoration: underline;
+}
+
+.login-message a:hover {
+    color: var(--secondary-color);
+}
+
+.comments-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.comment {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.comment-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.75rem;
+}
+
+.comment-author {
+    font-weight: bold;
+    color: var(--primary-color);
+}
+
+.comment-date {
+    font-size: 0.9rem;
+    color: #6c757d;
+}
+
+.comment-body {
+    font-size: 1rem;
+    color: var(--text-color);
+    line-height: 1.6;
+}
+
+@media (max-width: 768px) {
+    .article-header h1 {
+        font-size: 2rem;
+    }
+
+    .article-meta {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .article-image img {
+        max-height: 300px;
+    }
+
+    .comments-section h2 {
+        font-size: 1.5rem;
+    }
+}
+</style>
+</body>
+</html>

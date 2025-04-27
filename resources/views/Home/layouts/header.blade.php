@@ -2,9 +2,9 @@
     <nav>
         <div class="logo">گیاهان دارویی</div>
         <ul id="nav-menu">
-            <li><a href="#home" title="خانه"><i class="fas fa-home"></i></a></li>
+            <li><a href="{{ route('home') }}" title="خانه"><i class="fas fa-home"></i></a></li>
             <li><a href="#shop" title="فروشگاه"><i class="fas fa-store"></i></a></li>
-            <li><a href="#blog" title="آموزش"><i class="fas fa-book-open"></i></a></li>
+            <li><a href="{{ route('article.index') }}" title="مقالات"><i class="fas fa-book-open"></i></a></li>
             <li class="user-dropdown">
                 @auth
                     <a href="#" class="user-profile" title="پروفایل کاربری">

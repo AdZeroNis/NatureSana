@@ -25,13 +25,13 @@
             </div>
             <div class="form-row">
                 <div class="form-group">
-                    <label for="Id_category">دسته‌بندی</label>
-                    <select name="Id_category" id="Id_category" class="selectpicker form-control p-2 @error('Id_category') is-invalid @enderror" required>
+                    <label for="category_id">دسته‌بندی</label>
+                    <select name="category_id" id="category_id" class="selectpicker form-control p-2 @error('category_id') is-invalid @enderror" required>
                         @foreach ($categories as $category)
-                            <option value="{{ $category->id }}" {{ old('Id_category', $product->Id_category) == $category->id ? 'selected' : '' }}>{{ $category->name }}</option>
+                            <option value="{{ $category->id }}" {{ old('category_id', $product->category_id) == $category->id ? 'selected' : '' }}>{{ $category->name }}</option>
                         @endforeach
                     </select>
-                    @error('Id_category')
+                    @error('category_id')
                         <span class="error">{{ $message }}</span>
                     @enderror
                 </div>
