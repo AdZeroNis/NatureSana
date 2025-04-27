@@ -41,9 +41,27 @@ nav {
 }
 
 nav .logo {
-    font-size: 2rem;
+    display: flex;
+    align-items: center;
+    padding: 0.5rem;
+    font-size: 26px;
     font-family: 'Playfair Display', serif;
-    letter-spacing: 1px;
+}
+
+.logo a {
+    display: block;
+    text-decoration: none;
+}
+
+.logo img {
+    height: 64px;
+    width: auto;
+    object-fit: contain;
+    transition: transform 0.3s ease;
+}
+
+.logo img:hover {
+    transform: scale(1.05);
 }
 
 nav ul {

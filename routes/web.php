@@ -30,6 +30,7 @@ Route::namespace("home")->group(function () {
     Route::get('/stores', [StoreController::class, 'index'])->name('store.index');
     Route::get('/articles', [HomeController::class, "articles"])->name('article.index');   
     Route::get('/articles/{id}', [HomeController::class, "showArticle"])->name('article.show');
+
     
 });
 

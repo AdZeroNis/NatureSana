@@ -1,10 +1,10 @@
 <header>
     <nav>
-        <div class="logo">گیاهان دارویی</div>
+        <div class="logo">NatureSana </div>
         <ul id="nav-menu">
-            <li><a href="{{ route('home') }}" title="خانه"><i class="fas fa-home"></i></a></li>
-            <li><a href="#shop" title="فروشگاه"><i class="fas fa-store"></i></a></li>
-            <li><a href="{{ route('article.index') }}" title="مقالات"><i class="fas fa-book-open"></i></a></li>
+            <li><a href="{{ route('home') }}" title="خانه">خانه</a></li>
+            <li><a href="#shop" title="محصولات">محصولات</a></li>
+            <li><a href="{{ route('article.index') }}" title="مقالات">مقالات</a></li>
             <li class="user-dropdown">
                 @auth
                     <a href="#" class="user-profile" title="پروفایل کاربری">
@@ -26,7 +26,7 @@
                     </ul>
                 @else
                     <a href="{{ route('login') }}" title="حساب کاربری">
-                        <i class="fas fa-user"></i>
+                        حساب کاربری
                     </a>
                 @endauth
             </li>

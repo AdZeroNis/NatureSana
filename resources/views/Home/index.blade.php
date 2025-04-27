@@ -23,7 +23,7 @@
     <div class="store-grid">
         @foreach ($latestItems['stores'] as $store)
             <div class="store-card">
-                <a href="">
+                <a href="{{ route('store.products', $store->id) }}">
                     <img src="{{ asset('AdminAssets/Store-image/' . $store->image) }}" alt="{{ $store->name }}">
                 </a>
                 <h3>{{ $store->name }}</h3>

@@ -21,7 +21,7 @@ body {
     font-family: 'Vazir', sans-serif;
     line-height: 1.8;
     color: var(--text-color);
-    background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://images.unsplash.com/photo-1512621776951-a57141f2eefd') no-repeat center center/cover;
+    background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('../images/336766.jpg') no-repeat center center/cover;
     min-height: 100vh;
     display: flex;
     justify-content: center;
