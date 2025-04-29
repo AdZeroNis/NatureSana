@@ -18,7 +18,8 @@ class StoreController extends Controller
 
             $stores = Store::all();
 
-        } else {
+        } else
+        {
 
             $storeId = $user->store_id;
             $stores = Store::where('id', $storeId)->get();

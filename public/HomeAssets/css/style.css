@@ -141,17 +141,7 @@ nav ul li a:hover {
     box-shadow: 0 0 5px var(--secondary-color);
 }
 
-.hero {
-    background: url('https://images.unsplash.com/photo-1512621776951-a57141f2eefd') no-repeat center center/cover;
-    height: 600px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    color: white;
-    position: relative;
-    overflow: hidden;
-}
+
 
 .hero::before {
     content: '';

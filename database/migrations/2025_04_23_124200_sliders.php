@@ -16,7 +16,6 @@ return new class extends Migration
             $table->id();
             $table->text('url');
             $table->text('image');
-            $table->string('status')->default(1);
             $table->foreignId('admin_id')->nullable()->constrained('users')->cascadeOnDelete();  
             $table->timestamps();
         });

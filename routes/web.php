@@ -11,6 +11,7 @@ use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Auth\PasswordResetController;
 use App\Http\Controllers\Admin\ArticleController;
+use App\Http\Controllers\Admin\SliderController;
 use App\Http\Middleware\AdminAccess;
 /*
 |--------------------------------------------------------------------------
@@ -38,7 +39,7 @@ Route::namespace("home")->group(function () {
 // ------------------------
 //  احراز هویت
 // ------------------------
-Route::namespace("auth")->group(function () {
+Route::prefix('auth')->group(function () {
     // ثبت‌نام
     Route::get('/register', [AuthController::class, "showRegisterForm"])->name('register.form');
     Route::post('/register', [AuthController::class, "register"])->name('register.submit');
@@ -50,24 +51,26 @@ Route::namespace("auth")->group(function () {
     // خروج
     Route::get('/logout', [AuthController::class, "logout"])->name('logout');
 
-    // Password Reset Routes
-    Route::get('/password/reset', [PasswordResetController::class, 'showRequestForm'])->name('password.request');
-    Route::post('/password/email', [PasswordResetController::class, 'sendResetCode'])->name('password.email');
-    Route::get('/password/verify', [PasswordResetController::class, 'showVerifyForm'])->name('password.verify');
-    Route::post('/password/verify', [PasswordResetController::class, 'verifyCode'])->name('password.verify.submit');
-    Route::get('/password/reset/{token}', [PasswordResetController::class, 'showResetForm'])->name('password.reset');
-    Route::post('/password/reset', [PasswordResetController::class, 'reset'])->name('password.update');
-});
+    // ریست رمز عبور
+    Route::prefix('password')->group(function () {
+      
+        Route::get('/reset', [PasswordResetController::class, 'showRequestForm'])->name('password.request');
+        Route::post('/email', [PasswordResetController::class, 'sendResetCode'])->name('password.email');
+        Route::get('/verify', [PasswordResetController::class, 'showVerifyForm'])->name('password.verify');
+        Route::post('/verify', [PasswordResetController::class, 'verifyCode'])->name('password.verify.submit');
+        Route::get('/reset/{token}', [PasswordResetController::class, 'showResetForm'])->name('password.reset');
+        Route::post('/reset', [PasswordResetController::class, 'reset'])->name('password.update');
+    });
 
-// ------------------------
-// 📧 تأیید کد
-// ------------------------
-Route::middleware('auth')->group(function () {
-    Route::get('/verify-code', [AuthController::class, 'showVerificationForm'])->name('verification.notice');
-    Route::post('/verify-code', [AuthController::class, 'verifyCode'])->name('verification.verify-code');
-    Route::post('/resend-code', [AuthController::class, 'resendCode'])
-        ->middleware('throttle:6,1')
-        ->name('verification.resend-code');
+    // ✅ مسیرهایی که نیاز به احراز هویت دارند
+    Route::middleware('auth')->group(function () {
+        Route::get('/verify-code', [AuthController::class, 'showVerificationForm'])->name('verification.notice');
+        Route::post('/verify-code', [AuthController::class, 'verifyCode'])->name('verification.verify-code');
+        Route::post('/resend-code', [AuthController::class, 'resendCode'])
+            ->middleware('throttle:6,1')
+            ->name('verification.resend-code');
+    });
+    Route::get('/profile', [AuthController::class, 'profile'])->name('profile');
 });
 
 // ------------------------
@@ -119,6 +122,12 @@ Route::prefix('panel')->middleware(['auth', AdminAccess::class])->group(function
         Route::delete('/delete/{id}', [ArticleController::class, 'destroy'])->name('panel.article.delete');
         Route::get('/search', [ArticleController::class, 'filter'])->name('panel.article.filter');
         Route::get('/show/{id}', [ArticleController::class, 'show'])->name('panel.article.show');
+    });
+    Route::prefix('slider')->group(function () {
+        Route::get('/', [SliderController::class, 'index'])->name('panel.slider.index');
+        Route::get('/create', [SliderController::class, 'create'])->name('panel.slider.create');
+        Route::post('/store', [SliderController::class, 'store'])->name('panel.slider.store');
+        Route::delete('/delete/{id}', [SliderController::class, 'destroy'])->name('panel.slider.delete');
     });
 
 });

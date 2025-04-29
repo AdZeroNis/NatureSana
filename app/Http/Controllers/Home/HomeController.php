@@ -23,7 +23,7 @@ class HomeController extends Controller
                               ->take(5)
                               ->get(),
     
-            'sliders' => Slider::where('status', 1)
+            'sliders' => Slider::orderBy('created_at', 'desc')
                                 ->take(3)
                                 ->get(),
         ];

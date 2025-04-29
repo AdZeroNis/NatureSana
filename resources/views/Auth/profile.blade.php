@@ -1,0 +1,133 @@
+@extends('Auth.layouts.master')
+
+@section('content')
+    <div class="container py-5">
+        <div class="profile-section">
+            <!-- هدر پروفایل -->
+            <div class="profile-header">
+                <h2>👤 پروفایل کاربری</h2>
+            </div>
+
+            <!-- کارت پروفایل -->
+            <div class="profile-card">
+          
+
+                <div class="profile-info">
+                    <h3>{{ auth()->user()->name }}</h3>
+                    <p class="user-email"><i class="fas fa-envelope"></i> {{ auth()->user()->email }}</p>
+                    <p class="user-join-date"><i class="fas fa-calendar-alt"></i> تاریخ عضویت: {{ \Morilog\Jalali\Jalalian::fromDateTime(auth()->user()->created_at)->format('Y/m/d') }}</p>
+                    <a href="#" class="edit-btn">✏️ ویرایش پروفایل</a>
+                </div>
+            </div>
+        </div>
+    </div>
+@endsection
+
+<style>
+:root {
+    --primary-color: #00b09b;
+    --secondary-color: #96c93d;
+    --accent-color: #ff6f61;
+    --text-color: #333;
+}
+
+.container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+    direction: rtl;
+}
+
+.py-5 {
+    padding-top: 3rem;
+    padding-bottom: 3rem;
+}
+
+.profile-section {
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.profile-header {
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    color: white;
+    padding: 2rem;
+    text-align: center;
+}
+
+.profile-header h2 {
+    font-family: 'Vazirmatn', sans-serif;
+    font-size: 2rem;
+    margin: 0;
+}
+
+.profile-card {
+    display: flex;
+    gap: 2rem;
+    align-items: center;
+    padding: 2rem;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.user-image {
+    width: 140px;
+    height: 140px;
+    border-radius: 50%;
+    border: 5px solid #fff;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    object-fit: cover;
+    background-color: #f0f0f0;
+}
+
+.profile-info {
+    text-align: center;
+    max-width: 400px;
+}
+
+.profile-info h3 {
+    font-size: 1.8rem;
+    color: var(--text-color);
+    margin-bottom: 0.5rem;
+}
+
+.user-email,
+.user-join-date {
+    color: #6c757d;
+    font-size: 1rem;
+    margin-bottom: 0.3rem;
+}
+
+.user-email i,
+.user-join-date i {
+    margin-left: 0.5rem;
+    color: var(--accent-color);
+}
+
+.edit-btn {
+    background: var(--accent-color);
+    color: white;
+    padding: 0.6rem 1.2rem;
+    border-radius: 30px;
+    font-size: 0.95rem;
+    text-decoration: none;
+    transition: background 0.3s ease, transform 0.2s;
+    display: inline-block;
+    margin-top: 1rem;
+}
+
+.edit-btn:hover {
+    background: var(--secondary-color);
+    transform: translateY(-2px);
+}
+
+/* responsive */
+@media (max-width: 768px) {
+    .profile-card {
+        flex-direction: column;
+        text-align: center;
+    }
+}
+</style>

@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Slider extends Model
 {
-    protected $fillable = ['url','image', 'status','admin_id'];
+    protected $fillable = ['url', 'image', 'admin_id'];
 
     public function admin()
     {

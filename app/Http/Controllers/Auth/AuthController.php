@@ -138,4 +138,14 @@ class AuthController extends Controller
             return redirect()->route("login")->with('error', "ایمیل یا رمز غلط است");
         }
     }
+    public function logout(Request $request){
+        Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+        return redirect()->route("home");
+    }
+    public function profile(){
+        $user = auth()->user();
+        return view("Auth.profile", compact('user'));
+    }
 }
