@@ -13,7 +13,9 @@
         <div class="product-details">
             <div class="product-image">
                 @if($product->image)
-                    <img src="{{ asset('AdminAssets/Product-image/' . $product->image) }}" alt="{{ $product->name }}">
+                <a href="{{ asset('AdminAssets/Product-image/' . $product->image) }}" data-lightbox="product-gallery" data-title="{{ $product->name }}">
+                        <img src="{{ asset('AdminAssets/Product-image/' . $product->image) }}" alt="{{ $product->name }}">
+                    </a>
                 @else
                     <div class="no-image">
                         <i class="fas fa-box"></i>

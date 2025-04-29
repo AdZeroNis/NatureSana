@@ -74,6 +74,7 @@ Route::prefix('auth')->group(function () {
     Route::get('/profile', [AuthController::class, 'profile'])->name('profile');
     Route::get('/edit-profile', [AuthController::class, 'edit'])->name('edit.profile');
     Route::post('/edit-profile', [AuthController::class, 'update'])->name('edit.profile.submit');
+    Route::post('/update-password', [AuthController::class, 'updatePassword'])->name('update.password');
 });
 
 // ------------------------

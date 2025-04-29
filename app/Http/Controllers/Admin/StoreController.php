@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Store;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
@@ -26,7 +27,7 @@ class StoreController extends Controller
 
         }
 
-        return view('Admin.Store.index', compact('stores'));
+        return view('Admin.Store.index', compact('stores', 'user'));
     }
     public function create(Request $request)
     {

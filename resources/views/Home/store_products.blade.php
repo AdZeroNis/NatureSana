@@ -17,8 +17,9 @@
                             <span class="badge bg-danger py-2">جدید</span>
                         </div>
                     @endif
-
-                    <img src="{{ asset('AdminAssets/Product-image/' . $product->image) }}" alt="{{ $product->name }}">
+                    <a href="{{ asset('AdminAssets/Product-image/' . $product->image) }}" data-lightbox="product-gallery" data-title="{{ $product->name }}">
+                        <img src="{{ asset('AdminAssets/Product-image/' . $product->image) }}" alt="{{ $product->name }}">
+                    </a>
                     <h3>{{ Str::limit($product->name, 30) }}</h3>
                     <p>{{ number_format($product->price) }} تومان</p>
                     <form action="{{ route('product.show', $product->id) }}" method="GET">
@@ -205,6 +206,6 @@
     }
 }
 </style>
-    @include('Home.layouts.footer')
+  
 </body>
 </html>

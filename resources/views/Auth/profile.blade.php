@@ -19,6 +19,22 @@
                 <div class="profile-info">
                     <h3>{{ auth()->user()->name }}</h3>
                     <p class="user-email"><i class="fas fa-envelope"></i> {{ auth()->user()->email }}</p>
+                    <p class="user-phone"><i class="fas fa-phone"></i> شماره تماس: {{ auth()->user()->phone }}</p>
+                    @if(auth()->user()->address->address_one)
+                                <div class="info-row">
+                                    <p class="user-phone"><i class="fas fa-phone"></i> آدرس 1: {{ auth()->user()->address->address_one }}</p>
+                                </div>
+                            @endif
+                            @if(auth()->user()->address->address_two)
+                                <div class="info-row">
+                                    <p class="user-phone"><i class="fas fa-phone"></i> آدرس 2: {{ auth()->user()->address->address_two }}</p>
+                                </div>
+                            @endif  
+                            @if(auth()->user()->address->address_three)
+                                <div class="info-row">
+                                    <p class="user-phone"><i class="fas fa-phone"></i> آدرس 3: {{ auth()->user()->address->address_three }}</p>
+                                </div>
+                            @endif  
                     <p class="user-join-date"><i class="fas fa-calendar-alt"></i> تاریخ عضویت: {{ \Morilog\Jalali\Jalalian::fromDateTime(auth()->user()->created_at)->format('Y/m/d') }}</p>
                     <a href="{{ route('edit.profile') }}" class="edit-btn">✏️ ویرایش پروفایل</a>
                 </div>

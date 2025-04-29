@@ -76,6 +76,7 @@
                     <a href="{{ route('store.edit', $store->id) }}" class="btn btn-sm" style="color: hotpink;" title="ویرایش">
                         <i class="fas fa-edit"></i>
                     </a>
+                    @if($user->role === 'super_admin')
                     <a href="#" 
                        class="btn btn-sm" 
                        style="color: red;" 
@@ -84,11 +85,13 @@
                            document.getElementById('delete-form-{{ $store->id }}').submit(); }">
                         <i class="fas fa-trash-alt"></i>
                     </a>
+                    @endif
 
                     <form id="delete-form-{{ $store->id }}" action="{{ route('store.delete', $store->id) }}" method="POST" style="display: none;">
                         @csrf
                         @method('DELETE')
                     </form>
+                    
                 </td>
             </tr>
             @empty

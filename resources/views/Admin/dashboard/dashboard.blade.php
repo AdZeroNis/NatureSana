@@ -5,19 +5,21 @@
 <section class="dashboard" id="dashboard">
     <div class="card">
         <h3>کل محصولات</h3>
-        <p>۱۵۰</p>
+        <p>{{ $productsCount }}</p>
     </div>
     <div class="card">
-        <h3>سفارشات در انتظار</h3>
-        <p>۲۵</p>
+        <h3>کل مغازه</h3>
+        <p>{{ $storesCount }}</p>
     </div>
     <div class="card">
-        <h3>مقالات</h3>
-        <p>۴۵</p>
+        <h3>کل مقالات</h3>
+        <p>{{ $articlesCount }}</p>
     </div>
+    @if($user->role === 'super_admin')
     <div class="card">
         <h3>کاربران ثبت‌نام‌شده</h3>
-        <p>۱,۲۰۰</p>
+        <p>{{ $usersCount }}</p>
     </div>
+    @endif
 </section>
 @endsection

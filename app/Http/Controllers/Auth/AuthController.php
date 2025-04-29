@@ -105,39 +105,23 @@ class AuthController extends Controller
             return redirect()->route("register.form")->with('error', "ایمیل از قبل وجود دارد");
         }
     }
-    public function login(Request $request){
-
+    public function login(Request $request)
+    {
         $request->validate([
             "email" => "required",
             "password" => "required",
         ]);
-
+    
         $user = User::where("email", $request->email)->first();
-
+    
         if ($user && Hash::check($request->password, $user->password)) {
-            if ($user->hasVerifiedEmail()) {
-                Auth::login($user);
-                return redirect()->route("home");
-            } else {
-                Auth::login($user);
-               // Generate and send verification code
-            $code = sprintf('%04d', random_int(0, 9999));
-            $user->verification_code = $code;
-            $user->verification_code_expires_at = now()->addMinutes(10);
-            $user->save();
-
-            // Send email with code
-            Mail::raw("کد تایید شما: {$code}\n\nاین کد تا 10 دقیقه معتبر است.", function($message) use ($user) {
-                $message->to($user->email)
-                    ->subject('کد تایید سایت گیاهان دارویی');
-            });
-
-            return redirect()->route('verification.notice')->with('success', 'کد تایید به ایمیل شما ارسال شد');
-        }
+            Auth::login($user);
+            return redirect()->route("home");
         } else {
-            return redirect()->route("login")->with('error', "ایمیل یا رمز غلط است");
+            return redirect()->route("login")->with('error', "ایمیل یا رمز عبور اشتباه است");
         }
     }
+    
     public function logout(Request $request){
         Auth::logout();
         $request->session()->invalidate();
@@ -158,6 +142,7 @@ class AuthController extends Controller
         $request->validate([
             'name' => 'required',
             'email' => 'required|email|unique:users,email,' . $user->id,
+            'phone' => 'required',
             'address_one' => 'nullable|string|max:255',
             'address_two' => 'nullable|string|max:255',
             'address_three' => 'nullable|string|max:255',
@@ -165,6 +150,7 @@ class AuthController extends Controller
         $user->update([
             'name' => $request->name,
             'email' => $request->email,
+            'phone' => $request->phone,
         ]);
     
         $user->address()->updateOrCreate(
@@ -176,9 +162,29 @@ class AuthController extends Controller
             ]
         );
 
-        return redirect()->route('profile')
+        return redirect()->back()
             ->with('success', 'پروفایل با موفقیت به‌روزرسانی شد');
 
 
+    }
+    public function updatePassword(Request $request)
+    {
+        $request->validate([
+            'current_password' => 'required',
+            'new_password' => 'required|min:6|confirmed',
+            'new_password_confirmation' => 'required',
+        ]);
+
+        $user = Auth::user();
+        if (!Hash::check($request->current_password, $user->password)) {
+            return back()->with('error', 'رمز فعلی صحیح نیست');
+        }
+
+        $user->update([
+            'password' => Hash::make($request->new_password)
+        ]);
+
+        return redirect()->back()
+            ->with('success', 'رمز عبور با موفقیت به‌روزرسانی شد');
     }
 }
