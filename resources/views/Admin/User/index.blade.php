@@ -11,6 +11,13 @@
                 <input type="text" name="search" class="form-control" placeholder="جستجو بر اساس نام کاربر" value="{{ request('search') }}">
             </div>
             <div class="form-group">
+                <select name="role" class="form-control">
+                    <option value="">تمام نقش ها</option>
+                    <option value="admin" {{ request('role') == 'admin' ? 'selected' : '' }}>ادمین</option>
+                    <option value="user" {{ request('role') == 'user' ? 'selected' : '' }}>کاربر</option>
+                </select>
+            </div>
+            <div class="form-group">
                 <select name="status" class="form-control">
                     <option value="">تمام وضعیت‌ها</option>
                     <option value="active" {{ request('status') == '1' ? 'selected' : '' }}>فعال</option>
@@ -32,7 +39,8 @@
             <tr>
                 <th>شناسه</th>
                 <th>نام</th>
-                <th>ایمیل</th>
+                <th>شماره تماس</th>
+                <th>نقش</th>
                 <th>وضعیت</th>
                 <th>عملیات</th>
             </tr>
@@ -42,7 +50,14 @@
             <tr>
                 <td>{{ $user->id }}</td>
                 <td>{{ $user->name }}</td>
-                <td>{{ $user->email }}</td>
+                <td>{{ $user->phone }}</td>
+                @if($user->role == 'super_admin')
+                    <td>سوپر ادمین</td>
+                @elseif($user->role == 'admin')
+                    <td>ادمین</td>
+                @elseif($user->role == 'user')
+                    <td>کاربر</td>
+                @endif
                 <td class="text-center">
                     <span class="badge badge-{{ $user->status == '1' ? 'success' : 'danger' }}">
                         {{ $user->status == '1' ? 'فعال' : 'غیرفعال' }}
@@ -76,7 +91,7 @@
             </tr>
             @empty
             <tr>
-                <td colspan="5" class="text-center">هیچ کاربری یافت نشد</td>
+                <td colspan="7" class="text-center">هیچ کاربری یافت نشد</td>
             </tr>
             @endforelse
         </tbody>

@@ -36,6 +36,43 @@ class UserController extends Controller
         $user->delete();
         return redirect()->route('panel.user.index')->with('success', 'کاربر با موفقیت حذف شد');
     }
-  
+    public function filter(Request $request)
+    {
+        $query = User::query();
+
+        if ($request->has('search') && $request->search != '') {
+            $query->where('name', 'like', '%' . $request->search . '%');
+        }
+    
+    
+        if ($request->has('role') && $request->role !== '') {
+    
+            if ($request->role == 'user') {
+                $query->where('role', 'user');
+            } elseif ($request->role == 'admin') {
+                $query->where('role', 'admin');
+            }
+    
+        }
+        if ($request->has('status') && $request->status !== '') {
+    
+            if ($request->status == 'active') {
+                $query->where('status', 1);
+            } elseif ($request->status == 'inactive') {
+                $query->where('status', 0);
+            }
+    
+        }
+    
+        $Users = $query->get();
+    
+    
+        return view('Admin.User.index', [
+            'users' => $Users,
+            'search' => $request->search,
+            'role' => $request->role,
+            'status' => $request->status,
+        ]);
+    }
 
 }

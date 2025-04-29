@@ -92,6 +92,7 @@
                                 {{ $user->store->status == 1 ? 'فعال' : 'در انتظار تایید' }}
                             </span>
                         </div>
+                        
                         @if($user->store->image)
                         <div class="store-image">
                             <img src="{{ asset('AdminAssets/Store-image/' . $user->store->image) }}" alt="تصویر مغازه" style="width: 213px;">
