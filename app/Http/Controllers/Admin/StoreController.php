@@ -29,40 +29,50 @@ class StoreController extends Controller
         return view('Admin.Store.index', compact('stores'));
     }
     public function create(Request $request)
-{
-    // اعتبارسنجی داده‌های ورودی
-    $request->validate([
-        'name' => 'required|string|max:255',
-        'address' => 'required|string|max:255',
-        'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
-        'phone_number' => 'required|string|max:20',
-    ]);
-
-    // آپلود تصویر
-    $imageName = time() . '.' . $request->image->extension();
-    $request->image->move(public_path('AdminAssets/Store-image'), $imageName);
-
-    // ایجاد مغازه با status = 0 (در انتظار تأیید)
-    $store = Store::create([
-        'name' => $request->input('name'),
-        'address' => $request->input('address'),
-        'image' => $imageName,
-        'phone_number' => $request->input('phone_number'),
-        'admin_id' => Auth::id(),
-        'status' => 0,
-    ]);
-    // آپدیت store_id کاربر
-
-    $user = Auth::user();
-
-    $user->update([
-        'store_id' => $store->id,
-       
-    ]);
-
-    return redirect()->route('home')->with('message', 'درخواست ثبت مغازه ارسال شد. منتظر تأیید مدیر باشید.');
-
-}
+    {
+        $user = Auth::user();
+    
+        // بررسی اگر کاربر قبلاً مغازه داشته باشد
+        if ($user->store_id) {
+            // ارسال ایمیل
+            \Mail::raw('شما قبلاً یک مغازه ثبت کرده‌اید و نمی‌توانید مجدداً ثبت کنید.', function ($message) use ($user) {
+                $message->to($user->email)
+                        ->subject('درخواست مغازه تکراری');
+            });
+    
+            return redirect()->back()->with('error', 'شما قبلاً یک مغازه ثبت کرده‌اید.');
+        }
+    
+        // اعتبارسنجی داده‌های ورودی
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'address' => 'required|string|max:255',
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'phone_number' => 'required|string|max:20',
+        ]);
+    
+        // آپلود تصویر
+        $imageName = time() . '.' . $request->image->extension();
+        $request->image->move(public_path('AdminAssets/Store-image'), $imageName);
+    
+        // ایجاد مغازه با status = 0 (در انتظار تأیید)
+        $store = Store::create([
+            'name' => $request->input('name'),
+            'address' => $request->input('address'),
+            'image' => $imageName,
+            'phone_number' => $request->input('phone_number'),
+            'admin_id' => Auth::id(),
+            'status' => 0,
+        ]);
+    
+        // آپدیت store_id کاربر
+        $user->update([
+            'store_id' => $store->id,
+        ]);
+    
+        return redirect()->route('home')->with('message', 'درخواست ثبت مغازه ارسال شد. منتظر تأیید مدیر باشید.');
+    }
+    
 
 public function approve(Request $request, $id)
 {
@@ -81,6 +91,10 @@ public function approve(Request $request, $id)
             'role' => 'admin',
         ]);
     }
+    \Mail::raw('مغازه ' . $store->name . ' با موفقیت تایید شد.', function ($message) use ($user) {
+        $message->to($user->email)
+                ->subject('مغازه تایید شد');
+    });
 
     return redirect()->back()->with('success', 'مغازه با موفقیت تایید شد و نقش کاربر به مدیر تغییر یافت.');
 }
@@ -90,6 +104,11 @@ public function approve(Request $request, $id)
     {
         $store = Store::findOrFail($id);
         $store->delete();
+        
+        \Mail::raw('مغازه ' . $store->name . ' مغازه یرای فعالیت رد شد.', function ($message) use ($store) {
+            $message->to($store->user->email)
+                    ->subject('مغازه رد شد');
+        });
     
         return redirect()->back()->with('success', 'مغازه با موفقیت حذف شد.');
     }
@@ -145,14 +164,15 @@ public function approve(Request $request, $id)
     }
     public function destroy($id)
     {
-        $store = Store::find($id);
+        $store = Store::findOrFail($id);
 
-        // ابتدا کاربر را که به عنوان admin به این مغازه اختصاص داده شده است جدا می‌کنیم
-        $user = User::where('store_id', $store->id)->first();
-        if ($user) {
-            $user->store_id = null;  // جدا کردن store_id از کاربر
-            $user->role = 'user';    // اگر می‌خواهید نقش را به کاربر عادی تغییر دهید
-            $user->save();
+        // ابتدا همه کاربران مرتبط با این مغازه را به‌روزرسانی می‌کنیم
+        $users = User::where('store_id', $store->id)->get();
+        foreach ($users as $user) {
+            $user->update([
+                'store_id' => null,
+                'role' => 'user'
+            ]);
         }
 
         // حذف تصویر قبلی اگر وجود داشت
@@ -165,7 +185,7 @@ public function approve(Request $request, $id)
         $store->delete();
 
         // نمایش پیام موفقیت
-        return redirect()->route("store.index")->with('success', 'مغازه با موفقیت حذف شد');
+        return redirect()->route("store.index")->with('success', 'مغازه و دسترسی‌های مرتبط با موفقیت حذف شدند');
     }
     public function filter(Request $request)
     {

@@ -17,7 +17,7 @@ class User extends Authenticatable implements MustVerifyEmail
      *
      * @var list<string>
      */
-    protected $fillable = ['name', 'email', 'password', 'phone', 'address', 'role', 'status','store_id'];
+    protected $fillable = ['name', 'email', 'password', 'phone', 'role', 'status','store_id'];
 
     /**
      * The attributes that should be hidden for serialization.
@@ -69,5 +69,9 @@ class User extends Authenticatable implements MustVerifyEmail
     public function sliders()
     {
         return $this->hasMany(Slider::class);
+    }
+    public function address()
+    {
+        return $this->hasOne(UserAddress::class);
     }
 }

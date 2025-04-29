@@ -9,6 +9,7 @@
         <li><a href="{{route('panel.article.index')}}" class="{{ request()->routeIs('panel.article.index') ? 'active' : '' }}">مقالات</a></li>
         @if(auth()->user()->role == 'super_admin')
         <li><a href="{{route('panel.slider.index')}}" class="{{ request()->routeIs('panel.slider.index') ? 'active' : '' }}">اسلایدرها</a></li>
+        <li><a href="{{route('panel.user.index')}}" class="{{ request()->routeIs('panel.user.index') ? 'active' : '' }}">کاربران</a></li>
         @endif
     </ul>
 </aside>

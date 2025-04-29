@@ -5,10 +5,12 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\UserAddress;
 use Illuminate\Support\Facades\Mail;
 
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
+
 
 class AuthController extends Controller
 {
@@ -68,7 +70,6 @@ class AuthController extends Controller
             "name" => "required",
             "email" => "required",
             "phone" => "required",
-            "address" => "required",
             "password" => "required|min:6|confirmed",
             "password_confirmation" => "required",
         ]);
@@ -79,7 +80,6 @@ class AuthController extends Controller
                 'name' => $request->name,
                 'email' => $request->email,
                 'phone' => $request->phone,
-                'address' => $request->address,
                 'password' => Hash::make($request->password),
                 'role' => 'user',
                 'status' => 1
@@ -147,5 +147,38 @@ class AuthController extends Controller
     public function profile(){
         $user = auth()->user();
         return view("Auth.profile", compact('user'));
+    }
+    public function edit(){
+        $user = auth()->user();
+        return view("Auth.edit", compact('user'));
+    }
+    public function update(Request $request)
+    {
+        $user = Auth::user();
+        $request->validate([
+            'name' => 'required',
+            'email' => 'required|email|unique:users,email,' . $user->id,
+            'address_one' => 'nullable|string|max:255',
+            'address_two' => 'nullable|string|max:255',
+            'address_three' => 'nullable|string|max:255',
+        ]);
+        $user->update([
+            'name' => $request->name,
+            'email' => $request->email,
+        ]);
+    
+        $user->address()->updateOrCreate(
+            ['user_id' => $user->id],
+            [
+                'address_one' => $request->address_one,
+                'address_two' => $request->address_two,
+                'address_three' => $request->address_three,
+            ]
+        );
+
+        return redirect()->route('profile')
+            ->with('success', 'پروفایل با موفقیت به‌روزرسانی شد');
+
+
     }
 }

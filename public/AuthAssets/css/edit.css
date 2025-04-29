@@ -1,0 +1,54 @@
+
+.edit-profile-form {
+    padding: 2rem;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: bold;
+    font-family: 'Vazirmatn', sans-serif;
+    color: var(--text-color);
+}
+
+.form-control {
+    width: 100%;
+    padding: 0.6rem 1rem;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    font-size: 1rem;
+    font-family: 'Arial', sans-serif;
+    transition: border 0.3s;
+}
+
+.form-control:focus {
+    border-color: var(--accent-color);
+    outline: none;
+}
+
+.form-control-file {
+    font-size: 0.95rem;
+    font-family: 'Arial', sans-serif;
+}
+
+.save-btn {
+    background: var(--accent-color);
+    color: white;
+    border: none;
+    padding: 0.7rem 1.5rem;
+    border-radius: 30px;
+    font-size: 1rem;
+    cursor: pointer;
+    font-family: 'Arial', sans-serif;
+    transition: background 0.3s ease, transform 0.2s;
+}
+
+.save-btn:hover {
+    background: var(--secondary-color);
+    transform: translateY(-2px);
+}
+

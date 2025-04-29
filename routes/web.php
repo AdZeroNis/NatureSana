@@ -12,6 +12,7 @@ use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Auth\PasswordResetController;
 use App\Http\Controllers\Admin\ArticleController;
 use App\Http\Controllers\Admin\SliderController;
+use App\Http\Controllers\Admin\UserController;
 use App\Http\Middleware\AdminAccess;
 /*
 |--------------------------------------------------------------------------
@@ -71,6 +72,8 @@ Route::prefix('auth')->group(function () {
             ->name('verification.resend-code');
     });
     Route::get('/profile', [AuthController::class, 'profile'])->name('profile');
+    Route::get('/edit-profile', [AuthController::class, 'edit'])->name('edit.profile');
+    Route::post('/edit-profile', [AuthController::class, 'update'])->name('edit.profile.submit');
 });
 
 // ------------------------
@@ -128,6 +131,15 @@ Route::prefix('panel')->middleware(['auth', AdminAccess::class])->group(function
         Route::get('/create', [SliderController::class, 'create'])->name('panel.slider.create');
         Route::post('/store', [SliderController::class, 'store'])->name('panel.slider.store');
         Route::delete('/delete/{id}', [SliderController::class, 'destroy'])->name('panel.slider.delete');
+    });
+    Route::prefix('user')->group(function () {
+        Route::get('/', [UserController::class, 'index'])->name('panel.user.index');
+        Route::get('/create', [UserController::class, 'create'])->name('panel.user.create');
+        Route::get('/edit/{id}', [UserController::class, 'edit'])->name('panel.user.edit');
+        Route::post('/update/{id}', [UserController::class, 'update'])->name('panel.user.update');
+        Route::delete('/delete/{id}', [UserController::class, 'destroy'])->name('panel.user.delete');
+        Route::get('/search', [UserController::class, 'filter'])->name('panel.user.filter');
+        Route::get('/show/{id}', [UserController::class, 'show'])->name('panel.user.show');
     });
 
 });
