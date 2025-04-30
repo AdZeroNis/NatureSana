@@ -13,6 +13,7 @@ use App\Http\Controllers\Auth\PasswordResetController;
 use App\Http\Controllers\Admin\ArticleController;
 use App\Http\Controllers\Admin\SliderController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Home\ProductComment;
 use App\Http\Middleware\AdminAccess;
 /*
 |--------------------------------------------------------------------------
@@ -34,7 +35,11 @@ Route::namespace("home")->group(function () {
     Route::get('/articles', [HomeController::class, "articles"])->name('article.index');   
     Route::get('/articles/{id}', [HomeController::class, "showArticle"])->name('article.show');
 
-    
+    // نظرات محصولات
+    Route::middleware('auth')->group(function () {
+        Route::post('/product/{product}/comment', [ProductComment::class, 'store'])->name('product.comment.store');
+        Route::post('/comment/{comment}/reply', [ProductComment::class, 'reply'])->name('product.comment.reply');
+    });
 });
 
 // ------------------------
@@ -141,6 +146,10 @@ Route::prefix('panel')->middleware(['auth', AdminAccess::class])->group(function
         Route::delete('/delete/{id}', [UserController::class, 'destroy'])->name('panel.user.delete');
         Route::get('/search', [UserController::class, 'filter'])->name('panel.user.filter');
         Route::get('/show/{id}', [UserController::class, 'show'])->name('panel.user.show');
+    });
+    Route::prefix('comment')->group(function () {
+        Route::get('/', [ProductComment::class, 'index'])->name('panel.comment.index');
+        Route::delete('/delete/{id}', [ProductComment::class, 'destroy'])->name('panel.comment.delete');
     });
 
 });

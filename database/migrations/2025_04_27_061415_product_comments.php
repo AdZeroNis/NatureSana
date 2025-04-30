@@ -17,6 +17,7 @@ return new class extends Migration
             $table->text('content');
             $table->foreignId('user_id')->constrained('users'); // کاربری که نظر داده
             $table->foreignId('product_id')->constrained('products'); // نظر درباره محصول
+
             $table->timestamps();
         });
     }

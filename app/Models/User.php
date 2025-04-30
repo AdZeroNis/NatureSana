@@ -51,10 +51,7 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany(Basket::class);
     }
 
-    public function comments()
-    {
-        return $this->hasMany(Comment::class);
-    }
+
 
     public function articles()
     {
@@ -73,5 +70,13 @@ class User extends Authenticatable implements MustVerifyEmail
     public function address()
     {
         return $this->hasOne(UserAddress::class);
+    }
+    public function Productcomments()
+    {
+        return $this->hasMany(ProductComment::class);
+    }
+    public function Articlecomments()
+    {
+        return $this->hasMany(ArticleComment::class);
     }
 }

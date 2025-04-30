@@ -23,9 +23,9 @@ class Product extends Model
         return $this->hasMany(Basket::class);
     }
 
-    public function comments()
+    public function ProductComments()
     {
-        return $this->hasMany(Comment::class);
+        return $this->hasMany(ProductComment::class);
     }
 
     public function orderItems()

@@ -13,7 +13,7 @@
         <div class="product-details">
             <div class="product-image">
                 @if($product->image)
-                <a href="{{ asset('AdminAssets/Product-image/' . $product->image) }}" data-lightbox="product-gallery" data-title="{{ $product->name }}">
+                    <a href="{{ asset('AdminAssets/Product-image/' . $product->image) }}" data-lightbox="product-gallery" data-title="{{ $product->name }}">
                         <img src="{{ asset('AdminAssets/Product-image/' . $product->image) }}" alt="{{ $product->name }}">
                     </a>
                 @else
@@ -36,7 +36,6 @@
                     <span class="label"><i class="fas fa-store"></i> فروشگاه:</span>
                     <span class="value">{{ $product->store ? $product->store->name : 'بدون فروشگاه' }}</span>
                 </div>
-
                 <div class="info-row">
                     <span class="label"><i class="fas fa-align-right"></i> توضیحات:</span>
                     <span class="value">{{ $product->description ?: 'بدون توضیحات' }}</span>
@@ -46,6 +45,125 @@
                     <button type="submit" class="add-to-cart-btn">افزودن به سبد خرید</button>
                 </form>
             </div>
+        </div>
+
+        <!-- بخش نظرات کاربران -->
+        <div class="comments-section">
+            <h2>نظرات کاربران</h2>
+            <!-- فرم ارسال نظر -->
+            <div class="comment-form">
+                @if(auth()->check())
+                    <form action="{{ route('product.comment.store', $product->id) }}" method="POST">
+                        @csrf
+                        <div class="form-group">
+                            <label for="content">نظر شما:</label>
+                            <textarea name="content" id="content" class="form-control" rows="5" required></textarea>
+                        </div>
+                        <button type="submit" class="submit-comment-btn">ارسال نظر</button>
+                    </form>
+                @else
+                    <p>برای ارسال نظر، لطفاً <a href="{{ route('login') }}">وارد شوید</a>.</p>
+                @endif
+            </div>
+
+         
+        <!-- لیست نظرات -->
+<!-- لیست نظرات -->
+<!-- لیست نظرات -->
+<div class="comments-list">
+    @forelse($product->productcomments->where('parent_id', null) as $comment)
+        <div class="comment" data-comment-id="{{ $comment->id }}">
+            <div class="comment-header">
+                <span class="comment-author">{{ $comment->user->name }}</span>
+                <span class="comment-date">{{ \Morilog\Jalali\Jalalian::fromDateTime($comment->created_at)->format('Y/m/d H:i') }}</span>
+            </div>
+            <p class="comment-body">{{ $comment->content }}</p>
+            @if(auth()->check())
+                <button class="reply-toggle-btn" data-comment-id="{{ $comment->id }}">پاسخ</button>
+                <form action="{{ route('product.comment.reply', $comment->id) }}" method="POST" class="reply-form" id="reply-form-{{ $comment->id }}" style="display: none;">
+                    @csrf
+                    <div class="form-group">
+                        <textarea name="content" class="form-control" rows="3" required placeholder="پاسخ خود را بنویسید..."></textarea>
+                    </div>
+                    <button type="submit" class="submit-reply-btn">ارسال پاسخ</button>
+                </form>
+            @else
+                <p class="reply-login-message">برای پاسخ به این نظر، لطفاً <a href="{{ route('login') }}">وارد شوید</a>.</p>
+            @endif
+
+            <!-- نمایش پاسخ‌ها -->
+            @if($comment->replies->isNotEmpty())
+                <div class="replies-container" id="replies-{{ $comment->id }}">
+                    @foreach($comment->replies->take(1) as $reply) <!-- نمایش فقط یک پاسخ به‌صورت پیش‌فرض -->
+                        <div class="reply" data-reply-id="{{ $reply->id }}">
+                            <div class="comment-header">
+                                <span class="comment-author">
+                                    {{ $reply->user->name }}
+                                    @if($reply->user->role === 'admin' || $reply->user->role === 'superadmin')
+                                        <span class="admin-badge">مدیر</span>
+                                    @endif
+                                </span>
+                                <span class="comment-date">{{ \Morilog\Jalali\Jalalian::fromDateTime($reply->created_at)->format('Y/m/d H:i') }}</span>
+                            </div>
+                            <p class="comment-body">{{ $reply->content }}</p>
+                            @if(auth()->check())
+                                <button class="reply-toggle-btn" data-comment-id="{{ $reply->id }}">پاسخ</button>
+                                <form action="{{ route('product.comment.reply', $comment->id) }}" method="POST" class="reply-form" id="reply-form-{{ $reply->id }}" style="display: none;">
+                                    @csrf
+                                    <input type="hidden" name="reply_to" value="{{ $reply->id }}">
+                                    <div class="form-group">
+                                        <textarea name="content" class="form-control" rows="3" required placeholder="پاسخ به {{ $reply->user->name }}..."></textarea>
+                                    </div>
+                                    <button type="submit" class="submit-reply-btn">ارسال پاسخ</button>
+                                </form>
+                            @else
+                                <p class="reply-login-message">برای پاسخ به این نظر، لطفاً <a href="{{ route('login') }}">وارد شوید</a>.</p>
+                            @endif
+                        </div>
+                    @endforeach
+
+                    <!-- نمایش تمام پاسخ‌ها (مخفی به‌صورت پیش‌فرض) -->
+                    @if($comment->replies->count() > 1)
+                        <div class="hidden-replies" id="hidden-replies-{{ $comment->id }}" style="display: none;">
+                            @foreach($comment->replies->slice(1) as $reply) <!-- نمایش پاسخ‌های باقی‌مانده -->
+                                <div class="reply" data-reply-id="{{ $reply->id }}">
+                                    <div class="comment-header">
+                                        <span class="comment-author">
+                                            {{ $reply->user->name }}
+                                            @if($reply->user->role === 'admin' || $reply->user->role === 'superadmin')
+                                                <span class="admin-badge">مدیر</span>
+                                            @endif
+                                        </span>
+                                        <span class="comment-date">{{ \Morilog\Jalali\Jalalian::fromDateTime($reply->created_at)->format('Y/m/d H:i') }}</span>
+                                    </div>
+                                    <p class="comment-body">{{ $reply->content }}</p>
+                                    @if(auth()->check())
+                                        <button class="reply-toggle-btn" data-comment-id="{{ $reply->id }}">پاسخ</button>
+                                        <form action="{{ route('product.comment.reply', $comment->id) }}" method="POST" class="reply-form" id="reply-form-{{ $reply->id }}" style="display: none;">
+                                            @csrf
+                                            <input type="hidden" name="reply_to" value="{{ $reply->id }}">
+                                            <div class="form-group">
+                                                <textarea name="content" class="form-control" rows="3" required placeholder="پاسخ به {{ $reply->user->name }}..."></textarea>
+                                            </div>
+                                            <button type="submit" class="submit-reply-btn">ارسال پاسخ</button>
+                                        </form>
+                                    @else
+                                        <p class="reply-login-message">برای پاسخ به این نظر، لطفاً <a href="{{ route('login') }}">وارد شوید</a>.</p>
+                                    @endif
+                                </div>
+                            @endforeach
+                        </div>
+                        <button class="show-all-replies-btn" data-comment-id="{{ $comment->id }}" data-reply-count="{{ $comment->replies->count() }}">
+    مشاهده همه نظرات ({{ $comment->replies->count() }})
+</button>
+                    @endif
+                </div>
+            @endif
+        </div>
+    @empty
+        <p>هنوز نظری برای این محصول ثبت نشده است.</p>
+    @endforelse
+</div>
         </div>
     </div>
 </section>
@@ -213,6 +331,200 @@
     left: 100%;
 }
 
+/* استایل بخش نظرات */
+.comments-section {
+    margin-top: 3rem;
+    padding: 2rem;
+    background: #f9f9f9;
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+}
+
+.comments-section h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    color: var(--primary-color);
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+.comment-form {
+    margin-bottom: 2rem;
+}
+
+.comment-form .form-group {
+    margin-bottom: 1.5rem;
+}
+
+.comment-form label {
+    display: block;
+    font-weight: bold;
+    color: var(--text-color);
+    margin-bottom: 0.5rem;
+}
+
+.comment-form .form-control {
+    width: 100%;
+    padding: 0.8rem;
+    border: 1px solid #e0e0e0;
+    border-radius: 10px;
+    font-size: 1rem;
+    font-family: 'Arial', sans-serif;
+    resize: vertical;
+}
+
+.comment-form .form-control:focus {
+    border-color: var(--accent-color);
+    outline: none;
+}
+
+.submit-comment-btn, .submit-reply-btn {
+    background: var(--accent-color);
+    color: white;
+    border: none;
+    padding: 0.8rem 2rem;
+    border-radius: 30px;
+    cursor: pointer;
+    font-family: 'Arial', sans-serif;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.submit-comment-btn:hover, .submit-reply-btn:hover {
+    background: var(--secondary-color);
+    transform: translateY(-2px);
+}
+
+.comments-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.comment {
+    padding: 1rem;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+}
+
+.reply {
+    margin-top: 1rem;
+    padding-right: 1rem;
+    border-right: 3px solid var(--accent-color);
+    background: #f8f9fa;
+}
+
+.comment-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.comment-author {
+    font-weight: bold;
+    color: var(--primary-color);
+}
+
+.admin-badge {
+    background: var(--accent-color);
+    color: white;
+    padding: 0.2rem 0.5rem;
+    border-radius: 15px;
+    font-size: 0.8rem;
+    margin-right: 0.5rem;
+}
+
+.comment-date {
+    font-size: 0.9rem;
+    color: #6c757d;
+}
+
+.comment-body {
+    color: var(--text-color);
+    line-height: 1.6;
+    margin-bottom: 0.5rem;
+}
+
+.reply-toggle-btn {
+    background: none;
+    border: none;
+    color: var(--accent-color);
+    font-size: 0.9rem;
+    cursor: pointer;
+    padding: 0.2rem 0.5rem;
+    margin-top: 0.5rem;
+    display: inline-block;
+}
+
+.reply-toggle-btn:hover {
+    text-decoration: underline;
+}
+
+.reply-form {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid #eee;
+}
+
+.reply-form .form-control {
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 0.6rem;
+    font-size: 0.9rem;
+}
+
+.reply-login-message {
+    font-size: 0.9rem;
+    color: #6c757d;
+    margin-top: 0.5rem;
+    padding: 0.5rem;
+    background: #f8f9fa;
+    border-radius: 8px;
+    text-align: center;
+}
+
+.reply-login-message a {
+    color: var(--accent-color);
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.reply-login-message a:hover {
+    text-decoration: underline;
+}
+
+.submit-reply-btn {
+    padding: 0.5rem 1.5rem;
+    font-size: 0.9rem;
+    margin-top: 0.5rem;
+}
+.show-all-replies-btn {
+    background: none;
+    border: none;
+    color: var(--accent-color);
+    font-size: 0.9rem;
+    cursor: pointer;
+    padding: 0.3rem 0.8rem;
+    margin-top: 0.5rem;
+    display: inline-block;
+    border: 1px solid var(--accent-color);
+    border-radius: 15px;
+    transition: all 0.3s ease;
+}
+
+.show-all-replies-btn:hover {
+    background-color: var(--accent-color);
+    color: white;
+}
+
+.hidden-replies {
+    padding-right: 1rem;
+    border-right: 2px dashed #ddd;
+    margin-right: 1rem;
+}
 @media (max-width: 768px) {
     .container {
         padding: 0 1rem;
@@ -255,6 +567,22 @@
         padding: 0.7rem 2rem;
         font-size: 1rem;
     }
+
+    .comments-section {
+        padding: 1rem;
+    }
+
+    .comments-section h2 {
+        font-size: 1.8rem;
+    }
+
+    .comment-form .form-control {
+        padding: 0.6rem;
+    }
+
+    .submit-comment-btn {
+        padding: 0.7rem 1.5rem;
+    }
 }
 
 @media (max-width: 480px) {
@@ -269,7 +597,48 @@
     .product-info {
         padding: 0.8rem;
     }
+
+    .comments-section h2 {
+        font-size: 1.5rem;
+    }
 }
 </style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    // کد قبلی برای نمایش فرم پاسخ‌ها
+    const replyButtons = document.querySelectorAll('.reply-toggle-btn');
+    replyButtons.forEach(button => {
+        button.addEventListener('click', function () {
+            const commentId = this.getAttribute('data-comment-id');
+            const form = document.getElementById(`reply-form-${commentId}`);
+            const isVisible = form.style.display === 'block';
+            
+            // Hide all reply forms
+            document.querySelectorAll('.reply-form').forEach(f => {
+                f.style.display = 'none';
+            });
+            
+            // Toggle the clicked form
+            form.style.display = isVisible ? 'none' : 'block';
+        });
+    });
+
+    // کد جدید برای نمایش همه پاسخ‌ها
+    const showAllRepliesButtons = document.querySelectorAll('.show-all-replies-btn');
+    showAllRepliesButtons.forEach(button => {
+        button.addEventListener('click', function () {
+            const commentId = this.getAttribute('data-comment-id');
+            const hiddenReplies = document.getElementById(`hidden-replies-${commentId}`);
+            const isVisible = hiddenReplies.style.display === 'block';
+            
+            hiddenReplies.style.display = isVisible ? 'none' : 'block';
+            this.textContent = isVisible 
+                ? `مشاهده همه نظرات (${this.dataset.replyCount})` 
+                : 'مخفی کردن نظرات';
+        });
+    });
+});
+</script>
 </body>
 </html>

@@ -11,5 +11,6 @@
         <li><a href="{{route('panel.slider.index')}}" class="{{ request()->routeIs('panel.slider.index') ? 'active' : '' }}">اسلایدرها</a></li>
         <li><a href="{{route('panel.user.index')}}" class="{{ request()->routeIs('panel.user.index') ? 'active' : '' }}">کاربران</a></li>
         @endif
+        <li><a href="{{route('panel.comment.index')}}" class="{{ request()->routeIs('panel.comment.index') ? 'active' : '' }}">نظرات</a></li>
     </ul>
 </aside>
