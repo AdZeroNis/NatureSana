@@ -26,9 +26,17 @@ class ProductController extends Controller
 
    public function create()
    {
-    $storeId = Auth::user()->store_id;
-    $categories = Category::where('store_id', $storeId)->get();
-    return view('Admin.Product.create', compact('categories'));
+    $user = Auth::user();
+    $stores = [];
+    
+    if ($user->role == 'super_admin') {
+        $stores = \App\Models\Store::all();
+        $categories = Category::all();
+    } else {
+        $categories = Category::where('store_id', $user->store_id)->get();
+    }
+    
+    return view('Admin.Product.create', compact('categories', 'stores'));
    }
 
    public function store(Request $request)
@@ -43,7 +51,9 @@ class ProductController extends Controller
     ]);
 
     $data = $request->all();
-    $data['store_id'] = Auth::user()->store_id;
+    if (Auth::user()->role != 'super_admin') {
+        $data['store_id'] = Auth::user()->store_id;
+    }
 
     if ($request->hasFile('image')) {
         $file = $request->file('image');
@@ -60,25 +70,43 @@ class ProductController extends Controller
 
    public function edit($id)
    {
-    $product= Product::find($id);
-    $storeId = Auth::user()->store_id;
-    $categories = Category::where('store_id', $storeId)->get();
-    return view('Admin.Product.edit', compact('product', 'categories'));
+    $product = Product::find($id);
+    $user = Auth::user();
+    $stores = [];
+    
+    if ($user->role == 'super_admin') {
+        $stores = \App\Models\Store::all();
+        $categories = Category::all();
+    } else {
+        $categories = Category::where('store_id', $user->store_id)->get();
+    }
+    
+    return view('Admin.Product.edit', compact('product', 'categories', 'stores'));
    }
 
    public function update(Request $request, $id)
    {
     $product = Product::find($id);
-
+    
+    $request->validate([
+        'name' => 'required|string|max:255',
+        'description' => 'required',
+        'inventory' => 'required',
+        'price' => 'required',
+        'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+        'category_id' => 'required|exists:categories,id',
+    ]);
 
     $dataForm = $request->except('image');
-
+    
+    if (Auth::user()->role != 'super_admin') {
+        $dataForm['store_id'] = Auth::user()->store_id;
+    }
 
     if ($request->hasFile('image')) {
         $imageName = time() . "." . $request->image->extension();
         $request->image->move(public_path("AdminAssets/Product-image"), $imageName);
         $dataForm['image'] = $imageName;
-
 
         $picture = public_path("AdminAssets/Product-image/") . $product->image;
         if (File::exists($picture)) {

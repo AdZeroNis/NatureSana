@@ -23,9 +23,25 @@
                 </div>
             </div>
             <div class="form-row">
+                @if(Auth::user()->role == 'super_admin')
+                <div class="form-group">
+                    <label for="store_id">مغازه</label>
+                    <select name="store_id" id="store_id" class="selectpicker form-control p-2 @error('store_id') is-invalid @enderror" required>
+                        <option value="">انتخاب مغازه</option>
+                        @foreach ($stores as $store)
+                            <option value="{{ $store->id }}" {{ old('store_id') == $store->id ? 'selected' : '' }}>{{ $store->name }}</option>
+                        @endforeach
+                    </select>
+                    @error('store_id')
+                        <span class="error">{{ $message }}</span>
+                    @enderror
+                </div>
+                @endif
+
                 <div class="form-group">
                     <label for="category_id">دسته‌بندی</label>
                     <select name="category_id" id="category_id" class="selectpicker form-control p-2 @error('category_id') is-invalid @enderror" required>
+                        <option value="">انتخاب دسته‌بندی</option>
                         @foreach ($categories as $category)
                             <option value="{{ $category->id }}" {{ old('category_id') == $category->id ? 'selected' : '' }}>{{ $category->name }}</option>
                         @endforeach
@@ -34,6 +50,7 @@
                         <span class="error">{{ $message }}</span>
                     @enderror
                 </div>
+
                 <div class="form-group">
                     <label for="quantity">تعداد محصول</label>
                     <input type="number" name="inventory" id="quantity" class="form-control @error('inventory') is-invalid @enderror" value="{{ old('inventory') }}" min="0" required>

@@ -13,7 +13,7 @@ use App\Http\Controllers\Auth\PasswordResetController;
 use App\Http\Controllers\Admin\ArticleController;
 use App\Http\Controllers\Admin\SliderController;
 use App\Http\Controllers\Admin\UserController;
-use App\Http\Controllers\Home\ProductComment;
+use App\Http\Controllers\Home\ProductCommentController;
 use App\Http\Middleware\AdminAccess;
 /*
 |--------------------------------------------------------------------------
@@ -32,13 +32,13 @@ Route::namespace("home")->group(function () {
     Route::get('/search', [HomeController::class, 'search'])->name('search');
     Route::post('/store/register', [StoreController::class, 'create'])->name('store.register');
     Route::get('/stores', [StoreController::class, 'index'])->name('store.index');
-    Route::get('/articles', [HomeController::class, "articles"])->name('article.index');   
+    Route::get('/articles', [HomeController::class, "articles"])->name('article.index');
     Route::get('/articles/{id}', [HomeController::class, "showArticle"])->name('article.show');
 
     // نظرات محصولات
     Route::middleware('auth')->group(function () {
-        Route::post('/product/{product}/comment', [ProductComment::class, 'store'])->name('product.comment.store');
-        Route::post('/comment/{comment}/reply', [ProductComment::class, 'reply'])->name('product.comment.reply');
+        Route::post('/product/{product}/comment', [ProductCommentController::class, 'store'])->name('product.comment.store');
+        Route::post('/comment/{comment}/reply', [ProductCommentController::class, 'reply'])->name('product.comment.reply');
     });
 });
 
@@ -59,7 +59,7 @@ Route::prefix('auth')->group(function () {
 
     // ریست رمز عبور
     Route::prefix('password')->group(function () {
-      
+
         Route::get('/reset', [PasswordResetController::class, 'showRequestForm'])->name('password.request');
         Route::post('/email', [PasswordResetController::class, 'sendResetCode'])->name('password.email');
         Route::get('/verify', [PasswordResetController::class, 'showVerifyForm'])->name('password.verify');
@@ -121,7 +121,7 @@ Route::prefix('panel')->middleware(['auth', AdminAccess::class])->group(function
         Route::get('/show/{id}', [StoreController::class, "show"])->name('store.show');
         Route::delete('/delete/{id}', [StoreController::class, 'destroy'])->name('store.delete');
         Route::get('/search', [StoreController::class, 'filter'])->name('store.filter');
-    }); 
+    });
     Route::prefix('article')->group(function () {
         Route::get('/', [ArticleController::class, 'index'])->name('panel.article.index');
         Route::get('/create', [ArticleController::class, 'create'])->name('panel.article.create');
@@ -148,8 +148,8 @@ Route::prefix('panel')->middleware(['auth', AdminAccess::class])->group(function
         Route::get('/show/{id}', [UserController::class, 'show'])->name('panel.user.show');
     });
     Route::prefix('comment')->group(function () {
-        Route::get('/', [ProductComment::class, 'index'])->name('panel.comment.index');
-        Route::delete('/delete/{id}', [ProductComment::class, 'destroy'])->name('panel.comment.delete');
+        Route::get('/', [ProductCommentController::class, 'index'])->name('panel.comment.index');
+        Route::delete('/delete/{id}', [ProductCommentController::class, 'destroy'])->name('panel.comment.delete');
     });
 
 });
