@@ -32,6 +32,9 @@
             <tr>
                 <th>شناسه</th>
                 <th>نام</th>
+                @if(Auth::user()->role == 'super_admin')
+                <th>مغازه</th>
+                @endif
                 <th>وضعیت</th>
                 <th>عملیات</th>
             </tr>
@@ -41,6 +44,9 @@
             <tr>
                 <td>{{ $category->id }}</td>
                 <td>{{ $category->name }}</td>
+                @if(Auth::user()->role == 'super_admin')
+                <td>{{ $category->store->name }}</td>
+                @endif
                 <td class="text-center">
                     <span class="badge badge-{{ $category->status == '1' ? 'success' : 'danger' }}">
                         {{ $category->status == '1' ? 'فعال' : 'غیرفعال' }}
@@ -66,7 +72,7 @@
             </tr>
             @empty
             <tr>
-                <td colspan="4" class="text-center">هیچ دسته‌بندی یافت نشد</td>
+                <td colspan="@if(Auth::user()->role == 'super_admin')5 @else4 @endif" class="text-center">هیچ دسته‌بندی یافت نشد</td>
             </tr>
             @endforelse
         </tbody>

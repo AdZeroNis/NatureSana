@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Category;
+use App\Models\Store;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 class CategoryController extends Controller
@@ -11,14 +12,16 @@ class CategoryController extends Controller
     public function index()
     {
         $user = Auth::user();
+        $stores = [];
     
         if ($user->role == 'super_admin') {
             $categories = Category::all();
+            $stores = Store::all();
         } else {
             $categories = Category::where('store_id', $user->store_id)->get();
         }
     
-        return view('Admin.Category.index', compact('categories'));
+        return view('Admin.Category.index', compact('categories', 'stores'));
     }
 
     public function create()
