@@ -1,0 +1,146 @@
+
+    .form-section {
+        background: white;
+        border-radius: 15px;
+        padding: 2rem;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+        max-width: 800px;
+        margin: 3rem auto;
+    }
+
+    .form-section h2 {
+        font-family: 'Vazir', sans-serif;
+        color: var(--primary-color);
+        margin-bottom: 1.5rem;
+        text-align: center;
+        font-size: 1.5rem;
+    }
+
+    .card {
+        padding: 1rem;
+    }
+
+    .form-row {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .form-group {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .form-group.full-width {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-group label {
+        font-family: 'Vazir', sans-serif;
+        font-size: 1rem;
+        color: var(--text-color);
+        margin-bottom: 0.5rem;
+        display: block;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 0.75rem;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        font-family: 'Vazir', sans-serif;
+        font-size: 1rem;
+        transition: border-color 0.3s ease;
+    }
+
+    .form-control:focus {
+        outline: none;
+        border-color: var(--secondary-color);
+        box-shadow: 0 0 5px rgba(67, 160, 71, 0.3);
+    }
+
+    textarea.form-control {
+        resize: vertical;
+        min-height: 100px;
+    }
+
+    .form-control.is-invalid {
+        border-color: var(--accent-color);
+    }
+
+    .error {
+        color: var(--accent-color);
+        font-size: 0.9rem;
+        margin-top: 0.25rem;
+        display: block;
+    }
+
+    .image-preview {
+        margin-top: 1rem;
+    }
+
+    .image-preview img {
+        max-height: 150px;
+        border-radius: 8px;
+        border: 1px solid #ddd;
+    }
+
+    .form-actions {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+    }
+
+    .btn {
+        padding: 0.75rem 2rem;
+        border: none;
+        border-radius: 25px;
+        font-family: 'Vazir', sans-serif;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: background 0.3s ease, transform 0.3s ease;
+    }
+
+    .btn-submit {
+        background: var(--accent-color);
+        color: white;
+    }
+
+    .btn-submit:hover {
+        background: var(--secondary-color);
+        transform: scale(1.05);
+    }
+
+    .btn-cancel {
+        background: #ddd;
+        color: var(--text-color);
+        text-decoration: none;
+        display: inline-block;
+        text-align: center;
+    }
+
+    .btn-cancel:hover {
+        background: #ccc;
+        transform: scale(1.05);
+    }
+
+    @media (max-width: 768px) {
+        .form-section {
+            margin: 1rem;
+            padding: 1.5rem;
+        }
+
+        .form-row {
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .form-actions {
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .btn {
+            width: 100%;
+        }
+    }

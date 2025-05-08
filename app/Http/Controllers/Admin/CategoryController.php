@@ -26,8 +26,17 @@ class CategoryController extends Controller
 
     public function create()
     {
-        return view('Admin.Category.create');
+        $user = Auth::user();
+        $stores = [];
+        
+        if ($user->role == 'super_admin') {
+            $stores = Store::all();
+        }
+        
+        return view('Admin.Category.create', compact('stores'));
     }
+
+
 
     public function store(Request $request)
     {
@@ -35,10 +44,11 @@ class CategoryController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
         ]);
-        Category::create([
-            'name' => $request->input('name'),
-            'store_id' => Auth::user()->store_id,
-        ]);
+        $data = $request->all();
+        if (Auth::user()->role != 'super_admin') {
+            $data['store_id'] = Auth::user()->store_id;
+        }
+        Category::create($data);
 
         return redirect()->route('panel.category.index')
             ->with('success', 'دسته بندی با موفقیت اضافه شد');

@@ -67,7 +67,11 @@ class ProductController extends Controller
     return redirect()->route('panel.product.index')
         ->with('success', 'محصول با موفقیت اضافه شد');
 }
-
+public function getByStore($store_id)
+{
+    $categories = Category::where('store_id', $store_id)->get();
+    return response()->json($categories);
+}
    public function edit($id)
    {
     $product = Product::find($id);

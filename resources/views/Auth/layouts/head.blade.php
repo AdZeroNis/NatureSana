@@ -6,4 +6,5 @@
     <link rel="stylesheet" href="{{asset('AuthAssets/css/style.css')}}">
     <link rel="stylesheet" href="{{asset('AuthAssets/css/edit.css')}}">
     <link rel="stylesheet" href="{{asset('AuthAssets/css/profile.css')}}">
+    <link rel="stylesheet" href="{{asset('AuthAssets/css/verify_code.css')}}">
 </head>

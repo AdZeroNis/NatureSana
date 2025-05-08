@@ -47,7 +47,6 @@
                 <input type="email" name="email" placeholder="ایمیل" required>
                 <input type="tel" name="phone" placeholder="شماره تماس" required>
                 <input type="password" name="password" placeholder="رمز عبور" required>
-                <input type="password" name="password_confirmation" placeholder="تکرار رمز عبور" required>
                 <button type="submit">ثبت‌نام</button>
             </form>
         </div>

@@ -5,6 +5,22 @@
     <title>پنل مدیریت گیاهان دارویی</title>
    <link rel="stylesheet" href="{{asset('AdminAssets/css/style.css')}}">
    <link rel="stylesheet" href="{{asset('AdminAssets/css/style2.css')}}">
+   <link rel="stylesheet" href="{{asset('AdminAssets/ArticleAseets/css/create.css')}}">
+   <link rel="stylesheet" href="{{asset('AdminAssets/ArticleAseets/css/edit.css')}}">
+   <link rel="stylesheet" href="{{asset('AdminAssets/ArticleAseets/css/index.css')}}">
+   <link rel="stylesheet" href="{{asset('AdminAssets/ArticleAseets/css/show.css')}}">
+   <link rel="stylesheet" href="{{asset('AdminAssets/CategoryAseets/css/index.css')}}">
+   <link rel="stylesheet" href="{{asset('AdminAssets/CommentAseets/css/index.css')}}">
+   <link rel="stylesheet" href="{{asset('AdminAssets/productAssets/css/create.css')}}">
+   <link rel="stylesheet" href="{{asset('AdminAssets/productAssets/css/edit.css')}}">
+   <link rel="stylesheet" href="{{asset('AdminAssets/productAssets/css/index.css')}}">
+   <link rel="stylesheet" href="{{asset('AdminAssets/productAssets/css/show.css')}}">
+   <link rel="stylesheet" href="{{asset('AdminAssets/SliderAssets/css/index.css')}}">
+   <link rel="stylesheet" href="{{asset('AdminAssets/StoreAssets/css/edit.css')}}">
+   <link rel="stylesheet" href="{{asset('AdminAssets/StoreAssets/css/index.css')}}">
+   <link rel="stylesheet" href="{{asset('AdminAssets/StoreAssets/css/show.css')}}">
+   <link rel="stylesheet" href="{{asset('AdminAssets/UserAseets/css/index.css')}}">
+   <link rel="stylesheet" href="{{asset('AdminAssets/UserAseets/css/show.css')}}">
    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
 </head>

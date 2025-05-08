@@ -11,9 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn('address');
-        });
+        // Migration not needed as address column was never created
     }
 
     /**
@@ -21,8 +19,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->string('address')->nullable();
-        });
+        // No rollback needed
     }
 };

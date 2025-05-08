@@ -37,12 +37,13 @@ class ProductCommentController extends Controller
 
         $reply->save();
 
-        return redirect()->back()->with('success', 'پاسخ شما با موفقیت ثبت شد و پس از تایید نمایش داده خواهد شد');
+        return redirect()->back()->with('success', 'پاسخ شما با موفقیت ثبت شد');
     }
     public function index()
     {
         $user = Auth::user();
-        $query = ProductCommentModel::with('user', 'product');
+        $query = ProductCommentModel::with(['user', 'product', 'replies.user'])
+        ->whereNull('parent_id'); // Only get main comments
 
         if ($user->role != 'super_admin') {
             $query->whereHas('product', function($q) use ($user) {
@@ -64,5 +65,12 @@ class ProductCommentController extends Controller
 
         $comment->delete();
         return redirect()->back()->with('success', 'نظر با موفقیت حذف شد');
+    }
+    public function show($id)
+    {
+        $comment = ProductCommentModel::with(['user', 'product', 'replies.user'])
+            ->findOrFail($id);
+
+        return view('Admin.Comment.show', compact('comment'));
     }
 }

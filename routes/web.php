@@ -88,8 +88,7 @@ Route::prefix('auth')->group(function () {
 Route::prefix('panel')->middleware(['auth', AdminAccess::class])->group(function () {
     // داشبورد
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('panel.dashboard.index');
-
-
+    
     // دسته‌بندی‌ها
     Route::prefix('category')->group(function () {
         Route::get('/', [CategoryController::class, 'index'])->name('panel.category.index');
@@ -111,6 +110,8 @@ Route::prefix('panel')->middleware(['auth', AdminAccess::class])->group(function
         Route::delete('/delete/{id}', [ProductController::class, 'destroy'])->name('panel.product.delete');
         Route::get('/search', [ProductController::class, 'filter'])->name('panel.product.filter');
         Route::get('/show/{id}', [ProductController::class, 'show'])->name('panel.product.show');
+        Route::get('/get-categories-by-store/{store_id}', [ProductController::class, 'getByStore']);
+
     });
 
     Route::prefix('store')->group(function () {
@@ -150,6 +151,8 @@ Route::prefix('panel')->middleware(['auth', AdminAccess::class])->group(function
     Route::prefix('comment')->group(function () {
         Route::get('/', [ProductCommentController::class, 'index'])->name('panel.comment.index');
         Route::delete('/delete/{id}', [ProductCommentController::class, 'destroy'])->name('panel.comment.delete');
+        Route::post('/reply/{comment}', [ProductCommentController::class, 'reply'])->name('panel.comment.reply');
+        Route::get('/show/{id}', [ProductCommentController::class, 'show'])->name('panel.comment.show');
     });
 
 });

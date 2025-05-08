@@ -70,8 +70,8 @@ class AuthController extends Controller
             "name" => "required",
             "email" => "required",
             "phone" => "required",
-            "password" => "required|min:6|confirmed",
-            "password_confirmation" => "required",
+            "password" => "required|min:6",
+  
         ]);
 
         $emailUser = User::where("email", $request->email)->first();

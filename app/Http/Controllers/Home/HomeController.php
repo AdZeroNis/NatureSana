@@ -18,20 +18,20 @@ class HomeController extends Controller
                                   ->orderBy('created_at', 'desc')
                                   ->take(10)
                                   ->get(),
-    
+
             'stores' => Store::where('status', 1)
                               ->take(5)
                               ->get(),
-    
+
             'sliders' => Slider::orderBy('created_at', 'desc')
                                 ->take(3)
                                 ->get(),
         ];
-    
+
         return view('Home.index', compact('latestItems'));
     }
 
-    public function showProduct($id) 
+    public function showProduct($id)
     {
         $product = Product::find($id);
         return view('Home.product_single', compact('product'));
@@ -44,7 +44,7 @@ class HomeController extends Controller
 
         return view('Home.articles_list', compact('latestArticles'));
     }
-  
+
     public function showArticle($id)
     {
         $article = Article::find($id);
@@ -65,11 +65,11 @@ class HomeController extends Controller
     {
         $category = Category::findOrFail($id);
         $products = Product::where('category_id', $id)->where('status', 1)->get();
-       
+
 
         return view('Home.category_products', compact('category', 'products'));
     }
-    
+
     public function search(Request $request)
     {
         $searchKey = $request->input('search_key');
@@ -101,10 +101,7 @@ class HomeController extends Controller
 
         if ($searchType === 'all' || $searchType === 'articles') {
             $articles = Article::where('status', 1)
-                ->where(function($query) use ($searchKey) {
-                    $query->where('title', 'like', '%' . $searchKey . '%')
-                          ->orWhere('content', 'like', '%' . $searchKey . '%');
-                })
+                ->where('title', 'like', '%' . $searchKey . '%')
                 ->orderBy('created_at', 'desc')
                 ->take(10)
                 ->get();

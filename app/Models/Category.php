@@ -15,4 +15,17 @@ class Category extends Model
     {
         return $this->hasMany(Product::class, 'category_id', 'id');
     }
+    protected static function booted(): void
+    {
+        static::deleting(function (Category $category) {
+            if (!$category->isDeletable()) {
+                abort(403, 'این دسته‌بندی قابل حذف نیست');
+            }
+        });
+    }
+
+    public function isDeletable()
+    {
+        return !$this->products()->exists(); 
+    }
 }

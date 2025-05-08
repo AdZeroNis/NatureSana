@@ -20,7 +20,6 @@ class DatabaseSeeder extends Seeder
             'name' => 'shaghayegh',
             'email' => 'shaghayeghk2001@gmail.com',
             'phone' => '09336892362',
-            'address' => '123 Main St',
             'status' => 1,
             'role' => 'super_admin',
             'password' => 123456,

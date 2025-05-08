@@ -14,6 +14,23 @@
                     <span class="error">{{ $message }}</span>
                 @enderror -->
             </div>
+            <div class="form-row">
+                @if(Auth::user()->role == 'super_admin')
+                <div class="form-group">
+                    <label for="store_id">مغازه</label>
+                    <select name="store_id" id="store_id" class="selectpicker form-control p-2 @error('store_id') is-invalid @enderror" required>
+                        <option value="">انتخاب مغازه</option>
+                        @foreach ($stores as $store)
+                            <option value="{{ $store->id }}" {{ old('store_id') == $store->id ? 'selected' : '' }}>{{ $store->name }}</option>
+                        @endforeach
+                    </select>
+                    @error('store_id')
+                        <span class="error">{{ $message }}</span>
+                    @enderror
+                </div>
+                @endif
+    
+            </div>
 
             <div class="form-actions">
                 <button type="submit" class="btn btn-submit">ذخیره دسته‌بندی</button>
