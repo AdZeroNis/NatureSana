@@ -11,7 +11,7 @@
                 <h3>{{ $product->name }}</h3>
                 <p>{{ number_format($product->price, 0) }} تومان</p>
                 <form action="{{ route('product.show', $product->id) }}" method="GET">
-                    <button type="submit"> مشاهده </button>
+                    <button type="submit">مشاهده</button>
                 </form>
             </div>
         @endforeach
@@ -22,13 +22,13 @@
     <h2>فروشگاه‌های ما</h2>
     <div class="store-grid">
         @foreach ($latestItems['stores'] as $store)
-            <div class="store-card">
-                <a href="{{ route('store.products', $store->id) }}">
-                    <img src="{{ asset('AdminAssets/Store-image/' . $store->image) }}" alt="{{ $store->name }}">
-                </a>
+            <a href="{{ route('store.products', $store->id) }}" class="store-avatar">
+                <img src="{{ asset('AdminAssets/Store-image/' . $store->image) }}" alt="{{ $store->name }}">
                 <h3>{{ $store->name }}</h3>
-            </div>
+            </a>
         @endforeach
     </div>
 </section>
+
+
 @endsection

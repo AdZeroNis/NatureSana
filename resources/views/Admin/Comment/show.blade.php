@@ -32,9 +32,7 @@
             </div>
             <div class="card-footer d-flex justify-content-between align-items-center">
                 <div>
-                    <button class="btn btn-info" data-toggle="collapse" data-target="#replyForm">
-                        <i class="fas fa-reply ml-1"></i> پاسخ دادن
-                    </button>
+                 
                 </div>
                 <div>
                     <a href="#" class="btn btn-danger"
