@@ -7,7 +7,7 @@
         <!-- Header -->
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h2>جزئیات نظر</h2>
-            <a href="{{ route('panel.comment.index') }}" class="btn btn-secondary">
+            <a href="{{ route('panel.article.comment.articles') }}" class="btn btn-secondary">
                 <i class="fas fa-arrow-right ml-1"></i> بازگشت به لیست نظرات
             </a>
         </div>
@@ -21,10 +21,11 @@
                     <strong>تاریخ:</strong> {{ \Morilog\Jalali\Jalalian::fromDateTime($comment->created_at)->format('Y/m/d H:i') }}
                 </div>
                 <div>
-                    <strong>محصول:</strong>
-                    <a href="{{ route('product.show', $comment->product_id) }}" target="_blank">
-                        {{ $comment->product->name }}
+                    <strong>مقاله:</strong>
+                    <a href="{{ route('article.show', $comment->article_id) }}" target="_blank">
+                        {{ $comment->article->title }}
                     </a>
+                                
                 </div>
             </div>
             <div class="card-body">
@@ -40,7 +41,7 @@
                             document.getElementById('delete-comment-form').submit(); }">
                         <i class="fas fa-trash-alt"></i> حذف نظر
                     </a>
-                    <form id="delete-comment-form" action="{{ route('panel.comment.delete', $comment->id) }}" method="POST" class="d-none">
+                    <form id="delete-comment-form" action="{{ route('panel.article.comment.delete', $comment->id) }}" method="POST" class="d-none">
                         @csrf
                         @method('DELETE')
                     </form>
@@ -51,8 +52,13 @@
         <!-- Reply Form -->
         <div class="collapse mb-4" id="replyForm">
             <div class="card shadow-sm">
+            </div>
+        </div>
+          <!-- Reply Form -->
+          <div class="collapse mb-4" id="replyForm">
+            <div class="card shadow-sm">
                 <div class="card-body">
-                    <form action="{{ route('panel.comment.reply', $comment->id) }}" method="POST">
+                    <form action="{{ route('panel.article.comment.reply', $comment->id) }}" method="POST">
                         @csrf
                         <div class="form-group">
                             <label for="reply_content">پاسخ شما:</label>
@@ -83,7 +89,7 @@
                                 document.getElementById('delete-reply-form-{{ $reply->id }}').submit(); }">
                             <i class="fas fa-trash-alt"></i>
                         </a>
-                        <form id="delete-reply-form-{{ $reply->id }}" action="{{ route('panel.comment.delete', $reply->id) }}" method="POST" class="d-none">
+                        <form id="delete-reply-form-{{ $reply->id }}" action="{{ route('panel.article.comment.delete', $reply->id) }}" method="POST" class="d-none">
                             @csrf
                             @method('DELETE')
                         </form>

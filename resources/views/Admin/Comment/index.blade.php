@@ -1,63 +1,92 @@
 @extends('Admin.layouts.master')
 
 @section('content')
-<section class="table-section" id="comments">
-    <h2>مدیریت نظرات</h2>
-
-    <!-- Search and Filter Form -->
-    <form method="GET" action="" class="search-form mb-4">
-        <div class="form-row">
-            <div class="form-group">
-                <input type="text" name="search" class="form-control" placeholder="جستجو بر اساس نام" value="{{ request('search') }}">
-            </div>
-            <div class="form-group">
-                <button type="submit" class="btn btn-search">جستجو</button>
+<section class="comments-section py-4">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8 text-center">
+                <h2 class="mb-5">مدیریت نظرات</h2>
+                
+                <div class="d-flex justify-content-center gap-4">
+                    <a href="{{ route('panel.article.comment.articles') }}" class="btn btn-lg comment-btn article-btn">
+                        <i class="fas fa-newspaper ml-2"></i>
+                        نظرات مقالات
+                        <div class="badge">{{ \App\Models\ArticleComment::count() }}</div>
+                    </a>
+                    
+                    <a href="{{ route('panel.product.comment.products') }}" class="btn btn-lg comment-btn product-btn">
+                        <i class="fas fa-box-open ml-2"></i>
+                        نظرات محصولات
+                        <div class="badge">{{ \App\Models\ProductComment::count() }}</div>
+                    </a>
+                </div>
             </div>
         </div>
-    </form>
-
-
-    <table class="table table-bordered">
-        <thead>
-            <tr>
-                <th>شناسه</th>
-                <th>نام</th>
-                <th>محتوا</th>
-                <th>عملیات</th>
-            </tr>
-        </thead>
-        <tbody>
-            @forelse($comments as $comment)
-            <tr>
-                <td>{{ $comment->id }}</td>
-                <td>{{ optional($comment->user)->name }}</td>
-                <td>{{ $comment->content }}</td>
-                <td class="action-buttons">
-                <a href="{{ route('panel.comment.show', $comment->id) }}" class="btn btn-sm" style="color: #007bff;" title="جزئیات">
-                        <i class="fas fa-eye"></i>
-                    </a>
-                    <a href="#" 
-                       class="btn btn-sm" 
-                       style="color: red;" 
-                       title="حذف" 
-                       onclick="event.preventDefault(); if(confirm('آیا از حذف این نظر مطمئن هستید؟')) {   
-                           document.getElementById('delete-form-{{ $comment->id }}').submit(); }">
-                        <i class="fas fa-trash-alt"></i>
-                    </a>
-                    <form id="delete-form-{{ $comment->id }}" action="{{ route('panel.comment.delete', $comment->id) }}" method="POST" style="display: none;">
-                        @csrf
-                        @method('DELETE')
-                    </form>
-                </td>
-            </tr>
-            @empty
-            <tr>
-                <td colspan="4" class="text-center">هیچ نظری یافت نشد</td>
-            </tr>
-            @endforelse
-        </tbody>
-    </table>
+    </div>
 </section>
 
+<style>
+.comments-section {
+    padding: 2rem;
+}
 
+.comment-btn {
+    min-width: 200px;
+    max-width: 300px;
+    flex: 1;
+    padding: 1.5rem;
+    text-align: center;
+    border-radius: 15px;
+    transition: all 0.3s ease;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    text-decoration: none;
+}
+
+.comment-btn i {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+}
+
+.article-btn {
+    background: linear-gradient(135deg, #1976d2, #64b5f6);
+    color: white;
+}
+
+.product-btn {
+    background: linear-gradient(135deg, #43a047, #81c784);
+    color: white;
+}
+
+.comment-btn:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    color: white;
+}
+
+.badge {
+    background: rgba(255,255,255,0.2);
+    color: white;
+    padding: 0.3rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+}
+
+.gap-4 {
+    gap: 1.5rem;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: center;
+}
+
+@media (max-width: 576px) {
+    .gap-4 {
+        flex-direction: column;
+    }
+}
+</style>
 @endsection

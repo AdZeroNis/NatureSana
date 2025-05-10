@@ -12,8 +12,10 @@ use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Auth\PasswordResetController;
 use App\Http\Controllers\Admin\ArticleController;
 use App\Http\Controllers\Admin\SliderController;
+use App\Http\Controllers\Home\ArticleCommentController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Home\ProductCommentController;
+use App\Http\Controllers\Admin\CommentController;
 use App\Http\Middleware\AdminAccess;
 /*
 |--------------------------------------------------------------------------
@@ -40,6 +42,10 @@ Route::namespace("home")->group(function () {
         // نظرات محصولات
         Route::post('/product/{product}/comment', [ProductCommentController::class, 'store'])->name('product.comment.store');
         Route::post('/comment/{comment}/reply', [ProductCommentController::class, 'reply'])->name('product.comment.reply');
+
+        // نظرات مقالات
+        Route::post('/article/{article}/comment', [ArticleCommentController::class, 'store'])->name('article.comment.store');
+        Route::post('/comment/{comment}/reply', [ArticleCommentController::class, 'reply'])->name('article.comment.reply');
     });
 });
 
@@ -151,10 +157,15 @@ Route::prefix('panel')->middleware(['auth', AdminAccess::class])->group(function
         Route::get('/show/{id}', [UserController::class, 'show'])->name('panel.user.show');
     });
     Route::prefix('comment')->group(function () {
-        Route::get('/', [ProductCommentController::class, 'index'])->name('panel.comment.index');
-        Route::delete('/delete/{id}', [ProductCommentController::class, 'destroy'])->name('panel.comment.delete');
-        Route::post('/reply/{comment}', [ProductCommentController::class, 'reply'])->name('panel.comment.reply');
-        Route::get('/show/{id}', [ProductCommentController::class, 'show'])->name('panel.comment.show');
+        Route::get('/', [CommentController::class, 'index'])->name('panel.comment.index');
+        Route::get('/product', [ProductCommentController::class, 'index'])->name('panel.product.comment.products');
+        Route::delete('/product/delete/{id}', [ProductCommentController::class, 'destroy'])->name('panel.product.comment.delete');
+        Route::post('/product/reply/{comment}', [ProductCommentController::class, 'reply'])->name('panel.product.comment.reply');
+        Route::get('/product/show/{id}', [ProductCommentController::class, 'show'])->name('panel.product.comment.show');
+        Route::get('/article', [ArticleCommentController::class, 'index'])->name('panel.article.comment.articles');
+        Route::delete('/article/delete/{id}', [ArticleCommentController::class, 'destroy'])->name('panel.article.comment.delete');
+        Route::post('/article/reply/{comment}', [ArticleCommentController::class, 'reply'])->name('panel.article.comment.reply');
+        Route::get('/article/show/{id}', [ArticleCommentController::class, 'show'])->name('panel.article.comment.show');
     });
 
 });
