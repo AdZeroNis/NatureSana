@@ -25,18 +25,19 @@ use App\Http\Middleware\AdminAccess;
 // 🏠 روت‌های عمومی (صفحه اصلی و نمایش محصولات و مقالات)
 // ------------------------
 Route::namespace("home")->group(function () {
-    Route::get('/', [HomeController::class, "home"])->name('home');
-    Route::get('/product/{id}', [HomeController::class, "showProduct"])->name('product.show');
-    Route::get('/category/{id}/products', [HomeController::class, 'showCategoryProducts'])->name('category.products');
-    Route::get('/store/{id}/products', [HomeController::class, 'showStoreProducts'])->name('store.products');
-    Route::get('/search', [HomeController::class, 'search'])->name('search');
-    Route::post('/store/register', [StoreController::class, 'create'])->name('store.register');
-    Route::get('/stores', [StoreController::class, 'index'])->name('store.index');
-    Route::get('/articles', [HomeController::class, "articles"])->name('article.index');
-    Route::get('/articles/{id}', [HomeController::class, "showArticle"])->name('article.show');
-
-    // نظرات محصولات
-    Route::middleware('auth')->group(function () {
+    // All routes require authentication and verification
+    Route::middleware(['auth', 'verified'])->group(function () {
+        Route::get('/', [HomeController::class, "home"])->name('home');
+        Route::get('/search', [HomeController::class, 'search'])->name('search');
+        Route::get('/articles', [HomeController::class, "articles"])->name('article.index');
+        Route::get('/articles/{id}', [HomeController::class, "showArticle"])->name('article.show');
+        Route::get('/stores', [StoreController::class, 'index'])->name('store.index');
+        Route::get('/product/{id}', [HomeController::class, "showProduct"])->name('product.show');
+        Route::get('/category/{id}/products', [HomeController::class, 'showCategoryProducts'])->name('category.products');
+        Route::get('/store/{id}/products', [HomeController::class, 'showStoreProducts'])->name('store.products');
+        Route::post('/store/register', [StoreController::class, 'create'])->name('store.register');
+        
+        // نظرات محصولات
         Route::post('/product/{product}/comment', [ProductCommentController::class, 'store'])->name('product.comment.store');
         Route::post('/comment/{comment}/reply', [ProductCommentController::class, 'reply'])->name('product.comment.reply');
     });
@@ -51,6 +52,7 @@ Route::prefix('auth')->group(function () {
     Route::post('/register', [AuthController::class, "register"])->name('register.submit');
 
     // ورود
+    
     Route::get('/login', [AuthController::class, "showLoginForm"])->name('login');
     Route::post('/login', [AuthController::class, "login"])->name('login.submit');
 

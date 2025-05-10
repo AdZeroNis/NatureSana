@@ -33,6 +33,7 @@ class AuthController extends Controller
         }
 
         $user->is_verified = true;
+        $user->email_verified_at = now();
         $user->verification_code = null;
         $user->verification_code_expires_at = null;
         $user->save();
@@ -115,6 +116,11 @@ class AuthController extends Controller
         $user = User::where("email", $request->email)->first();
     
         if ($user && Hash::check($request->password, $user->password)) {
+            // Check if email is verified
+            if (!$user->hasVerifiedEmail()) {
+                return redirect()->route("login")->with('error', "لطفا ابتدا ایمیل خود را تایید کنید");
+            }
+            
             Auth::login($user);
             return redirect()->route("home");
         } else {

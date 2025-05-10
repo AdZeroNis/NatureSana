@@ -1,7 +1,7 @@
 @extends('Auth.layouts.master')
 
 @section('content')
-    <div class="container py-5">
+    <div class="container py-5 "style="margin-left: 10rem !important">
         @if(session('error'))
             <div class="alert alert-danger">
                 {{ session('error') }}
