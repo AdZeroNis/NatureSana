@@ -15,7 +15,7 @@
 }
 
 body {
-    font-family: 'Georgia', serif;
+    font-family: 'Iranian Sans', sans-serif;
     line-height: 1.8;
     color: var(--text-color);
     background-color: var(--light-bg);
@@ -45,7 +45,7 @@ nav .logo {
     align-items: center;
     padding: 0.5rem;
     font-size: 26px;
-    font-family: 'Playfair Display', serif;
+    font-family: 'Iranian Sans', sans-serif;
 }
 
 .logo a {
@@ -133,7 +133,7 @@ nav ul li a:hover {
     border: none;
     padding: 0.75rem;
     border-radius: 25px;
-    font-family: 'Arial', sans-serif;
+    font-family: 'Iranian Sans', sans-serif;
 }
 
 .search-bar input:focus, .search-bar select:focus {
@@ -160,7 +160,7 @@ nav ul li a:hover {
 }
 
 .hero h1 {
-    font-family: 'Playfair Display', serif;
+    font-family: 'Iranian Sans', sans-serif;
     font-size: 3.5rem;
     margin-bottom: 1rem;
 }
@@ -202,7 +202,7 @@ nav ul li a:hover {
 }
 
 .carousel-item h3 {
-    font-family: 'Playfair Display', serif;
+    font-family: 'Iranian Sans', sans-serif;
     margin: 1rem 0 0.5rem;
 }
 
@@ -240,7 +240,7 @@ nav ul li a:hover {
 }
 
 .product-card h3 {
-    font-family: 'Playfair Display', serif;
+    font-family: 'Iranian Sans', sans-serif;
     margin: 0.75rem 0;
 }
 
@@ -251,7 +251,7 @@ nav ul li a:hover {
     padding: 0.75rem 1.5rem;
     border-radius: 25px;
     cursor: pointer;
-    font-family: 'Arial', sans-serif;
+    font-family: 'Iranian Sans', sans-serif;
     transition: background 0.3s ease;
 }
 
@@ -273,7 +273,7 @@ nav ul li a:hover {
 }
 
 .blog-post h3 {
-    font-family: 'Playfair Display', serif;
+    font-family: 'Iranian Sans', sans-serif;
     margin-bottom: 1rem;
 }
 
@@ -317,7 +317,7 @@ footer {
 }
 
 h2 {
-    font-family: 'Playfair Display', serif;
+    font-family: 'Iranian Sans', sans-serif;
     font-size: 2.5rem;
     text-align: center;
     margin-bottom: 2rem;

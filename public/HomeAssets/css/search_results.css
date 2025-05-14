@@ -32,7 +32,7 @@
 }
 
 .filter-header h5 {
-    font-family: 'Playfair Display', serif;
+    font-family: 'Iranian Sans', sans-serif;
     font-size: 1.5rem;
 }
 
@@ -45,7 +45,7 @@
 }
 
 .form-group label {
-    font-family: 'Arial', sans-serif;
+    font-family: 'Iranian Sans', sans-serif;
     font-weight: bold;
     color: var(--text-color);
     margin-bottom: 0.5rem;
@@ -56,7 +56,7 @@
     border: 1px solid #ddd;
     border-radius: 8px;
     padding: 0.75rem;
-    font-family: 'Arial', sans-serif;
+    font-family: 'Iranian Sans', sans-serif;
     font-size: 1rem;
     color: var(--text-color);
 }
@@ -74,7 +74,7 @@
     padding: 0.75rem 1.5rem;
     border-radius: 25px;
     cursor: pointer;
-    font-family: 'Arial', sans-serif;
+    font-family: 'Iranian Sans', sans-serif;
     font-size: 1rem;
     transition: background 0.3s ease;
     width: 100%;
@@ -87,7 +87,7 @@
 
 /* عنوان نتایج جستجو */
 .search-title {
-    font-family: 'Playfair Display', serif;
+font-family: 'Iranian Sans', sans-serif;
     font-size: 1.8rem;
     color: var(--primary-color);
     margin-bottom: 2rem;
@@ -130,7 +130,7 @@
 }
 
 .result-header h5 {
-    font-family: 'Playfair Display', serif;
+    font-family: 'Iranian Sans', sans-serif;
     font-size: 1.5rem;
 }
 
@@ -174,7 +174,7 @@
 }
 
 .product-card h3 {
-    font-family: 'Playfair Display', serif;
+    font-family: 'Iranian Sans', sans-serif;
     font-size: 1.1rem;
     margin: 0.5rem 0;
     color: var(--text-color);
@@ -193,7 +193,7 @@
     padding: 0.5rem 1rem;
     border-radius: 25px;
     cursor: pointer;
-    font-family: 'Arial', sans-serif;
+    font-family: 'Iranian Sans', sans-serif;
     font-size: 0.9rem;
     transition: background 0.3s ease;
 }
@@ -203,7 +203,7 @@
 }
 
 .product-meta small {
-    font-family: 'Arial', sans-serif;
+    font-family: 'Iranian Sans', sans-serif;
     font-size: 0.9rem;
 }
 
@@ -224,7 +224,7 @@
     border: none;
     border-radius: 8px;
     padding: 1rem;
-    font-family: 'Arial', sans-serif;
+    font-family: 'Iranian Sans', sans-serif;
     font-size: 1rem;
     color: var(--text-color);
     transition: background 0.3s ease;
@@ -247,7 +247,7 @@
 }
 
 .article-item h5 a {
-    font-family: 'Playfair Display', serif;
+    font-family: 'Iranian Sans', sans-serif;
     font-size: 1.3rem;
     color: var(--primary-color);
     text-decoration: none;
@@ -258,13 +258,13 @@
 }
 
 .article-item p {
-    font-family: 'Arial', sans-serif;
+    font-family: 'Iranian Sans', sans-serif;
     font-size: 1rem;
     color: #6c757d;
 }
 
 .article-item small {
-    font-family: 'Arial', sans-serif;
+    font-family: 'Iranian Sans', sans-serif;
     font-size: 0.9rem;
 }
 
@@ -287,14 +287,14 @@
 }
 
 .store-info .card-title {
-    font-family: 'Playfair Display', serif;
+    font-family: 'Iranian Sans', sans-serif;
     font-size: 1.2rem;
     color: var(--text-color);
     margin-bottom: 0.5rem;
 }
 
 .store-info .card-text {
-    font-family: 'Arial', sans-serif;
+    font-family: 'Iranian Sans', sans-serif;
     font-size: 0.9rem;
     color: #6c757d;
     margin-bottom: 1rem;
@@ -308,7 +308,7 @@
     padding: 0.5rem 1rem;
     border-radius: 25px;
     cursor: pointer;
-    font-family: 'Arial', sans-serif;
+    font-family: 'Iranian Sans', sans-serif;
     font-size: 0.9rem;
     transition: background 0.3s ease;
     display: inline-block;
@@ -327,7 +327,7 @@
     padding: 1.5rem;
     border-radius: 15px;
     text-align: center;
-    font-family: 'Arial', sans-serif;
+    font-family: 'Iranian Sans', sans-serif;
     font-size: 1.1rem;
 }
 

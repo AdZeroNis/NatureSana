@@ -1,4 +1,4 @@
-.article-details {
+.store-details {
     padding: 2rem;
     background-color: #f8f9fa;
     min-height: 100vh;
@@ -72,14 +72,14 @@
     padding: 2rem;
 }
 
-.article-image {
+.store-image {
     flex: 0 0 300px;
     height: 300px;
     border-radius: 10px;
     overflow: hidden;
 }
 
-.article-image img {
+.store-image img {
     width: 100%;
     height: 100%;
     object-fit: cover;
@@ -99,7 +99,7 @@
     color: #adb5bd;
 }
 
-.article-info {
+.store-info {
     flex: 1;
     display: flex;
     flex-direction: column;
@@ -154,44 +154,13 @@
     color: #721c24;
 }
 
-.article-content {
-    color: #212529;
-    line-height: 1.6;
-    font-family: 'Iranian Sans', sans-serif;
-    font-size: 1rem;
-}
-
-.article-content img {
-    max-width: 100%;
-    height: auto;
-    border-radius: 8px;
-}
-
-.article-content p {
-    margin-bottom: 1rem;
-}
-
-.article-content h1, .article-content h2, .article-content h3, .article-content h4, .article-content h5, .article-content h6 {
-    margin-bottom: 0.75rem;
-    color: #333;
-}
-
-.article-content ul, .article-content ol {
-    margin-bottom: 1rem;
-    padding-right: 1.5rem;
-}
-
-.article-content a {
-    color: var(--primary-color);
-    text-decoration: underline;
-}
-
-.article-content a:hover {
-    color: var(--secondary-color);
+.status-badge.pending {
+    background-color: #fff3cd;
+    color: #856404;
 }
 
 @media (max-width: 768px) {
-    .article-details {
+    .store-details {
         padding: 1rem;
     }
 
@@ -206,7 +175,7 @@
         padding: 1rem;
     }
 
-    .article-image {
+    .store-image {
         flex: 0 0 200px;
         height: 200px;
     }

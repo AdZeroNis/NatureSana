@@ -9,7 +9,7 @@
     }
 
     .form-section h2 {
-        font-family: 'Vazir', sans-serif;
+        font-family: 'Iranian Sans', sans-serif;
         color: var(--primary-color);
         margin-bottom: 1.5rem;
         text-align: center;
@@ -33,7 +33,7 @@
     }
 
     .form-group label {
-        font-family: 'Vazir', sans-serif;
+        font-family: 'Iranian Sans', sans-serif;
         font-size: 1rem;
         color: var(--text-color);
         margin-bottom: 0.5rem;
@@ -45,7 +45,7 @@
         padding: 0.75rem;
         border: 1px solid #ddd;
         border-radius: 8px;
-        font-family: 'Vazir', sans-serif;
+        font-family: 'Iranian Sans', sans-serif;
         font-size: 1rem;
         transition: border-color 0.3s ease;
     }
@@ -86,7 +86,7 @@
         padding: 0.75rem 2rem;
         border: none;
         border-radius: 25px;
-        font-family: 'Vazir', sans-serif;
+        font-family: 'Iranian Sans', sans-serif;
         font-size: 1rem;
         cursor: pointer;
         transition: background 0.3s ease, transform 0.3s ease;

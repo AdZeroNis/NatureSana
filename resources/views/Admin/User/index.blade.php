@@ -109,7 +109,7 @@
     }
 
     .table-section h2 {
-        font-family: 'Vazir', sans-serif;
+        font-family: 'Iranian Sans', sans-serif;
         color: var(--primary-color);
         margin-bottom: 1.5rem;
         text-align: center;
@@ -133,7 +133,7 @@
         padding: 0.75rem;
         border: 1px solid #ddd;
         border-radius: 8px;
-        font-family: 'Vazir', sans-serif;
+        font-family: 'Iranian Sans', sans-serif;
         font-size: 1rem;
     }
 
@@ -143,7 +143,7 @@
         color: white;
         border: none;
         border-radius: 25px;
-        font-family: 'Vazir', sans-serif;
+        font-family: 'Iranian Sans', sans-serif;
         cursor: pointer;
         transition: background 0.3s ease;
     }
@@ -158,7 +158,7 @@
         color: white;
         border: none;
         border-radius: 25px;
-        font-family: 'Vazir', sans-serif;
+        font-family: 'Iranian Sans', sans-serif;
         text-decoration: none;
         display: inline-block;
         transition: background 0.3s ease;
@@ -171,7 +171,7 @@
     .table {
         width: 100%;
         border-collapse: collapse;
-        font-family: 'Vazir', sans-serif;
+        font-family: 'Iranian Sans', sans-serif;
     }
 
     .table th, .table td {

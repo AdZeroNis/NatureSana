@@ -21,6 +21,7 @@
    <link rel="stylesheet" href="{{asset('AdminAssets/StoreAssets/css/show.css')}}">
    <link rel="stylesheet" href="{{asset('AdminAssets/UserAseets/css/index.css')}}">
    <link rel="stylesheet" href="{{asset('AdminAssets/UserAseets/css/show.css')}}">
+   <link rel="stylesheet" href="{{asset('AdminAssets/PartnerAssets/css/show.css')}}">
    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
 </head>

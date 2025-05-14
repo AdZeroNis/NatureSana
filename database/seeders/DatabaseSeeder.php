@@ -23,6 +23,8 @@ class DatabaseSeeder extends Seeder
             'status' => 1,
             'role' => 'super_admin',
             'password' => 123456,
+            'email_verified_at'=>now(),
+            'is_verified'=> 1
         ]);
     }
 }

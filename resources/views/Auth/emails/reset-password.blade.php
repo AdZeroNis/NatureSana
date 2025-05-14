@@ -6,7 +6,7 @@
     <title>بازیابی رمز عبور</title>
     <style>
         body {
-            font-family: Tahoma, Arial, sans-serif;
+            font-family: 'Iranian Sans', sans-serif;
             line-height: 1.6;
             color: #333;
             direction: rtl;

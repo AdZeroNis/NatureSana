@@ -47,7 +47,7 @@ class ProductController extends Controller
         'inventory' => 'required',
         'price' => 'required',
         'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-        'category_id' => 'required|exists:categories,id',
+        'category_id' => 'nullable|exists:categories,id',
     ]);
 
     $data = $request->all();
@@ -61,7 +61,16 @@ class ProductController extends Controller
         $file->move(public_path('AdminAssets/Product-image'), $filename);
         $data['image'] = $filename;
     }
-
+    $exists = Product::where('name', $data['name'])
+            ->where('store_id', $data['store_id'] ?? null)
+            ->exists();
+    
+        if ($exists) {
+            return redirect()->back()
+                ->withInput()
+                ->with('error', 'این محصول قبلاً ثبت شده است.');
+        }
+    
     Product::create($data);
 
     return redirect()->route('panel.product.index')
@@ -98,7 +107,7 @@ public function getByStore($store_id)
         'inventory' => 'required',
         'price' => 'required',
         'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-        'category_id' => 'required|exists:categories,id',
+        'category_id' => 'nullable|exists:categories,id',
     ]);
 
     $dataForm = $request->except('image');

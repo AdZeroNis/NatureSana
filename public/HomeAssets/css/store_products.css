@@ -18,7 +18,7 @@
 }
 
 .shop-section h2, .stores-section h2 {
-    font-family: 'Playfair Display', serif;
+    font-family: 'Iranian Sans', sans-serif;
     font-size: 2rem;
     text-align: center;
     margin-bottom: 2rem;
@@ -70,7 +70,7 @@
 }
 
 .product-card h3, .store-card h3 {
-    font-family: 'Playfair Display', serif;
+font-family: 'Iranian Sans', sans-serif;
     font-size: 1.1rem;
     margin: 0.5rem 0;
     color: var(--text-color);
@@ -89,7 +89,7 @@
     padding: 0.5rem 1rem;
     border-radius: 25px;
     cursor: pointer;
-    font-family: 'Arial', sans-serif;
+    font-family: 'Iranian Sans', sans-serif;
     font-size: 0.9rem;
     transition: background 0.3s ease;
 }

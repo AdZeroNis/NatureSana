@@ -41,7 +41,7 @@
 
                 <div class="form-group">
                     <label for="category_id">دسته‌بندی</label>
-                    <select name="category_id" id="category_id" class="selectpicker form-control p-2 @error('category_id') is-invalid @enderror" required>
+                    <select name="category_id" id="category_id" class="selectpicker form-control p-2 @error('category_id') is-invalid @enderror" >
                         <option value="">انتخاب دسته‌بندی</option>
                         @foreach ($categories as $category)
                             <option value="{{ $category->id }}" {{ old('category_id', $product->category_id) == $category->id ? 'selected' : '' }}>{{ $category->name }}</option>

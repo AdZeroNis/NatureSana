@@ -57,7 +57,7 @@ class ArticleCommentController extends Controller
 
         if ($user->role != 'super_admin') {
             $query->whereHas('article', function($q) use ($user) {
-                $q->where('store_id', $user->store_id);
+                $q->where('user_id', $user->id);
             });
         }
 

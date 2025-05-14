@@ -72,7 +72,7 @@
 .site-footer {
     background-color: #f8f9fa;
     padding: 40px 0 20px;
-    font-family: 'Vazir', sans-serif;
+    font-family: 'Iranian Sans', sans-serif;
     direction: rtl;
 }
 
@@ -212,7 +212,7 @@
     padding: 8px 12px;
     border: 1px solid #ddd;
     border-radius: 4px;
-    font-family: 'Vazir', sans-serif;
+    font-family: 'Iranian Sans', sans-serif;
 }
 
 .form-group textarea {

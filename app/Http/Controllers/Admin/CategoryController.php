@@ -40,19 +40,35 @@ class CategoryController extends Controller
 
     public function store(Request $request)
     {
-
         $request->validate([
             'name' => 'required|string|max:255',
         ]);
+    
         $data = $request->all();
-        if (Auth::user()->role != 'super_admin') {
-            $data['store_id'] = Auth::user()->store_id;
+        $user = Auth::user();
+    
+        // تعیین فروشگاه
+        if ($user->role != 'super_admin') {
+            $data['store_id'] = $user->store_id;
         }
+    
+        // بررسی تکراری بودن دسته بندی در فروشگاه
+        $exists = Category::where('name', $data['name'])
+            ->where('store_id', $data['store_id'] ?? null)
+            ->exists();
+    
+        if ($exists) {
+            return redirect()->back()
+                ->withInput()
+                ->with('error', 'این دسته‌بندی قبلاً برای این فروشگاه ثبت شده است.');
+        }
+    
         Category::create($data);
-
+    
         return redirect()->route('panel.category.index')
-            ->with('success', 'دسته بندی با موفقیت اضافه شد');
+            ->with('success', 'دسته‌بندی با موفقیت اضافه شد');
     }
+    
 
 
   public function edit($id)

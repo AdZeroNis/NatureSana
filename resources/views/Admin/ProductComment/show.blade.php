@@ -59,22 +59,45 @@
             </div>
         </div>
           <!-- Reply Form -->
-          <div class="collapse mb-4" id="replyForm">
-            <div class="card shadow-sm">
-                <div class="card-body">
-                    <form action="{{ route('panel.product.comment.reply', $comment->id) }}" method="POST">
-                        @csrf
-                        <div class="form-group">
-                            <label for="reply_content">پاسخ شما:</label>
-                            <textarea name="content" id="reply_content" class="form-control" rows="3" required></textarea>
-                        </div>
-                        <button type="submit" class="btn btn-primary mt-2">
-                            <i class="fas fa-paper-plane ml-1"></i> ارسال پاسخ
-                        </button>
-                    </form>
+     <!-- Reply Form -->
+<div class="collapse mb-4" id="replyForm">
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <form action="{{ route('panel.product.comment.reply', $comment->id) }}" method="POST">
+                @csrf
+                <div class="form-group">
+                    <label for="reply_content">پاسخ شما:</label>
+                    <textarea name="content" id="reply_content" class="form-control" rows="3" required></textarea>
                 </div>
-            </div>
+                
+                <!-- پیش‌نهادات پاسخ سریع -->
+                <div class="quick-replies mb-3">
+                    <h6 class="mb-2">پاسخ‌های سریع:</h6>
+                    <div class="d-flex flex-wrap gap-2">
+                        @php
+                            $quickReplies = [
+                                'با سلام، از نظر شما متشکریم.',
+                                'سلام، در اسرع وقت به نظر شما رسیدگی می‌شود.',
+                                'با سلام، پیشنهاد شما را بررسی خواهیم کرد.'
+                            ];
+                        @endphp
+                        
+                        @foreach($quickReplies as $reply)
+                            <button type="button" class="btn btn-outline-primary btn-sm quick-reply-btn" 
+                                    data-reply="{{ $reply }}">
+                                {{ Str::limit($reply, 30) }}
+                            </button>
+                        @endforeach
+                    </div>
+                </div>
+                
+                <button type="submit" class="btn btn-primary mt-2">
+                    <i class="fas fa-paper-plane ml-1"></i> ارسال پاسخ
+                </button>
+            </form>
         </div>
+    </div>
+</div>
 
         <!-- Replies Section -->
         <div class="replies-section">
@@ -126,5 +149,37 @@
 textarea.form-control {
     resize: vertical;
 }
+.quick-replies {
+    background-color: #f8f9fa;
+    padding: 15px;
+    border-radius: 8px;
+    border: 1px solid #eee;
+}
+
+.quick-reply-btn {
+    font-size: 0.8rem;
+    padding: 5px 10px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 200px;
+}
 </style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // اضافه کردن پاسخ‌های سریع به textarea
+        const quickReplyButtons = document.querySelectorAll('.quick-reply-btn');
+        const replyTextarea = document.getElementById('reply_content');
+        
+        quickReplyButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                replyTextarea.value = this.getAttribute('data-reply');
+                // اسکرول به textarea
+                replyTextarea.focus();
+            });
+        });
+    });
+</script>
+
 @endsection

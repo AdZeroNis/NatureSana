@@ -18,7 +18,32 @@ class UserController extends Controller
         $user = User::with(['address', 'store'])->findOrFail($id);
         return view("Admin.User.show", compact("user"));
     }
-
+    public function create()
+    {
+        return view('Admin.User.create');
+    }
+    
+    public function store(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users',
+            'phone' => 'required|string|max:20',
+            'password' => 'required|string|min:6|confirmed',
+        ]);
+        
+        User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'phone' => $request->phone,
+            'password' => bcrypt($request->password),
+            'is_verified' => true,
+            'email_verified_at' => now(),
+        ]);
+    
+        return redirect()->route('panel.user.index')->with('success', 'کاربر با موفقیت ایجاد شد');
+    }
+    
     public function edit($id)
     {
         $user = User::with(['address', 'store'])->findOrFail($id);

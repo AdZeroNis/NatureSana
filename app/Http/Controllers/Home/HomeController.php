@@ -53,14 +53,47 @@ class HomeController extends Controller
 
     public function showStoreProducts($id)
     {
-        $store = Store::findOrFail($id);
-        $products = Product::where('store_id', $id)
-                           ->where('status', 1)
-                           ->take(12)
-                           ->get();
-
-        return view('Home.store_products', compact('store', 'products'));
+        $store = Store::with(['products' => function($query) {
+            $query->where('status', 1);
+        }])->findOrFail($id);
+        
+        // محصولات خود فروشگاه
+        $products = $store->products;
+        $productNames = $products->pluck('name')->toArray();
+    
+        // شریک‌هایی که این فروشگاه شریک آن‌هاست (store_id → partner_store_id)
+        $partnerOfStores = $store->partnerOf()
+            ->where('stores.status', 1)
+            ->with(['products' => function($query) use ($productNames) {
+                $query->where('status', 1)
+                      ->whereNotIn('name', $productNames);
+            }])->get();
+    
+        // شریک‌هایی که این فروشگاه آن‌ها را به‌عنوان شریک ثبت کرده (partner_store_id ← store_id)
+        $partnersStores = $store->partners()
+            ->where('stores.status', 1)
+            ->with(['products' => function($query) use ($productNames) {
+                $query->where('status', 1)
+                      ->whereNotIn('name', $productNames);
+            }])->get();
+    
+        // ترکیب هر دو گروه شریک‌ها
+        $allPartnerStores = $partnerOfStores->merge($partnersStores)->unique('id');
+    
+        // جمع‌آوری محصولات آن‌ها
+        $partnerProducts = collect();
+        foreach ($allPartnerStores as $partnerStore) {
+            if ($partnerStore && $partnerStore->products) {
+                $partnerProducts = $partnerProducts->concat($partnerStore->products);
+            }
+        }
+    
+        // ادغام محصولات
+        $products = $products->concat($partnerProducts);
+    
+        return view('Home.store_products', compact('store', 'products', 'partnerProducts'));
     }
+    
     public function showCategoryProducts($id)
     {
         $category = Category::findOrFail($id);
