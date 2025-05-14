@@ -75,44 +75,51 @@ class StoreController extends Controller
     }
     
 
-public function approve(Request $request, $id)
-{
-    $store = Store::findOrFail($id);
-
-    // تایید مغازه
-    $store->update([
-        'is_approved' => true,
-        'status' => '1',
-    ]);
-
-    // تغییر نقش کاربر به admin
-    $user = $store->admin;
-    if ($user) {
-        $user->update([
-            'role' => 'admin',
+    public function approve(Request $request, $id)
+    {
+        $store = Store::findOrFail($id);
+    
+        $store->update([
+            'is_approved' => true,
+            'status' => '1',
+            'approved_at' => now(),
+            'rejected_at' => null, // در صورت تایید مجدد پس از رد
         ]);
+    
+        $user = $store->admin;
+        if ($user) {
+            $user->update([
+                'role' => 'admin',
+            ]);
+        }
+    
+        \Mail::raw('مغازه ' . $store->name . ' با موفقیت تایید شد.', function ($message) use ($user) {
+            $message->to($user->email)
+                    ->subject('مغازه تایید شد');
+        });
+    
+        return redirect()->back()->with('success', 'مغازه با موفقیت تایید شد و نقش کاربر به مدیر تغییر یافت.');
     }
-    \Mail::raw('مغازه ' . $store->name . ' با موفقیت تایید شد.', function ($message) use ($user) {
-        $message->to($user->email)
-                ->subject('مغازه تایید شد');
-    });
-
-    return redirect()->back()->with('success', 'مغازه با موفقیت تایید شد و نقش کاربر به مدیر تغییر یافت.');
-}
-
-
+    
     public function reject(Request $request, $id)
     {
         $store = Store::findOrFail($id);
-        $store->delete();
-        
-        \Mail::raw('مغازه ' . $store->name . ' مغازه یرای فعالیت رد شد.', function ($message) use ($store) {
-            $message->to($store->user->email)
-                    ->subject('مغازه رد شد');
+    
+        $store->update([
+            'is_approved' => false,
+            'status' => 0,
+            'rejected_at' => now(),
+            'approved_at' => null, // در صورت رد مجدد پس از تایید
+        ]);
+    
+        \Mail::raw('مغازه ' . $store->name . ' توسط مدیریت رد شده است.', function ($message) use ($store) {
+            $message->to($store->admin->email)
+                    ->subject('رد درخواست مغازه');
         });
     
-        return redirect()->back()->with('success', 'مغازه با موفقیت حذف شد.');
+        return redirect()->back()->with('success', 'مغازه با موفقیت رد شد.');
     }
+
 
     public function edit($id)
     {
@@ -190,6 +197,7 @@ public function approve(Request $request, $id)
     }
     public function filter(Request $request)
     {
+        $user = Auth::user();
         $query = Store::query();
     
         // جستجو بر اساس نام
@@ -208,12 +216,14 @@ public function approve(Request $request, $id)
 
     
     
+    
         $stores = $query->latest()->paginate(10);
     
         return view('Admin.Store.index', [
             'stores' => $stores,
             'search' => $request->search,
             'status' => $request->status,
+            'user' => $user
         ]);
     }
 }

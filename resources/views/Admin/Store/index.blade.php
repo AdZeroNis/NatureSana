@@ -31,6 +31,7 @@
                 <th>نام</th>
                 <th>وضعیت</th>
                 <th>وضعیت تایید</th>
+                <th>تاریخ تایید/رد</th>
                 <th>عملیات</th>
             </tr>
         </thead>
@@ -51,6 +52,15 @@
                         <span class="badge badge-success">تایید شده</span>
                     @else
                         <span class="badge badge-danger">رد شده</span>
+                    @endif
+                </td>
+                <td class="text-center">
+                    @if($store->approved_at)
+                        {{ \Morilog\Jalali\Jalalian::fromDateTime($store->approved_at)->format('Y/m/d H:i') }}
+                    @elseif($store->rejected_at)
+                        {{ \Morilog\Jalali\Jalalian::fromDateTime($store->rejected_at)->format('Y/m/d H:i') }}
+                    @else
+                        -
                     @endif
                 </td>
                 <td class="action-buttons">

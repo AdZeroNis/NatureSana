@@ -77,13 +77,20 @@
                         auth()->user()->store_id === $partner->store_id || 
                         auth()->user()->store_id === $partner->partner_store_id)
 
-                        <form action="{{ route('panel.partner.delete', $partner->id) }}" method="POST" style="display: inline;" 
-                              onsubmit="return confirm('آیا از حذف این همکاری مطمئن هستید؟');">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="btn btn-sm btn-danger" title="حذف همکاری">
-                                <i class="fas fa-trash"></i>
-                            </button>
+                        <form action="{{ route('panel.partner.delete', $partner->id) }}" method="POST" style="display: inline;" >
+                        <a href="#" 
+                       class="btn btn-sm" 
+                       style="color: red;" 
+                       title="حذف" 
+                       onclick="event.preventDefault(); if(confirm('آیا از حذف این همکاری مطمئن هستید؟')) { 
+                           document.getElementById('delete-form-{{ $partner->id }}').submit(); }">
+                        <i class="fas fa-trash-alt"></i>
+                    </a>
+                 
+                    <form id="delete-form-{{ $partner->id }}" action="{{ route('panel.partner.delete', $partner->id) }}" method="POST" style="display: none;">
+                        @csrf
+                        @method('DELETE')
+                    </form>
                         </form>
                     @endif
                 </td>

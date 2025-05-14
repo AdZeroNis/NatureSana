@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Store extends Model
 {
-    protected $fillable = ['name', 'address', 'image', 'phone_number', 'admin_id', 'status', 'is_approved'];
+    protected $fillable = ['name', 'address', 'image', 'phone_number', 'admin_id', 'status', 'is_approved','approved_at','rejected_at'];
 
     public function admin()
     {
