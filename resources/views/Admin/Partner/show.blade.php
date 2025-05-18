@@ -49,68 +49,159 @@
                 </div>
             </div>
 
-            @if($partner->status == 0)
-                <div class="approval-actions">
-                    @if(auth()->user()->store_id == $partner->store_id && is_null($partner->store_approval))
-                        <form action="{{ route('panel.partner.update', $partner->id) }}" method="POST" class="d-inline">
-                            @csrf
-                          
-                            <button type="submit" name="status" value="1" class="btn btn-success">
-                                <i class="fas fa-check"></i> تایید فروشگاه اصلی
-                            </button>
-                        </form>
-                        <form action="{{ route('panel.partner.update', $partner->id) }}" method="POST" class="d-inline">
-                            @csrf
-                         
-                            <button type="submit" name="status" value="2" class="btn btn-danger">
-                                <i class="fas fa-times"></i> رد فروشگاه اصلی
-                            </button>
-                        </form>
-                    @endif
-
-                    @if(auth()->user()->store_id == $partner->partner_store_id && is_null($partner->partner_approval))
-                        <form action="{{ route('panel.partner.update', $partner->id) }}" method="POST" class="d-inline">
-                            @csrf
-                         
-                            <button type="submit" name="status" value="1" class="btn btn-success">
-                                <i class="fas fa-check"></i> تایید فروشگاه همکار
-                            </button>
-                        </form>
-                        <form action="{{ route('panel.partner.update', $partner->id) }}" method="POST" class="d-inline">
-                            @csrf
-                            
-                            <button type="submit" name="status" value="2" class="btn btn-danger">
-                                <i class="fas fa-times"></i> رد فروشگاه همکار
-                            </button>
-                        </form>
-                    @endif
-                </div>
-            @endif
-
+            @if($partner->status == 1)
             <div class="products-section">
-                <h3>محصولات منحصر به فرد فروشگاه اصلی</h3>
-                @if($uniqueStoreProducts->count() > 0)
-                    <ul class="product-list">
-                        @foreach($uniqueStoreProducts as $product)
-                            <li>{{ $product->name }}</li>
-                        @endforeach
-                    </ul>
-                @else
-                    <p>هیچ محصول منحصر به فردی برای فروشگاه اصلی وجود ندارد.</p>
-                @endif
+                @if($isSuperAdmin)
+                    <h3>مدیریت محصولات هر دو فروشگاه</h3>
 
-                <h3>محصولات منحصر به فرد فروشگاه همکار</h3>
-                @if($uniquePartnerProducts->count() > 0)
-                    <ul class="product-list">
-                        @foreach($uniquePartnerProducts as $product)
-                            <li>{{ $product->name }}</li>
-                        @endforeach
-                    </ul>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h4>محصولات فروشگاه اصلی ({{ $partner->store->name }})</h4>
+                            <form action="{{ route('panel.partner.products.store', $partner->id) }}" method="POST">
+                                @csrf
+                                <ul class="product-list" id="mainStoreProductsList">
+                                    @foreach($mainStoreProducts as $index => $product)
+                                        <li class="{{ $index >= 5 ? 'extra-product d-none' : '' }}">
+                                            <label>
+                                                <input type="checkbox" name="product_ids[]" value="{{ $product->id }}"
+                                                    {{ in_array($product->id, $sharedProducts) ? 'checked' : '' }}>
+                                                <span class="product-name">{{ $product->name }}</span> -
+                                                <span>قیمت: {{ number_format($product->price) }} تومان</span>
+                                            </label>
+                                        </li>
+                                    @endforeach
+                                </ul>
+
+                                @if(count($mainStoreProducts) > 5)
+                                    <button type="button" class="btn btn-secondary mt-2 show-all-btn" data-target="mainStoreProductsList">
+                                        مشاهده همه محصولات
+                                    </button>
+                                @endif
+
+                                <button type="submit" class="btn btn-primary mt-3">ذخیره تغییرات</button>
+                            </form>
+                        </div>
+
+                        <div class="col-md-6">
+                            <h4>محصولات فروشگاه همکار ({{ $partner->partnerStore->name }})</h4>
+                            <form action="{{ route('panel.partner.products.store', $partner->id) }}" method="POST">
+                                @csrf
+                                <ul class="product-list" id="partnerStoreProductsList">
+                                    @foreach($partnerStoreProducts as $index => $product)
+                                        <li class="{{ $index >= 5 ? 'extra-product d-none' : '' }}">
+                                            <label>
+                                                <input type="checkbox" name="product_ids[]" value="{{ $product->id }}"
+                                                    {{ in_array($product->id, $sharedProducts) ? 'checked' : '' }}>
+                                                <span class="product-name">{{ $product->name }}</span> -
+                                                <span>قیمت: {{ number_format($product->price) }} تومان</span>
+                                            </label>
+                                        </li>
+                                    @endforeach
+                                </ul>
+
+                                @if(count($partnerStoreProducts) > 5)
+                                    <button type="button" class="btn btn-secondary mt-2 show-all-btn" data-target="partnerStoreProductsList">
+                                        مشاهده همه محصولات
+                                    </button>
+                                @endif
+
+                                <button type="submit" class="btn btn-primary mt-3">ذخیره تغییرات</button>
+                            </form>
+                        </div>
+                    </div>
                 @else
-                    <p>هیچ محصول منحصر به فردی برای فروشگاه همکار وجود ندارد.</p>
+                    <h3>
+                        @if($isMainStore)
+                            محصولات قابل نمایش از فروشگاه همکار
+                        @elseif($isPartnerStore)
+                            محصولات قابل نمایش از فروشگاه اصلی
+                        @endif
+                    </h3>
+
+                    <div class="search-box mb-3">
+                        <input type="text" id="productSearch" class="form-control" placeholder="جستجوی محصول...">
+                    </div>
+
+                    <form action="{{ route('panel.partner.products.store', $partner->id) }}" method="POST">
+                        @csrf
+                  <ul class="product-list" id="productList">
+@foreach($productsToShow as $index => $product)
+
+   <li class="{{ $index >= 3 ? 'extra-product hidden-manual' : '' }}">
+
+        <label>
+            <input type="checkbox" name="product_ids[]" value="{{ $product->id }}"
+                {{ in_array($product->id, $sharedProducts) ? 'checked' : '' }}>
+            <span class="product-name">{{ $product->name }}</span> -
+            <span>قیمت: {{ number_format($product->price) }} تومان</span> -
+            <span>موجودی: {{ $product->inventory }}</span>
+        </label>
+    </li>
+@endforeach
+
+</ul>
+
+@if(count($productsToShow) > 3)
+    <button type="button" id="showAllBtn" class="btn btn-secondary mt-2">مشاهده همه محصولات</button>
+@endif
+
+
+                        <button type="submit" class="btn btn-primary mt-3">
+                            ذخیره محصولات انتخابی
+                        </button>
+                    </form>
                 @endif
             </div>
+            @endif
         </div>
     </div>
 </section>
+<style>
+    .hidden-manual {
+        display: none !important;
+    }
+</style>
+<script>
+    // فیلتر جستجو
+    document.getElementById("productSearch")?.addEventListener("input", function () {
+        const filter = this.value.toLowerCase();
+        const items = document.querySelectorAll("#productList li");
+
+        items.forEach(function (item) {
+            const productName = item.querySelector(".product-name").textContent.toLowerCase();
+            if (productName.includes(filter)) {
+                item.style.display = "";
+            } else {
+                item.style.display = "none";
+            }
+        });
+    });
+
+    // دکمه‌های نمایش همه محصولات
+    document.querySelectorAll(".show-all-btn").forEach(function (btn) {
+        btn.addEventListener("click", function () {
+            const targetListId = btn.getAttribute("data-target");
+            const productList = document.getElementById(targetListId);
+
+            if (productList) {
+                productList.querySelectorAll(".extra-product").forEach(function (item) {
+                    item.classList.remove("d-none");
+                });
+            }
+
+            btn.style.display = 'none';
+        });
+    });
+
+    // دکمه نمایش همه برای کاربرهای غیر سوپر ادمین (با id خاص)
+document.getElementById("showAllBtn")?.addEventListener("click", function (e) {
+    e.preventDefault();
+    document.querySelectorAll("#productList .extra-product").forEach(function (item) {
+        item.classList.remove("hidden-manual");
+    });
+    this.style.display = 'none';
+});
+
+</script>
+
 @endsection

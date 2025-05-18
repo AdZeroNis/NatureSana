@@ -18,6 +18,7 @@ return new class extends Migration
             $table->boolean('status')->default(true); // فعال یا غیرفعال بودن همکاری
             $table->timestamps();
         });
+        
     }
 
     /**

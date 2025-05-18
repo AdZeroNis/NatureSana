@@ -2,11 +2,12 @@
 
 @section('content')
 <section class="form-section" id="edit-product">
+    
     <h2>ویرایش محصول</h2>
     <div class="card">
         <form method="POST" action="{{ route('panel.product.update', $product->id) }}" enctype="multipart/form-data">
             @csrf
-      
+
             <div class="form-row">
                 <div class="form-group">
                     <label for="name">نام محصول</label>

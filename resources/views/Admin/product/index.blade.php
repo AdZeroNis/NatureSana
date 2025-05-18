@@ -2,7 +2,7 @@
 
 @section('content')
 <section class="table-section" id="products">
-    <h2>مدیریت محصولات</h2>             
+    <h2>مدیریت محصولات</h2>
 
     <!-- Search and Filter Form -->
     <form method="GET" action="{{ route('panel.product.filter') }}" class="search-form mb-4">
@@ -32,6 +32,7 @@
             <tr>
                 <th>شناسه</th>
                 <th>نام</th>
+                <th>فروشگاه</th>
                 <th>وضعیت</th>
                 <th>عملیات</th>
             </tr>
@@ -41,32 +42,37 @@
             <tr>
                 <td>{{ $product->id }}</td>
                 <td>{{ $product->name }}</td>
+                <td>{{ $product->store->name ?? 'ندارد' }}</td>
                 <td class="text-center">
                     <span class="badge badge-{{ $product->status == '1' ? 'success' : 'danger' }}">
                         {{ $product->status == '1' ? 'فعال' : 'غیرفعال' }}
                     </span>
                 </td>
-                <td class="action-buttons">
-                <a href="{{ route('panel.product.show', $product->id) }}" class="btn btn-sm" style="color: #007bff;" title="جزئیات">
-                        <i class="fas fa-eye"></i>
-                    </a>
-                    <a href="{{ route('panel.product.edit', $product->id) }}" class="btn btn-sm" style="color: hotpink;" title="ویرایش">
-                        <i class="fas fa-edit"></i>
-                    </a>
-                    <a href="#" 
-                       class="btn btn-sm" 
-                       style="color: red;" 
-                       title="حذف" 
-                       onclick="event.preventDefault(); if(confirm('آیا از حذف این محصول مطمئن هستید؟')) { 
-                           document.getElementById('delete-form-{{ $product->id }}').submit(); }">
-                        <i class="fas fa-trash-alt"></i>
-                    </a>
-                 
-                    <form id="delete-form-{{ $product->id }}" action="{{ route('panel.product.delete', $product->id) }}" method="POST" style="display: none;">
-                        @csrf
-                        @method('DELETE')
-                    </form>
-                </td>
+            <td class="action-buttons">
+    <a href="{{ route('panel.product.show', $product->id) }}" class="btn btn-sm" style="color: #007bff;" title="جزئیات">
+        <i class="fas fa-eye"></i>
+    </a>
+
+    @if(Auth::user()->role == 'super_admin' || $product->store_id == Auth::user()->store_id)
+        <a href="{{ route('panel.product.edit', $product->id) }}" class="btn btn-sm" style="color: hotpink;" title="ویرایش">
+            <i class="fas fa-edit"></i>
+        </a>
+        <a href="#"
+           class="btn btn-sm"
+           style="color: red;"
+           title="حذف"
+           onclick="event.preventDefault(); if(confirm('آیا از حذف این محصول مطمئن هستید؟')) {
+               document.getElementById('delete-form-{{ $product->id }}').submit(); }">
+            <i class="fas fa-trash-alt"></i>
+        </a>
+
+        <form id="delete-form-{{ $product->id }}" action="{{ route('panel.product.delete', $product->id) }}" method="POST" style="display: none;">
+            @csrf
+            @method('DELETE')
+        </form>
+    @endif
+</td>
+
             </tr>
             @empty
             <tr>

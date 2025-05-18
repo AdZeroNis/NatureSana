@@ -8,10 +8,12 @@
         <div class="header">
             <h2>جزئیات محصول</h2>
             <div class="actions">
+                  @if(Auth::user()->role == 'super_admin' || $product->store_id == Auth::user()->store_id)
                 <a href="{{ route('panel.product.edit', $product->id) }}" class="btn btn-edit">
                     <i class="fas fa-edit"></i>
                     ویرایش
                 </a>
+                @endif
                 <a href="{{ route('panel.product.index') }}" class="btn btn-back">
                     <i class="fas fa-arrow-right"></i>
                     بازگشت

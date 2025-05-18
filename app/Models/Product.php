@@ -20,7 +20,7 @@ class Product extends Model
 
     public function carts()
     {
-        return $this->hasMany(Basket::class);
+        return $this->hasMany(Cart::class);
     }
 
     public function ProductComments()
@@ -32,4 +32,9 @@ class Product extends Model
     {
         return $this->hasMany(OrderItem::class);
     }
+public function sharedPartnerships()
+{
+    return $this->belongsToMany(StorePartner::class, 'partner_selected_products', 'product_id', 'store_partner_id');
+}
+
 }

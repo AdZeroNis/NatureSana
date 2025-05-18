@@ -2,40 +2,68 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
 use App\Models\Product;
 use App\Models\Category;
-use Illuminate\Support\Facades\Auth;
+use App\Models\StorePartner;
 use Illuminate\Http\Request;
+use App\Models\StorePartnerProduct;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 
 class ProductController extends Controller
 {
-   public function index()
-   {
-    $storeId = Auth::user()->store_id;
-    
-    if (Auth::user()->role == 'super_admin') {
+public function index()
+{
+    $user = Auth::user();
+
+    if ($user->role == 'super_admin') {
+        // سوپر ادمین همه محصولات را می‌بیند
         $products = Product::all();
     } else {
-        $products = Product::where('store_id', $storeId)->get();
+        $storeId = $user->store_id;
+
+        // گرفتن روابط فعال همکاری (store_partner_id ها)
+        $storePartnerIds = StorePartner::where(function ($query) use ($storeId) {
+                $query->where('store_id', $storeId)
+                      ->orWhere('partner_store_id', $storeId);
+            })
+            ->where('status', 1)
+            ->pluck('id')
+            ->toArray();
+
+        // گرفتن ID محصولات اشتراکی از جدول partner_products
+        $sharedProductIds = StorePartnerProduct::whereIn('store_partner_id', $storePartnerIds)
+            ->pluck('product_id')
+            ->unique()
+            ->toArray();
+
+        // گرفتن محصولات فروشگاه خودش
+        $ownProducts = Product::where('store_id', $storeId)->get();
+
+        // گرفتن محصولات اشتراکی
+        $sharedProducts = Product::whereIn('id', $sharedProductIds)->get();
+
+        // ترکیب دو لیست
+        $products = $ownProducts->merge($sharedProducts);
     }
 
     return view('Admin.Product.index', compact('products'));
-   }
+}
+
 
    public function create()
    {
     $user = Auth::user();
     $stores = [];
-    
+
     if ($user->role == 'super_admin') {
         $stores = \App\Models\Store::all();
         $categories = Category::all();
     } else {
         $categories = Category::where('store_id', $user->store_id)->get();
     }
-    
+
     return view('Admin.Product.create', compact('categories', 'stores'));
    }
 
@@ -64,13 +92,13 @@ class ProductController extends Controller
     $exists = Product::where('name', $data['name'])
             ->where('store_id', $data['store_id'] ?? null)
             ->exists();
-    
+
         if ($exists) {
             return redirect()->back()
                 ->withInput()
                 ->with('error', 'این محصول قبلاً ثبت شده است.');
         }
-    
+
     Product::create($data);
 
     return redirect()->route('panel.product.index')
@@ -86,21 +114,21 @@ public function getByStore($store_id)
     $product = Product::find($id);
     $user = Auth::user();
     $stores = [];
-    
+
     if ($user->role == 'super_admin') {
         $stores = \App\Models\Store::all();
         $categories = Category::all();
     } else {
         $categories = Category::where('store_id', $user->store_id)->get();
     }
-    
+
     return view('Admin.Product.edit', compact('product', 'categories', 'stores'));
    }
 
    public function update(Request $request, $id)
    {
     $product = Product::find($id);
-    
+
     $request->validate([
         'name' => 'required|string|max:255',
         'description' => 'required',
@@ -111,7 +139,7 @@ public function getByStore($store_id)
     ]);
 
     $dataForm = $request->except('image');
-    
+
     if (Auth::user()->role != 'super_admin') {
         $dataForm['store_id'] = Auth::user()->store_id;
     }
@@ -145,30 +173,59 @@ public function getByStore($store_id)
      return redirect()->route("panel.product.index")->with('success', 'محصول با موفقیت حذف شد');;
 }
 
-   public function show($id)
-   {
+public function show($id)
+{
     $currentUser = Auth::user();
 
     if ($currentUser->role == 'super_admin') {
         $product = Product::find($id);
     } else {
-        $product = Product::where('store_id', $currentUser->store_id)->find($id);
+        $storeId = $currentUser->store_id;
+
+        // گرفتن آیدی فروشگاه‌های شریک
+        $partnerStoreIds = StorePartner::where('store_id', $storeId)
+            ->where('status', 1)
+            ->pluck('partner_store_id')
+            ->toArray();
+
+        $partnerStoreIds = array_merge($partnerStoreIds,
+            StorePartner::where('partner_store_id', $storeId)
+                ->where('status', 1)
+                ->pluck('store_id')
+                ->toArray());
+
+        $allowedStoreIds = array_merge([$storeId], $partnerStoreIds);
+
+        // حالا فقط محصولاتی که در این فروشگاه‌ها هستند را جستجو کنید
+        $product = Product::whereIn('store_id', $allowedStoreIds)->find($id);
     }
+
+    if (!$product) {
+        abort(404, 'محصول مورد نظر یافت نشد.');
+    }
+
     $store = $product->store;
 
     return view('Admin.Product.show', compact('product', 'store'));
-   }
+}
 
-   public function filter(Request $request)
-   {
+
+  public function filter(Request $request)
+{
     $query = Product::query();
-    
-    // جستجو بر اساس نام
+
+    $user = Auth::user();
+
+    if ($user->role != 'super_admin') {
+        $storeId = $user->store_id;
+        $partnerIds = $user->store->partners()->pluck('partner_id')->toArray();
+        $query->whereIn('store_id', array_merge([$storeId], $partnerIds));
+    }
+
     if ($request->filled('search')) {
         $query->where('name', 'like', '%' . $request->search . '%');
     }
 
-    // فیلتر بر اساس وضعیت فعال/غیرفعال
     if ($request->filled('status')) {
         if ($request->status === 'active') {
             $query->where('status', 1);
@@ -177,8 +234,6 @@ public function getByStore($store_id)
         }
     }
 
-
-
     $products = $query->latest()->paginate(10);
 
     return view('Admin.Product.index', [
@@ -186,5 +241,6 @@ public function getByStore($store_id)
         'search' => $request->search,
         'status' => $request->status,
     ]);
-   }
+}
+
 }

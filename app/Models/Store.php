@@ -21,16 +21,17 @@ class Store extends Model
     {
         return $this->hasMany(Product::class);
     }
-    public function partners()
-    {
-        return $this->belongsToMany(Store::class, 'store_partners', 'store_id', 'partner_store_id')
-            ->wherePivot('status', true);
-    }
-    public function partnerOf()
-    {
-        return $this->belongsToMany(Store::class, 'store_partners', 'partner_store_id', 'store_id')
-            ->wherePivot('status', 1)
-            ->where('stores.status', 1); // 👈 مشخص کردن جدول
-    }
-    
+  public function partners()
+{
+    return $this->belongsToMany(Store::class, 'store_partners', 'store_id', 'partner_store_id')
+        ->withPivot('status', 'store_approval', 'partner_approval')
+        ->wherePivot('status', 1);
+}
+  public function partnerOf()
+{
+    return $this->belongsToMany(Store::class, 'store_partners', 'partner_store_id', 'store_id')
+        ->withPivot('status', 'store_approval', 'partner_approval')
+        ->wherePivot('status', 1);
+}
+
 }

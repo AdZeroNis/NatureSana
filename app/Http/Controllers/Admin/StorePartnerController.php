@@ -13,43 +13,40 @@ class StorePartnerController extends Controller
     public function index()
     {
         $user = Auth::user();
-    
+
         // اگر سوپر ادمین بود، همه همکاری‌ها را نمایش بده
         if ($user->role === 'super_admin') {
             $partners = StorePartner::with(['store', 'partnerStore'])->get();
         } else {
             // در غیر این صورت فقط همکاری‌های مربوط به فروشگاه کاربر
             $storeId = $user->store_id;
-    
+
             $partners = StorePartner::with(['store', 'partnerStore'])
                 ->where('store_id', $storeId)
                 ->orWhere('partner_store_id', $storeId)
                 ->get();
         }
-    
+
         // Get products for each partnership
         $partnerProducts = [];
         foreach ($partners as $partner) {
             $store = $partner->store;
             $partnerStore = $partner->partnerStore;
-            
             if ($store && $partnerStore) {
                 // Get product names from both stores
                 $storeProductNames = $store->products()->pluck('name')->toArray();
                 $partnerProductNames = $partnerStore->products()->pluck('name')->toArray();
-                
+
                 // Get unique product names (filter out products with same names)
-                $uniqueProducts = $partnerStore->products()
-                    ->whereNotIn('name', $storeProductNames)
-                    ->get();
-                
-                $partnerProducts[$partner->id] = $uniqueProducts;
+             $allPartnerProducts = $partnerStore->products()->get();
+$partnerProducts[$partner->id] = $allPartnerProducts;
+
             }
         }
-        
+
         return view('Admin.Partner.index', compact('partners', 'partnerProducts'));
     }
-    
+
     public function create()
 {
     $stores = Store::all();
@@ -65,7 +62,7 @@ public function store(Request $request)
     $storeId = Auth::user()->role === 'super_admin' ? $request->store_id : Auth::user()->store_id;
 
     // جلوگیری از تکراری بودن همکاری
-    $exists = \App\Models\StorePartner::where('store_id', $storeId)
+    $exists = StorePartner::where('store_id', $storeId)
         ->where('partner_store_id', $request->partner_store_id)
         ->exists();
 
@@ -74,7 +71,7 @@ public function store(Request $request)
     }
 
     // ایجاد همکاری با وضعیت 0 (درخواست در انتظار تایید)
-    \App\Models\StorePartner::create([
+    StorePartner::create([
         'store_id' => $storeId,
         'partner_store_id' => $request->partner_store_id,
         'status' => 0,  // درخواست در انتظار تایید
@@ -124,38 +121,85 @@ public function update(Request $request, $id)
 public function show($id)
 {
     $partner = StorePartner::with(['store', 'partnerStore'])->findOrFail($id);
-    
-    // Get products from both stores
-    $storeProducts = $partner->store->products;
-    $partnerProducts = $partner->partnerStore->products;
-    
-    // Get product names from both stores for filtering
-    $storeProductNames = $storeProducts->pluck('name')->toArray();
-    $partnerProductNames = $partnerProducts->pluck('name')->toArray();
-    
-    // Filter out products with same names
-    $uniquePartnerProducts = $partnerProducts->whereNotIn('name', $storeProductNames);
-    $uniqueStoreProducts = $storeProducts->whereNotIn('name', $partnerProductNames);
-    
+    $user = Auth::user();
+
+    // تعیین اینکه کاربر مالک کدام فروشگاه است
+    $isMainStore = $user->store_id === $partner->store_id;
+    $isPartnerStore = $user->store_id === $partner->partner_store_id;
+
+    // اگر سوپر ادمین نیست و به این همکاری دسترسی ندارد
+    if ($user->role !== 'super_admin' && !$isMainStore && !$isPartnerStore) {
+        abort(403, 'دسترسی غیرمجاز');
+    }
+
+    // برای سوپر ادمین هر دو فروشگاه را نمایش بده
+    if ($user->role === 'super_admin') {
+        $mainStoreProducts = $partner->store->products;
+        $partnerStoreProducts = $partner->partnerStore->products;
+
+        return view('Admin.Partner.show', [
+            'partner' => $partner,
+            'mainStoreProducts' => $mainStoreProducts,
+            'partnerStoreProducts' => $partnerStoreProducts,
+            'sharedProducts' => $partner->sharedProducts()->pluck('products.id')->toArray(),
+            'isMainStore' => false,
+            'isPartnerStore' => false,
+            'isSuperAdmin' => true,
+        ]);
+    }
+
+    // دریافت محصولات بر اساس اینکه کاربر مالک کدام فروشگاه است
+    if ($isMainStore) {
+        $productsToShow = $partner->partnerStore->products;
+    } else {
+        $productsToShow = $partner->store->products;
+    }
+
     return view('Admin.Partner.show', [
-        'partner' => $partner,  // Single partnership record
-        'uniqueStoreProducts' => $uniqueStoreProducts,
-        'uniquePartnerProducts' => $uniquePartnerProducts,
-        'store' => $partner->store,
-        'partnerStore' => $partner->partnerStore
+        'partner' => $partner,
+        'productsToShow' => $productsToShow,
+        'sharedProducts' => $partner->sharedProducts()->pluck('products.id')->toArray(),
+        'isMainStore' => $isMainStore,
+        'isPartnerStore' => $isPartnerStore,
+        'isSuperAdmin' => false,
     ]);
+}
+
+public function storePartnerProducts(Request $request, $partnerId)
+{
+    $partner = StorePartner::findOrFail($partnerId);
+    $user = Auth::user();
+
+    // فقط مالک فروشگاه اصلی یا همکار یا سوپر ادمین می‌تواند ادامه دهد
+    if (($user->store_id !== $partner->store_id &&
+         $user->store_id !== $partner->partner_store_id) &&
+        $user->role !== 'super_admin') {
+        return back()->withErrors(['error' => 'دسترسی غیرمجاز']);
+    }
+
+    $validated = $request->validate([
+        'product_ids' => 'nullable|array',
+        'product_ids.*' => 'exists:products,id'
+    ]);
+
+    $productIds = $validated['product_ids'] ?? [];
+
+    $partner->sharedProducts()->sync($productIds);
+
+    return redirect()->route('panel.partner.show', $partnerId)
+        ->with('success', 'تغییرات محصولات با موفقیت ذخیره شدند.');
 }
 
 
     public function destroy(StorePartner $partner)
     {
         $user = Auth::user();
-        
+
         // Check if user has permission to delete this partnership
-        if ($user->role === 'super_admin' || 
-            $user->store_id === $partner->store_id || 
+        if ($user->role === 'super_admin' ||
+            $user->store_id === $partner->store_id ||
             $user->store_id === $partner->partner_store_id) {
-            
+
             $partner->delete();
             return redirect()->route('panel.partner.index')
                 ->with('success', 'همکاری با موفقیت حذف شد.');

@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
-use App\Models\Store;
+use Mail;
 use App\Models\User;
+use App\Models\Store;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 
@@ -32,18 +33,18 @@ class StoreController extends Controller
     public function create(Request $request)
     {
         $user = Auth::user();
-    
+
         // بررسی اگر کاربر قبلاً مغازه داشته باشد
         if ($user->store_id) {
             // ارسال ایمیل
-            \Mail::raw('شما قبلاً یک مغازه ثبت کرده‌اید و نمی‌توانید مجدداً ثبت کنید.', function ($message) use ($user) {
+            Mail::raw('شما قبلاً یک مغازه ثبت کرده‌اید و نمی‌توانید مجدداً ثبت کنید.', function ($message) use ($user) {
                 $message->to($user->email)
                         ->subject('درخواست مغازه تکراری');
             });
-    
+
             return redirect()->back()->with('error', 'شما قبلاً یک مغازه ثبت کرده‌اید.');
         }
-    
+
         // اعتبارسنجی داده‌های ورودی
         $request->validate([
             'name' => 'required|string|max:255',
@@ -51,11 +52,11 @@ class StoreController extends Controller
             'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
             'phone_number' => 'required|string|max:20',
         ]);
-    
+
         // آپلود تصویر
         $imageName = time() . '.' . $request->image->extension();
         $request->image->move(public_path('AdminAssets/Store-image'), $imageName);
-    
+
         // ایجاد مغازه با status = 0 (در انتظار تأیید)
         $store = Store::create([
             'name' => $request->input('name'),
@@ -65,58 +66,58 @@ class StoreController extends Controller
             'admin_id' => Auth::id(),
             'status' => 0,
         ]);
-    
+
         // آپدیت store_id کاربر
         $user->update([
             'store_id' => $store->id,
         ]);
-    
+
         return redirect()->route('home')->with('message', 'درخواست ثبت مغازه ارسال شد. منتظر تأیید مدیر باشید.');
     }
-    
+
 
     public function approve(Request $request, $id)
     {
         $store = Store::findOrFail($id);
-    
+
         $store->update([
             'is_approved' => true,
             'status' => '1',
             'approved_at' => now(),
             'rejected_at' => null, // در صورت تایید مجدد پس از رد
         ]);
-    
+
         $user = $store->admin;
         if ($user) {
             $user->update([
                 'role' => 'admin',
             ]);
         }
-    
+
         \Mail::raw('مغازه ' . $store->name . ' با موفقیت تایید شد.', function ($message) use ($user) {
             $message->to($user->email)
                     ->subject('مغازه تایید شد');
         });
-    
+
         return redirect()->back()->with('success', 'مغازه با موفقیت تایید شد و نقش کاربر به مدیر تغییر یافت.');
     }
-    
+
     public function reject(Request $request, $id)
     {
         $store = Store::findOrFail($id);
-    
+
         $store->update([
             'is_approved' => false,
             'status' => 0,
             'rejected_at' => now(),
             'approved_at' => null, // در صورت رد مجدد پس از تایید
         ]);
-    
+
         \Mail::raw('مغازه ' . $store->name . ' توسط مدیریت رد شده است.', function ($message) use ($store) {
             $message->to($store->admin->email)
                     ->subject('رد درخواست مغازه');
         });
-    
+
         return redirect()->back()->with('success', 'مغازه با موفقیت رد شد.');
     }
 
@@ -199,12 +200,12 @@ class StoreController extends Controller
     {
         $user = Auth::user();
         $query = Store::query();
-    
+
         // جستجو بر اساس نام
         if ($request->filled('search')) {
             $query->where('name', 'like', '%' . $request->search . '%');
         }
-    
+
         // فیلتر بر اساس وضعیت فعال/غیرفعال
         if ($request->filled('status')) {
             if ($request->status === 'active') {
@@ -214,11 +215,11 @@ class StoreController extends Controller
             }
         }
 
-    
-    
-    
+
+
+
         $stores = $query->latest()->paginate(10);
-    
+
         return view('Admin.Store.index', [
             'stores' => $stores,
             'search' => $request->search,

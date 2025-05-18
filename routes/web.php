@@ -177,6 +177,8 @@ Route::prefix('panel')->middleware(['auth', AdminAccess::class])->group(function
         Route::post('/update/{id}', [StorePartnerController::class, 'update'])->name('panel.partner.update');
         Route::delete('/partner/{partner}', [StorePartnerController::class, 'destroy'])->name('panel.partner.delete');
         Route::get('/show/{id}', [StorePartnerController::class, 'show'])->name('panel.partner.show');
+        Route::post('/panel/partner/{partner}/products', [StorePartnerController::class, 'storePartnerProducts'])->name('panel.partner.products.store');
+
     });
 
 });

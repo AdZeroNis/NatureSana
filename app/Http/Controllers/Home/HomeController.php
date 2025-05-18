@@ -2,13 +2,15 @@
 
 namespace App\Http\Controllers\Home;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use App\Models\Product;
 use App\Models\Store;
 use App\Models\Slider;
 use App\Models\Article;
+use App\Models\Product;
 use App\Models\Category;
+use App\Models\StorePartner;
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use App\Models\StorePartnerProduct;
 
 class HomeController extends Controller
 {
@@ -51,49 +53,47 @@ class HomeController extends Controller
         return view('Home.article_single', compact('article'));
     }
 
-    public function showStoreProducts($id)
-    {
-        $store = Store::with(['products' => function($query) {
-            $query->where('status', 1);
-        }])->findOrFail($id);
-        
-        // محصولات خود فروشگاه
-        $products = $store->products;
-        $productNames = $products->pluck('name')->toArray();
-    
-        // شریک‌هایی که این فروشگاه شریک آن‌هاست (store_id → partner_store_id)
-        $partnerOfStores = $store->partnerOf()
-            ->where('stores.status', 1)
-            ->with(['products' => function($query) use ($productNames) {
-                $query->where('status', 1)
-                      ->whereNotIn('name', $productNames);
-            }])->get();
-    
-        // شریک‌هایی که این فروشگاه آن‌ها را به‌عنوان شریک ثبت کرده (partner_store_id ← store_id)
-        $partnersStores = $store->partners()
-            ->where('stores.status', 1)
-            ->with(['products' => function($query) use ($productNames) {
-                $query->where('status', 1)
-                      ->whereNotIn('name', $productNames);
-            }])->get();
-    
-        // ترکیب هر دو گروه شریک‌ها
-        $allPartnerStores = $partnerOfStores->merge($partnersStores)->unique('id');
-    
-        // جمع‌آوری محصولات آن‌ها
-        $partnerProducts = collect();
-        foreach ($allPartnerStores as $partnerStore) {
-            if ($partnerStore && $partnerStore->products) {
-                $partnerProducts = $partnerProducts->concat($partnerStore->products);
-            }
-        }
-    
-        // ادغام محصولات
-        $products = $products->concat($partnerProducts);
-    
-        return view('Home.store_products', compact('store', 'products', 'partnerProducts'));
-    }
-    
+ public function showStoreProducts($id)
+{
+    $store = Store::with(['products' => function($query) {
+        $query->where('status', 1);
+    }])->findOrFail($id);
+
+    // محصولات خود فروشگاه
+    $products = $store->products;
+    $productNames = $products->pluck('name')->toArray();
+
+    // گرفتن همه partnerها که این فروشگاه در آن‌ها دخیل است
+    $partners = StorePartner::where(function ($query) use ($store) {
+        $query->where('store_id', $store->id)
+              ->orWhere('partner_store_id', $store->id);
+    })->pluck('id');
+
+    // گرفتن آی‌دی محصولات انتخاب‌شده برای همکاری
+    $selectedProductIds = StorePartnerProduct::whereIn('store_partner_id', $partners)
+        ->pluck('product_id')
+        ->unique()
+        ->toArray();
+
+    // گرفتن محصولاتی از فروشگاه‌های دیگر که در همکاری انتخاب شده‌اند و مغازه اصلی آن‌ها را ندارد
+    $partnerProducts = Product::whereIn('id', $selectedProductIds)
+        ->where('status', 1)
+        ->whereNotIn('name', $productNames)
+        ->where('store_id', '!=', $store->id)
+        ->with('store')
+        ->get();
+
+    // ادغام محصولات
+    $products = $products->concat($partnerProducts);
+
+    return view('Home.store_products', compact(
+        'store',
+        'products',
+        'partnerProducts',
+        'selectedProductIds'
+    ));
+}
+
     public function showCategoryProducts($id)
     {
         $category = Category::findOrFail($id);
