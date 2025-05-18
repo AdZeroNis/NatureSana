@@ -54,10 +54,14 @@
                 @if($isSuperAdmin)
                     <h3>مدیریت محصولات هر دو فروشگاه</h3>
 
+                    <div class="search-box mb-3">
+                        <input type="text" id="superAdminProductSearch" class="form-control" placeholder="جستجوی محصول...">
+                    </div>
+
                     <div class="row">
                         <div class="col-md-6">
                             <h4>محصولات فروشگاه اصلی ({{ $partner->store->name }})</h4>
-                            <form action="{{ route('panel.partner.products.store', $partner->id) }}" method="POST">
+                            <form action="{{ route('panel.partner.products.store', $partner->id) }}" method="POST" id="mainStoreForm">
                                 @csrf
                                 <ul class="product-list" id="mainStoreProductsList">
                                     @foreach($mainStoreProducts as $index => $product)
@@ -84,7 +88,7 @@
 
                         <div class="col-md-6">
                             <h4>محصولات فروشگاه همکار ({{ $partner->partnerStore->name }})</h4>
-                            <form action="{{ route('panel.partner.products.store', $partner->id) }}" method="POST">
+                            <form action="{{ route('panel.partner.products.store', $partner->id) }}" method="POST" id="partnerStoreForm">
                                 @csrf
                                 <ul class="product-list" id="partnerStoreProductsList">
                                     @foreach($partnerStoreProducts as $index => $product)
@@ -124,27 +128,23 @@
 
                     <form action="{{ route('panel.partner.products.store', $partner->id) }}" method="POST">
                         @csrf
-                  <ul class="product-list" id="productList">
-@foreach($productsToShow as $index => $product)
+                        <ul class="product-list" id="productList">
+                            @foreach($productsToShow as $index => $product)
+                                <li class="{{ $index >= 3 ? 'extra-product hidden-manual' : '' }}">
+                                    <label>
+                                        <input type="checkbox" name="product_ids[]" value="{{ $product->id }}"
+                                            {{ in_array($product->id, $sharedProducts) ? 'checked' : '' }}>
+                                        <span class="product-name">{{ $product->name }}</span> -
+                                        <span>قیمت: {{ number_format($product->price) }} تومان</span> -
+                                        <span>موجودی: {{ $product->inventory }}</span>
+                                    </label>
+                                </li>
+                            @endforeach
+                        </ul>
 
-   <li class="{{ $index >= 3 ? 'extra-product hidden-manual' : '' }}">
-
-        <label>
-            <input type="checkbox" name="product_ids[]" value="{{ $product->id }}"
-                {{ in_array($product->id, $sharedProducts) ? 'checked' : '' }}>
-            <span class="product-name">{{ $product->name }}</span> -
-            <span>قیمت: {{ number_format($product->price) }} تومان</span> -
-            <span>موجودی: {{ $product->inventory }}</span>
-        </label>
-    </li>
-@endforeach
-
-</ul>
-
-@if(count($productsToShow) > 3)
-    <button type="button" id="showAllBtn" class="btn btn-secondary mt-2">مشاهده همه محصولات</button>
-@endif
-
+                        @if(count($productsToShow) > 3)
+                            <button type="button" id="showAllBtn" class="btn btn-secondary mt-2">مشاهده همه محصولات</button>
+                        @endif
 
                         <button type="submit" class="btn btn-primary mt-3">
                             ذخیره محصولات انتخابی
@@ -156,18 +156,32 @@
         </div>
     </div>
 </section>
+
 <style>
     .hidden-manual {
         display: none !important;
     }
 </style>
-<script>
-    // فیلتر جستجو
-    document.getElementById("productSearch")?.addEventListener("input", function () {
-        const filter = this.value.toLowerCase();
-        const items = document.querySelectorAll("#productList li");
 
-        items.forEach(function (item) {
+<script>
+    // فیلتر جستجو برای سوپر ادمین - فروشگاه اصلی و فروشگاه همکار
+    document.getElementById("superAdminProductSearch")?.addEventListener("input", function () {
+        const filter = this.value.toLowerCase();
+
+        // لیست محصولات فروشگاه اصلی
+        const mainStoreItems = document.querySelectorAll("#mainStoreProductsList li");
+        mainStoreItems.forEach(function (item) {
+            const productName = item.querySelector(".product-name").textContent.toLowerCase();
+            if (productName.includes(filter)) {
+                item.style.display = "";
+            } else {
+                item.style.display = "none";
+            }
+        });
+
+        // لیست محصولات فروشگاه همکار
+        const partnerStoreItems = document.querySelectorAll("#partnerStoreProductsList li");
+        partnerStoreItems.forEach(function (item) {
             const productName = item.querySelector(".product-name").textContent.toLowerCase();
             if (productName.includes(filter)) {
                 item.style.display = "";
@@ -177,7 +191,7 @@
         });
     });
 
-    // دکمه‌های نمایش همه محصولات
+    // دکمه‌های نمایش همه محصولات برای سوپر ادمین
     document.querySelectorAll(".show-all-btn").forEach(function (btn) {
         btn.addEventListener("click", function () {
             const targetListId = btn.getAttribute("data-target");
@@ -193,15 +207,29 @@
         });
     });
 
-    // دکمه نمایش همه برای کاربرهای غیر سوپر ادمین (با id خاص)
-document.getElementById("showAllBtn")?.addEventListener("click", function (e) {
-    e.preventDefault();
-    document.querySelectorAll("#productList .extra-product").forEach(function (item) {
-        item.classList.remove("hidden-manual");
-    });
-    this.style.display = 'none';
-});
+    // جستجوی عادی برای کاربران غیر سوپر ادمین
+    document.getElementById("productSearch")?.addEventListener("input", function () {
+        const filter = this.value.toLowerCase();
+        const items = document.querySelectorAll("#productList li");
 
+        items.forEach(function (item) {
+            const productName = item.querySelector(".product-name").textContent.toLowerCase();
+            if (productName.includes(filter)) {
+                item.style.display = "";
+            } else {
+                item.style.display = "none";
+            }
+        });
+    });
+
+    // دکمه نمایش همه محصولات برای کاربران غیر سوپر ادمین
+    document.getElementById("showAllBtn")?.addEventListener("click", function (e) {
+        e.preventDefault();
+        document.querySelectorAll("#productList .extra-product").forEach(function (item) {
+            item.classList.remove("hidden-manual");
+        });
+        this.style.display = 'none';
+    });
 </script>
 
 @endsection
