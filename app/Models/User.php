@@ -46,9 +46,9 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->belongsTo(Store::class, 'store_id');
     }
 
-    public function baskets()
+    public function carts()
     {
-        return $this->hasMany(Basket::class);
+        return $this->hasMany(Cart::class);
     }
 
     public function hasVerifiedEmail()

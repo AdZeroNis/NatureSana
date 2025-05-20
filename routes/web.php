@@ -1,24 +1,25 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
-use Illuminate\Foundation\Auth\EmailVerificationRequest;
-use App\Http\Controllers\Admin\StoreController;
-use App\Http\Controllers\Auth\AuthController;
-use App\Http\Controllers\Home\HomeController;
-use App\Http\Controllers\Admin\DashboardController;
-use App\Http\Controllers\Admin\CategoryController;
-use App\Http\Controllers\Admin\ProductController;
-use App\Http\Controllers\Auth\PasswordResetController;
-use App\Http\Controllers\Admin\ArticleController;
-use App\Http\Controllers\Admin\SliderController;
-use App\Http\Controllers\Home\ArticleCommentController;
-use App\Http\Controllers\Admin\UserController;
-use App\Http\Controllers\Admin\StorePartnerController;
-use App\Http\Controllers\Home\ProductCommentController;
-
-use App\Http\Controllers\Admin\CommentController;
 use App\Http\Middleware\AdminAccess;
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\Home\CartController;
+use App\Http\Controllers\Home\HomeController;
+use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\StoreController;
+use App\Http\Controllers\Admin\SliderController;
+use App\Http\Controllers\Admin\ArticleController;
+use App\Http\Controllers\Admin\CommentController;
+use App\Http\Controllers\Admin\ProductController;
+use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\StorePartnerController;
+use App\Http\Controllers\Auth\PasswordResetController;
+
+use App\Http\Controllers\Home\ArticleCommentController;
+use App\Http\Controllers\Home\ProductCommentController;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -29,25 +30,34 @@ use App\Http\Middleware\AdminAccess;
 // 🏠 روت‌های عمومی (صفحه اصلی و نمایش محصولات و مقالات)
 // ------------------------
 Route::namespace("home")->group(function () {
-      Route::get('/', [HomeController::class, "home"])->name('home');
-        Route::get('/search', [HomeController::class, 'search'])->name('search');
-        Route::get('/articles', [HomeController::class, "articles"])->name('article.index');
-        Route::get('/articles/{id}', [HomeController::class, "showArticle"])->name('article.show');
-        Route::get('/stores', [StoreController::class, 'index'])->name('store.index');
-        Route::get('/product/{id}', [HomeController::class, "showProduct"])->name('product.show');
-        Route::get('/category/{id}/products', [HomeController::class, 'showCategoryProducts'])->name('category.products');
-        Route::get('/store/{id}/products', [HomeController::class, 'showStoreProducts'])->name('store.products');
-        Route::post('/store/register', [StoreController::class, 'create'])->name('store.register');
+    Route::get('/', [HomeController::class, "home"])->name('home');
+    Route::get('/search', [HomeController::class, 'search'])->name('search');
+    Route::get('/articles', [HomeController::class, "articles"])->name('article.index');
+    Route::get('/articles/{id}', [HomeController::class, "showArticle"])->name('article.show');
+    Route::get('/stores', [StoreController::class, 'index'])->name('store.index');
+    Route::get('/product/{id}', [HomeController::class, "showProduct"])->name('product.show');
+    Route::get('/category/{id}/products', [HomeController::class, 'showCategoryProducts'])->name('category.products');
+    Route::get('/store/{id}/products', [HomeController::class, 'showStoreProducts'])->name('store.products');
+    Route::post('/store/register', [StoreController::class, 'create'])->name('store.register');
     // All routes require authentication and verification
     Route::middleware(['auth', 'verified'])->group(function () {
-
-
         // نظرات محصولات
         Route::post('/product/{product}/comment', [ProductCommentController::class, 'store'])->name('product.comment.store');
         Route::post('/product/comment/{comment}/reply', [ProductCommentController::class, 'reply'])->name('product.comment.reply');
         // نظرات مقالات
         Route::post('/article/{article}/comment', [ArticleCommentController::class, 'store'])->name('article.comment.store');
         Route::post('/article/comment/{comment}/reply', [ArticleCommentController::class, 'reply'])->name('article.comment.reply');
+
+     Route::prefix('cart')->group(function () {
+    Route::post('/add/{product}', [CartController::class, 'store'])->name('cart.add');
+    Route::get('/', [CartController::class, 'showCart'])->name('cart.showCart');
+    Route::post('/increase/{cartItem}', [CartController::class, 'increase'])->name('cart.increase');
+    Route::post('/decrease/{cartItem}', [CartController::class, 'decrease'])->name('cart.decrease');
+   Route::delete('cart/delete/{cartItem}',[CartController::class , 'delete'])->name('cart.delete');
+    Route::post('/checkout', [CartController::class, 'checkout'])->name('cart.checkout');
+    Route::post('/clear', [CartController::class, 'clear'])->name('cart.clear');
+});
+
     });
 });
 
@@ -121,7 +131,6 @@ Route::prefix('panel')->middleware(['auth', AdminAccess::class])->group(function
         Route::get('/search', [ProductController::class, 'filter'])->name('panel.product.filter');
         Route::get('/show/{id}', [ProductController::class, 'show'])->name('panel.product.show');
         Route::get('/get-categories-by-store/{store_id}', [ProductController::class, 'getByStore']);
-
     });
 
     Route::prefix('store')->group(function () {
@@ -170,7 +179,7 @@ Route::prefix('panel')->middleware(['auth', AdminAccess::class])->group(function
         Route::post('/article/reply/{comment}', [ArticleCommentController::class, 'reply'])->name('panel.article.comment.reply');
         Route::get('/article/show/{id}', [ArticleCommentController::class, 'show'])->name('panel.article.comment.show');
     });
-        Route::prefix('partner')->group(function () {
+    Route::prefix('partner')->group(function () {
         Route::get('/', [StorePartnerController::class, 'index'])->name('panel.partner.index');
         Route::get('/create', [StorePartnerController::class, 'create'])->name('panel.partner.create');
         Route::post('/store', [StorePartnerController::class, 'store'])->name('panel.partner.store');
@@ -178,7 +187,5 @@ Route::prefix('panel')->middleware(['auth', AdminAccess::class])->group(function
         Route::delete('/partner/{partner}', [StorePartnerController::class, 'destroy'])->name('panel.partner.delete');
         Route::get('/show/{id}', [StorePartnerController::class, 'show'])->name('panel.partner.show');
         Route::post('/panel/partner/{partner}/products', [StorePartnerController::class, 'storePartnerProducts'])->name('panel.partner.products.store');
-
     });
-
 });

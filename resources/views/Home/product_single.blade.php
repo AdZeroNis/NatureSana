@@ -40,10 +40,15 @@
                     <span class="label"><i class="fas fa-align-right"></i> توضیحات:</span>
                     <span class="value">{{ $product->description ?: 'بدون توضیحات' }}</span>
                 </div>
-                <form action="" method="POST" class="add-to-cart-form">
-                    @csrf
-                    <button type="submit" class="add-to-cart-btn">افزودن به سبد خرید</button>
-                </form>
+         @if ($product->inventory > 1)
+    <form action="{{ route('cart.add', $product->id) }}" method="POST" class="add-to-cart-form">
+        @csrf
+        <button type="submit" class="add-to-cart-btn">افزودن به سبد خرید</button>
+    </form>
+@else
+    <button class="add-to-cart-btn" disabled>نا موجود</button>
+@endif
+
             </div>
         </div>
 
@@ -66,7 +71,7 @@
                 @endif
             </div>
 
-         
+
         <!-- لیست نظرات -->
 
 <div class="comments-list">
@@ -178,12 +183,12 @@ document.addEventListener('DOMContentLoaded', function () {
             const commentId = this.getAttribute('data-comment-id');
             const form = document.getElementById(`reply-form-${commentId}`);
             const isVisible = form.style.display === 'block';
-            
+
             // Hide all reply forms
             document.querySelectorAll('.reply-form').forEach(f => {
                 f.style.display = 'none';
             });
-            
+
             // Toggle the clicked form
             form.style.display = isVisible ? 'none' : 'block';
         });
@@ -196,10 +201,10 @@ document.addEventListener('DOMContentLoaded', function () {
             const commentId = this.getAttribute('data-comment-id');
             const hiddenReplies = document.getElementById(`hidden-replies-${commentId}`);
             const isVisible = hiddenReplies.style.display === 'block';
-            
+
             hiddenReplies.style.display = isVisible ? 'none' : 'block';
-            this.textContent = isVisible 
-                ? `مشاهده همه نظرات (${this.dataset.replyCount})` 
+            this.textContent = isVisible
+                ? `مشاهده همه نظرات (${this.dataset.replyCount})`
                 : 'مخفی کردن نظرات';
         });
     });

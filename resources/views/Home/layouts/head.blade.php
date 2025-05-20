@@ -11,9 +11,12 @@
     <link rel="stylesheet" href="{{asset('HomeAssets/css/product_single.css')}}">
     <link rel="stylesheet" href="{{asset('HomeAssets/css/search_results.css')}}">
     <link rel="stylesheet" href="{{asset('HomeAssets/css/store_products.css')}}">
+    <link rel="stylesheet" href="{{asset('HomeAssets/css/cart.css')}}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.4/css/lightbox.min.css" rel="stylesheet">
     <link href="https://fonts.cdnfonts.com/css/iranian-sans" rel="stylesheet">
-    
+   
+
+
 
 </head>
