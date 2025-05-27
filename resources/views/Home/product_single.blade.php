@@ -37,17 +37,32 @@
                     <span class="value">{{ $product->store ? $product->store->name : 'بدون فروشگاه' }}</span>
                 </div>
                 <div class="info-row">
+    <span class="label"><i class="fas fa-handshake"></i> همکاری:</span>
+    <span class="value">
+        @if($referralStore)
+            {{ $referralStore->name }}
+        @else
+            بدون همکاری
+        @endif
+    </span>
+</div>
+
+                <div class="info-row">
                     <span class="label"><i class="fas fa-align-right"></i> توضیحات:</span>
                     <span class="value">{{ $product->description ?: 'بدون توضیحات' }}</span>
                 </div>
-         @if ($product->inventory > 1)
-    <form action="{{ route('cart.add', $product->id) }}" method="POST" class="add-to-cart-form">
-        @csrf
-        <button type="submit" class="add-to-cart-btn">افزودن به سبد خرید</button>
-    </form>
-@else
-    <button class="add-to-cart-btn" disabled>نا موجود</button>
+                @if ($product->inventory > 0)
+                <form action="{{ route('cart.add', $product->id) }}" method="POST" class="add-to-cart-form">
+    @csrf
+@if(isset($partnerId) && !empty($partnerId))
+    <input type="hidden" name="partner_product_id" value="{{ $partnerId }}">
 @endif
+    <button type="submit" class="add-to-cart-btn">افزودن به سبد خرید</button>
+</form>
+@else
+    <button class="add-to-cart-btn" disabled>ناموجود</button>
+@endif
+
 
             </div>
         </div>

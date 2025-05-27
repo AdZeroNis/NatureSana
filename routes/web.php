@@ -16,8 +16,9 @@ use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\StorePartnerController;
 use App\Http\Controllers\Auth\PasswordResetController;
-
+use App\Http\Controllers\Admin\CartController as AdminCartController;
 use App\Http\Controllers\Home\ArticleCommentController;
+use App\Http\Controllers\Home\PaymentController;
 use App\Http\Controllers\Home\ProductCommentController;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 /*
@@ -49,13 +50,17 @@ Route::namespace("home")->group(function () {
         Route::post('/article/comment/{comment}/reply', [ArticleCommentController::class, 'reply'])->name('article.comment.reply');
 
      Route::prefix('cart')->group(function () {
-    Route::post('/add/{product}', [CartController::class, 'store'])->name('cart.add');
+   Route::match(['get', 'post'], '/add/{product}', [CartController::class, 'store'])->name('cart.add');
     Route::get('/', [CartController::class, 'showCart'])->name('cart.showCart');
-    Route::post('/increase/{cartItem}', [CartController::class, 'increase'])->name('cart.increase');
-    Route::post('/decrease/{cartItem}', [CartController::class, 'decrease'])->name('cart.decrease');
    Route::delete('cart/delete/{cartItem}',[CartController::class , 'delete'])->name('cart.delete');
-    Route::post('/checkout', [CartController::class, 'checkout'])->name('cart.checkout');
-    Route::post('/clear', [CartController::class, 'clear'])->name('cart.clear');
+   Route::patch('/cart/update/{id}', [CartController::class, 'update'])->name('cart.update');
+
+        Route::prefix('payment')->group(function () {
+    Route::get('/payment', [PaymentController::class, 'payment'])->name('payment');
+    Route::post('/payment/submit', [PaymentController::class, 'submitPayment'])->name('payment.submit'); // پردازش پرداخت
+
+
+
 });
 
     });
@@ -188,4 +193,13 @@ Route::prefix('panel')->middleware(['auth', AdminAccess::class])->group(function
         Route::get('/show/{id}', [StorePartnerController::class, 'show'])->name('panel.partner.show');
         Route::post('/panel/partner/{partner}/products', [StorePartnerController::class, 'storePartnerProducts'])->name('panel.partner.products.store');
     });
+    Route::prefix('order')->group(function () {
+        Route::get('/', [OrderController::class, 'index'])->name('panel.order.index');
+    });
+    Route::prefix('cart')->group(function () {
+        Route::get('/', [AdminCartController::class, 'index'])->name('panel.cart.index');
+        Route::delete('/delete/{id}', [AdminCartController::class, 'destroy'])->name('panel.cart.delete');
+        Route::get('/show/{id}', [AdminCartController::class, 'show'])->name('panel.cart.show');
+    });
+});
 });

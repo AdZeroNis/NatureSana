@@ -1,122 +1,108 @@
 <!DOCTYPE html>
-<html lang="en">
-    @include('Home.layouts.head')
+<html lang="fa">
+@include('Home.layouts.head')
 <body>
-    @include('Home.layouts.header')
+@include('Home.layouts.header')
 
 <section class="cart-section" id="cart">
     <h2>سبد خرید</h2>
+
+    {{-- پیام‌های موفقیت یا خطا --}}
+    @if(session('success'))
+        <div class="alert alert-success" style="color: green; background-color: #e6ffe6; padding: 15px; border-radius: 5px; margin: 15px auto; width: 100%; max-width: 1000px; text-align: center;">
+            {{ session('success') }}
+        </div>
+    @endif
+
+    @if(session('error'))
+        <div class="alert alert-danger" style="color: red; background-color: #ffe6e6; padding: 15px; border-radius: 5px; margin: 15px auto; width: 100%; max-width: 1000px; text-align: center;">
+            {{ session('error') }}
+        </div>
+    @endif
+
     <div class="cart-container">
         @if (isset($cartItems) && count($cartItems) > 0)
             <div class="cart-items">
-                @php
-                    $totalPrice = 0;
-                @endphp
+                @php $totalPrice = 0; @endphp
                 @foreach ($cartItems as $item)
-                 @php
-    $totalPrice += $item->product->price * $item->quantity;
-@endphp
+                    @php
+                        $totalPrice += $item->product->price * $item->quantity;
+                    @endphp
 
                     <div class="cart-item">
-                     <img src="{{ asset('AdminAssets/Product-image/' . $item->product->image) }}" alt="{{ $item->product->name }}">
-<h3>{{ $item->product->name }}</h3>
-<p>{{ number_format($item->product->price, 0) }} تومان</p>
+                        <img src="{{ asset('AdminAssets/Product-image/' . $item->product->image) }}" alt="{{ $item->product->name }}">
+                        <h3>{{ $item->product->name }}</h3>
+                        <p>{{ number_format($item->product->price, 0) }} تومان</p>
 
-                          <div class="quantity-controls">
-    <form action="{{ route('cart.decrease', $item->id) }}" method="POST">
-        @csrf
-        @method('PATCH')
-        <button type="submit" class="quantity-btn">-</button>
-    </form>
-    <span>{{ $item->quantity }}</span>
-    <form action="{{ route('cart.increase', $item->id) }}" method="POST">
-        @csrf
-        @method('PATCH')
-        <button type="submit" class="quantity-btn">+</button>
-    </form>
-</div>
-<form action="{{ route('cart.delete', $item->id) }}" method="POST" onsubmit="return confirm('آیا از حذف این محصول مطمئن هستید؟')">
-    @csrf
-    @method('DELETE')
-    <button type="submit" class="remove-btn">حذف</button>
-</form>
+                        <div class="quantity-control">
+                            <form action="{{ route('cart.update', $item->id) }}" method="POST" class="quantity-form">
+                                @csrf
+                                @method('PATCH')
 
+                                <input type="hidden" name="action" value="">
+
+                                <button type="submit" class="quantity-btn minus" onclick="setAction(this.form, 'decrease')">-</button>
+
+                                <input type="number" name="quantity" value="{{ $item->quantity }}" min="1" max="{{ $item->product->inventory + $item->quantity }}" class="quantity-input" readonly>
+
+                                <button type="submit" class="quantity-btn plus" onclick="setAction(this.form, 'increase')">+</button>
+                            </form>
                         </div>
+
+                        <form action="{{ route('cart.delete', $item->id) }}" method="POST" onsubmit="return confirm('آیا از حذف این محصول مطمئن هستید؟')">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="remove-btn">حذف</button>
+                        </form>
                     </div>
                 @endforeach
             </div>
+
             <div class="cart-summary">
                 <h3>خلاصه سفارش</h3>
                 <p>جمع محصولات: {{ number_format($totalPrice, 0) }} تومان</p>
                 <p>هزینه ارسال: ۵۰ تومان</p>
-                <p class="total">جمع کل: {{ number_format($totalPrice + 50, 0) }} تومان</p>
-                <form action="{{ route('cart.checkout') }}" method="POST">
+                <p class="total">جمع کل: {{ number_format($totalPrice + 50000, 0) }} تومان</p>
+
+                <form action="{{ route('payment') }}" method="GET">
                     @csrf
-               <div class="address-form">
+                    <div class="address-form">
     <label for="address">آدرس:</label>
 
-    {{-- دکمه‌های انتخاب آدرس --}}
-    @if (!empty($addresses))
-        <div class="address-options" style="margin-bottom: 10px;">
+    @if(!empty($addresses) && count(array_filter($addresses)) > 0)
+        <select name="address" id="address" required>
+            <option value="">آدرس را انتخاب کنید</option>
             @foreach ($addresses as $addr)
-                @if (!empty($addr))
-                    <button type="button" class="address-btn" onclick="fillAddress(@json($addr))">
-                        {{ \Illuminate\Support\Str::limit($addr, 30) }}
-                    </button>
+                @if(!empty($addr))
+                    <option value="{{ $addr }}" @if(old('address') == $addr) selected @endif>{{ $addr }}</option>
                 @endif
             @endforeach
-        </div>
+        </select>
+        <p>یا اگر می‌خواهید آدرس جدید وارد کنید:</p>
+        <textarea name="address_new" rows="3" placeholder="آدرس جدید را وارد کنید"></textarea>
+    @else
+        <textarea name="address" id="address" rows="4" required placeholder="لطفا آدرس خود را وارد کنید">{{ old('address') }}</textarea>
     @endif
-
-    {{-- textarea برای آدرس انتخاب شده یا وارد شده --}}
-    <textarea id="address" name="address" required placeholder="آدرس خود و کد پستی  را وارد کنید"></textarea>
 </div>
 
 
-                    <button type="submit" class="checkout-btn">تأیید و پرداخت</button>
+                    <button type="submit" class="submit-order-btn">ثبت سفارش و پرداخت</button>
                 </form>
             </div>
+
         @else
-            <p class="empty-cart">سبد خرید شما خالی است.</p>
+            <p>سبد خرید شما خالی است.</p>
         @endif
     </div>
 </section>
 
 @include('Home.layouts.footer')
 
-</body>
 <script>
-    function fillAddress(address) {
-        document.getElementById('address').value = address;
-    }
+function setAction(form, action) {
+    form.querySelector('input[name="action"]').value = action;
+}
 </script>
-<style>
-.address-options {
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-}
 
-.address-btn {
-    background-color: #4caf50; /* رنگ سبز */
-    color: white;
-    border: none;
-    padding: 8px 15px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 14px;
-    transition: background-color 0.3s ease;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-}
-
-.address-btn:hover {
-    background-color: #45a049; /* سبز تیره‌تر برای هاور */
-}
-
-.address-btn:focus {
-    outline: none;
-    box-shadow: 0 0 0 3px rgba(72, 180, 97, 0.7);
-}
-</style>
-
+</body>
 </html>

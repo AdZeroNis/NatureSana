@@ -8,6 +8,8 @@
         <li><a href="{{route('panel.product.index')}}" class="{{ request()->routeIs('panel.product.index') ? 'active' : '' }}">محصولات</a></li>
         <li><a href="{{route('panel.article.index')}}" class="{{ request()->routeIs('panel.article.index') ? 'active' : '' }}">مقالات</a></li>
         <li><a href="{{route('panel.comment.index')}}" class="{{ request()->routeIs('panel.comment.index') ? 'active' : '' }}">نظرات</a></li>
+        <li><a href="{{route('panel.cart.index')}}" class="{{ request()->routeIs('panel.cart.index') ? 'active' : '' }}">سبد خرید</a></li>
+        <li><a href="{{route('panel.order.index')}}" class="{{ request()->routeIs('panel.order.index') ? 'active' : '' }}">سفارشات</a></li>
         @if(auth()->user()->role == 'super_admin')
         <li><a href="{{route('panel.slider.index')}}" class="{{ request()->routeIs('panel.slider.index') ? 'active' : '' }}">اسلایدرها</a></li>
         <li><a href="{{route('panel.user.index')}}" class="{{ request()->routeIs('panel.user.index') ? 'active' : '' }}">کاربران</a></li>

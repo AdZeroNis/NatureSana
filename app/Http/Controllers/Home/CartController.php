@@ -7,62 +7,71 @@ use App\Models\Cart;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\OrderItem;
+use App\Models\StorePartnerProduct;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 
 class CartController extends Controller
 {
-public function store(Request $request, Product $product)
-{
-    if (!Auth::check()) {
-        return redirect()->route('FormLogin')->with('error', 'ابتدا ورود کنید');
-    }
-
-    // دریافت تعداد درخواستی کاربر (پیش‌فرض 1)
-    $requestedQuantity = $request->input('quantity', 1);
-
-    // بررسی موجودی محصول
-    if ($product->inventory < $requestedQuantity) {
-        $message = $product->inventory == 0
-            ? 'این محصول موجود نیست'
-            : 'تعداد محصولات کافی نیست. فقط ' . $product->inventory . ' عدد موجود است';
-
-        return back()->with('error', $message);
-    }
-
-    // پیدا کردن آیتم در سبد خرید یا ایجاد جدید
-    $cartItem = Cart::where('user_id', Auth::id())
-                    ->where('product_id', $product->id)
-                    ->first();
-
-    if ($cartItem) {
-        // بررسی موجودی برای زمانی که آیتم از قبل در سبد وجود دارد
-        $newQuantity = $cartItem->quantity + $requestedQuantity;
-        if ($product->inventory < $newQuantity) {
-            return back()->with('error', 'تعداد درخواستی بیشتر از موجودی است. حداکثر می‌توانید ' . ($product->inventory - $cartItem->quantity) . ' عدد دیگر اضافه کنید');
+    public function store(Request $request, Product $product)
+    {
+        if (!Auth::check()) {
+            return redirect()->route('FormLogin')->with('error', 'ابتدا ورود کنید');
         }
-
-        $cartItem->quantity = $newQuantity;
-        $cartItem->save();
-    } else {
-        Cart::create([
-            'user_id' => Auth::id(),
-            'product_id' => $product->id,
-            'quantity' => $requestedQuantity
-        ]);
+    
+        $requestedQuantity = $request->input('quantity', 1);
+        $partnerProductId = $request->input('partner_product_id');
+    
+        // Validate partner_product_id if provided
+        if ($partnerProductId) {
+            $partnerProduct = StorePartnerProduct::find($partnerProductId);
+            if (!$partnerProduct || $partnerProduct->product_id !== $product->id) {
+                $partnerProductId = null; // Set to null if invalid
+            }
+        }
+    
+        if ($product->inventory < $requestedQuantity) {
+            $message = $product->inventory == 0
+                ? 'این محصول موجود نیست'
+                : 'تعداد محصولات کافی نیست. فقط ' . $product->inventory . ' عدد موجود است';
+    
+            return back()->with('error', $message);
+        }
+    
+        $cartItem = Cart::where('user_id', Auth::id())
+                        ->where('product_id', $product->id)
+                        ->first();
+    
+        if ($cartItem) {
+            $newQuantity = $cartItem->quantity + $requestedQuantity;
+            if ($product->inventory < $newQuantity) {
+                return back()->with('error', 'تعداد درخواستی بیشتر از موجودی است. حداکثر می‌توانید ' . ($product->inventory - $cartItem->quantity) . ' عدد دیگر اضافه کنید');
+            }
+    
+            $cartItem->quantity = $newQuantity;
+            $cartItem->partner_product_id = $partnerProductId; // Update partner_product_id
+            $cartItem->save();
+        } else {
+            Cart::create([
+                'user_id' => Auth::id(),
+                'product_id' => $product->id,
+                'quantity' => $requestedQuantity,
+                'partner_product_id' => $partnerProductId, // Store the correct partner_product_id
+            ]);
+        }
+    
+        $product->decrement('inventory', $requestedQuantity);
+    
+        $cartItems = Cart::with('product')
+                        ->where('user_id', Auth::id())
+                        ->get();
+    
+        $userId = Auth::id();
+    
+        return view('home.cart.index', compact('cartItems', 'userId')); 
     }
 
-    // کاهش موجودی محصول
-    $product->decrement('inventory', $requestedQuantity);
-
-    // واکشی اطلاعات سبد خرید برای نمایش
-    $cartItems = Cart::with('product')
-                    ->where('user_id', Auth::id())
-                    ->get();
-
-   return view('home.cart.index',compact('cartItems'));
-}
 
 
 public function showCart()
@@ -81,23 +90,11 @@ public function showCart()
         $userAddress->address_three,
     ] : [];
 
-    return view('home.cart.index', compact('cartItems', 'addresses'));
+    $userId = Auth::id(); // آیدی کاربر
+
+    return view('home.cart.index', compact('cartItems', 'addresses', 'userId'));
 }
 
-
-    public function increase(Cart $cartItem)
-    {
-        $cartItem->increment('quantity');
-        return back();
-    }
-
-    public function decrease(Cart $cartItem)
-    {
-        if ($cartItem->quantity > 1) {
-            $cartItem->decrement('quantity');
-        }
-        return back();
-    }
 
 public function delete(Cart $cartItem)
 {
@@ -110,44 +107,33 @@ public function delete(Cart $cartItem)
 
     return back()->with('success', 'محصول از سبد خرید حذف شد');
 }
+public function update(Request $request, $id)
+{
+    $cartItem = Cart::find($id);
+    $product = Product::find($cartItem->product_id);
 
-    // نهایی کردن خرید (پرداخت)
-    public function checkout(Request $request)
-    {
-        $request->validate([
-            'address' => 'required|string|max:1000',
-        ]);
-
-        $cartItems = Cart::where('user_id', Auth::id())->with('product')->get();
-
-        if ($cartItems->isEmpty()) {
-            return back()->with('error', 'سبد خرید شما خالی است.');
+    if ($request->action === 'increase') {
+        if ($product->inventory > 0) {
+            $cartItem->quantity += 1;
+            $product->decrement('inventory', 1);
+        } else {
+            return redirect()->back()->with('error', 'موجودی کافی برای افزایش تعداد وجود ندارد.');
         }
-
-        $totalPrice = 0;
-        foreach ($cartItems as $item) {
-            $totalPrice += $item->product->price * $item->quantity;
+    } elseif ($request->action === 'decrease') {
+        if ($cartItem->quantity > 1) {
+            $cartItem->quantity -= 1;
+            $product->increment('inventory', 1);
+        } else {
+            return redirect()->back()->with('error', 'حداقل تعداد باید یک باشد.');
         }
-
-        $order = Order::create([
-            'user_id' => Auth::id(),
-            'address' => $request->address,
-            'total_price' => $totalPrice + 50, // هزینه ارسال
-            'status' => 0, // در حال پردازش
-        ]);
-
-        foreach ($cartItems as $item) {
-            OrderItem::create([
-                'order_id' => $order->id,
-                'product_id' => $item->product_id,
-                'quantity' => $item->quantity,
-                'price' => $item->product->price,
-            ]);
-        }
-
-        // حذف سبد خرید پس از ثبت سفارش
-        Cart::where('user_id', Auth::id())->delete();
-
-        return redirect()->route('cart.index')->with('success', 'سفارش شما با موفقیت ثبت شد.');
     }
+
+    $cartItem->save();
+    $product->save();
+
+    return redirect()->back()->with('success', 'تعداد محصول به‌روز شد.');
+}
+
+
+
 }

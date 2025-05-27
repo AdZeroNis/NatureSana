@@ -13,11 +13,16 @@ class StorePartnerProduct extends Model
      'product_id',
 
     ];
-       public function sharedProducts()
-{
-    return $this->belongsToMany(Product::class, 'partner_products')
-                ->withTimestamps();
-}
+    public function product()
+    {
+        return $this->belongsTo(Product::class);
+    }
+    
+    public function partnerStore()
+    {
+        return $this->belongsTo(Store::class, 'store_partner_id');
+    }
+    
 
 
 }

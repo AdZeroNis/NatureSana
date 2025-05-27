@@ -35,5 +35,10 @@ public function sharedProducts()
     return $this->belongsToMany(Product::class, 'partner_products', 'store_partner_id', 'product_id')
         ->withTimestamps();
 }
+// app/Models/StorePartner.php
 
+public function cartItems()
+{
+    return $this->hasMany(Cart::class);
+}
 }

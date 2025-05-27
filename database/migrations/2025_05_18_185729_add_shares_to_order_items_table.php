@@ -14,13 +14,6 @@ return new class extends Migration
         Schema::table('order_items', function (Blueprint $table) {
                $table->engine = 'InnoDB';
 
-
-
-
-
-
-
-
             $table->foreignId('seller_store_id')->nullable()->constrained('stores');
 
 
@@ -33,7 +26,7 @@ return new class extends Migration
 
 
 
-          
+
         });
     }
 
