@@ -29,12 +29,12 @@
                     @enderror
                 </div>
                 @endif
-    
+
             </div>
 
-            <div class="form-actions">
+            <div class="form-actions" style="margin-right: 211px !important ;">
                 <button type="submit" class="btn btn-submit">ذخیره دسته‌بندی</button>
-             
+
             </div>
         </form>
     </div>

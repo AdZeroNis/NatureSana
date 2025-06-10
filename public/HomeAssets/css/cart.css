@@ -136,24 +136,122 @@
 .address-form {
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
+    gap: 1rem;
+    margin-top: 1rem;
+    padding: 1rem;
+    background: #f9f9f9; /* پس‌زمینه روشن برای تمایز */
+    border-radius: 10px;
+    border: 1px solid #e0e0e0; /* حاشیه ظریف */
+    transition: all 0.3s ease;
 }
 
 .address-form label {
     font-family: 'Arial', sans-serif;
     font-size: 1rem;
+    font-weight: bold;
     color: var(--text-color);
+    margin-bottom: 0.3rem;
+}
+
+.address-form select,
+.address-form textarea {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-family: 'Arial', sans-serif;
+    font-size: 0.95rem;
+    color: var(--text-color);
+    background: #fff;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.address-form select:focus,
+.address-form textarea:focus {
+    outline: none;
+    border-color: var(--accent-color); /* استفاده از رنگ اصلی برای فوکوس */
+    box-shadow: 0 0 8px rgba(var(--accent-color-rgb), 0.3); /* سایه ظریف هنگام فوکوس */
+}
+
+.address-form select {
+    appearance: none; /* حذف ظاهر پیش‌فرض مرورگر */
+    background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="%23666" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>') no-repeat left 0.75rem center;
+    padding-right: 2.5rem; /* فضای کافی برای آیکون فلش */
+    cursor: pointer;
 }
 
 .address-form textarea {
-    width: 100%;
-    height: 100px;
-    border: 1px solid #ddd;
-    border-radius: 10px;
-    padding: 0.5rem;
+    resize: vertical;
+    min-height: 80px;
+    max-height: 150px;
+}
+
+.address-form p {
     font-family: 'Arial', sans-serif;
     font-size: 0.9rem;
-    resize: vertical;
+    color: var(--text-color);
+    margin: 0.5rem 0;
+}
+
+.address-form select:invalid,
+.address-form textarea:invalid {
+    color: #999; /* رنگ خاکستری برای placeholder */
+}
+
+.submit-order-btn {
+    background: var(--accent-color);
+    color: white;
+    border: none;
+    padding: 0.75rem;
+    border-radius: 25px;
+    cursor: pointer;
+    font-family: 'Arial', sans-serif;
+    font-size: 1rem;
+    font-weight: bold;
+    transition: background 0.3s ease, transform 0.2s ease;
+    margin-top: 1rem;
+}
+
+.submit-order-btn:hover {
+    background: var(--secondary-color);
+    transform: translateY(-2px); /* انیمیشن بالا آمدن هنگام هاور */
+}
+
+.submit-order-btn:active {
+    transform: translateY(0); /* بازگشت به حالت اولیه هنگام کلیک */
+}
+
+/* استایل‌های ریسپانسیو */
+@media (max-width: 768px) {
+    .address-form {
+        padding: 0.75rem;
+    }
+
+    .address-form select,
+    .address-form textarea {
+        padding: 0.6rem;
+        font-size: 0.9rem;
+    }
+
+    .submit-order-btn {
+        padding: 0.6rem;
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .address-form {
+        padding: 0.5rem;
+    }
+
+    .address-form select,
+    .address-form textarea {
+        font-size: 0.85rem;
+    }
+
+    .submit-order-btn {
+        font-size: 0.85rem;
+    }
 }
 
 .checkout-btn {

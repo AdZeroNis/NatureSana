@@ -33,25 +33,23 @@ class HomeController extends Controller
         return view('Home.index', compact('latestItems'));
     }
 
-    public function showProduct($id, Request $request)
-    {
-        $product = Product::findOrFail($id);
-    
-        // مقدار اولیه
-        $partnerProduct = StorePartnerProduct::where('product_id', $product->id)->first();
-        $referralStore = null;
-        $partnerId = null;
-    
-        if ($partnerProduct) {
-            // گرفتن فروشگاه همکار
-            $referralStore = $partnerProduct->partnerStore;
-            $partnerId = $partnerProduct->id;
-        }
-    
-        return view('Home.product_single', compact('product', 'partnerId', 'referralStore'));
+public function showProduct($id)
+{
+    $product = Product::with('sharedPartnerships')->findOrFail($id);
+
+    // اگر محصول از نوع partner بود:
+    if ($product->partnerProduct) {
+        $partnerStoreId = $product->partnerProduct->store_partner_id;
+        session(['partner_store_id' => $partnerStoreId]);
+    } else {
+        session()->forget('partner_store_id');
     }
-    
-    
+
+    return view('Home.product_single', compact('product'));
+}
+
+
+
 
     public function articles() {
         $latestArticles = Article::where('status', 1)

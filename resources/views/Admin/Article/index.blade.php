@@ -32,6 +32,7 @@
             <tr>
                 <th>شناسه</th>
                 <th>عنوان</th>
+                <th>تاریخ ثبت</th>
                 <th>وضعیت</th>
                 <th>عملیات</th>
             </tr>
@@ -41,6 +42,7 @@
             <tr>
                 <td>{{ $article->id }}</td>
                 <td>{{ $article->title }}</td>
+                <td>{{ \Morilog\Jalali\Jalalian::fromDateTime($article->created_at)->format('Y/m/d H:i') }}</td>
                 <td class="text-center">
                     <span class="badge badge-{{ $article->status == '1' ? 'success' : 'danger' }}">
                         {{ $article->status == '1' ? 'فعال' : 'غیرفعال' }}
@@ -53,11 +55,11 @@
                     <a href="{{ route('panel.article.edit', $article->id) }}" class="btn btn-sm" style="color: hotpink;" title="ویرایش">
                         <i class="fas fa-edit"></i>
                     </a>
-                    <a href="#" 
-                       class="btn btn-sm" 
-                       style="color: red;" 
-                       title="حذف" 
-                       onclick="event.preventDefault(); if(confirm('آیا از حذف این مقاله مطمئن هستید؟')) { 
+                    <a href="#"
+                       class="btn btn-sm"
+                       style="color: red;"
+                       title="حذف"
+                       onclick="event.preventDefault(); if(confirm('آیا از حذف این مقاله مطمئن هستید؟')) {
                            document.getElementById('delete-form-{{ $article->id }}').submit(); }">
                         <i class="fas fa-trash-alt"></i>
                     </a>

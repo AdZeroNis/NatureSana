@@ -17,12 +17,13 @@ class StorePartnerProduct extends Model
     {
         return $this->belongsTo(Product::class);
     }
-    
-    public function partnerStore()
-    {
-        return $this->belongsTo(Store::class, 'store_partner_id');
-    }
-    
 
+
+
+
+public function storePartner()
+{
+    return $this->belongsTo(Store::class, 'store_partner_id');
+}
 
 }

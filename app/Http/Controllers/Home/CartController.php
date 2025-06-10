@@ -7,70 +7,64 @@ use App\Models\Cart;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\OrderItem;
-use App\Models\StorePartnerProduct;
+use App\Models\StorePartner;
 use Illuminate\Http\Request;
+use App\Models\StorePartnerProduct;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
 
 class CartController extends Controller
 {
-    public function store(Request $request, Product $product)
-    {
-        if (!Auth::check()) {
-            return redirect()->route('FormLogin')->with('error', 'ابتدا ورود کنید');
-        }
-    
-        $requestedQuantity = $request->input('quantity', 1);
-        $partnerProductId = $request->input('partner_product_id');
-    
-        // Validate partner_product_id if provided
-        if ($partnerProductId) {
-            $partnerProduct = StorePartnerProduct::find($partnerProductId);
-            if (!$partnerProduct || $partnerProduct->product_id !== $product->id) {
-                $partnerProductId = null; // Set to null if invalid
-            }
-        }
-    
-        if ($product->inventory < $requestedQuantity) {
-            $message = $product->inventory == 0
-                ? 'این محصول موجود نیست'
-                : 'تعداد محصولات کافی نیست. فقط ' . $product->inventory . ' عدد موجود است';
-    
-            return back()->with('error', $message);
-        }
-    
-        $cartItem = Cart::where('user_id', Auth::id())
-                        ->where('product_id', $product->id)
-                        ->first();
-    
-        if ($cartItem) {
-            $newQuantity = $cartItem->quantity + $requestedQuantity;
-            if ($product->inventory < $newQuantity) {
-                return back()->with('error', 'تعداد درخواستی بیشتر از موجودی است. حداکثر می‌توانید ' . ($product->inventory - $cartItem->quantity) . ' عدد دیگر اضافه کنید');
-            }
-    
-            $cartItem->quantity = $newQuantity;
-            $cartItem->partner_product_id = $partnerProductId; // Update partner_product_id
-            $cartItem->save();
-        } else {
-            Cart::create([
-                'user_id' => Auth::id(),
-                'product_id' => $product->id,
-                'quantity' => $requestedQuantity,
-                'partner_product_id' => $partnerProductId, // Store the correct partner_product_id
-            ]);
-        }
-    
-        $product->decrement('inventory', $requestedQuantity);
-    
-        $cartItems = Cart::with('product')
-                        ->where('user_id', Auth::id())
-                        ->get();
-    
-        $userId = Auth::id();
-    
-        return view('home.cart.index', compact('cartItems', 'userId')); 
+public function store(Request $request, Product $product)
+{
+    $request->validate([
+        'partner_product_id' => 'nullable|exists:partner_products,id',
+        'partner_store_id' => 'nullable|exists:stores,id'
+    ]);
+
+    // بررسی وضعیت فروشگاه اصلی محصول
+    if ($product->store->status == 0) {
+        return back()->with('error', 'فروشگاه این محصول در حال حاضر غیرفعال است.');
     }
+
+    // اگر محصول از طریق همکاری اضافه شده باشد، بررسی وضعیت فروشگاه شریک
+    if ($request->partner_store_id) {
+        $partnerStore = Store::find($request->partner_store_id);
+        if ($partnerStore->status == 0) {
+            return back()->with('error', 'فروشگاه شریک در حال حاضر غیرفعال است.');
+        }
+    }
+
+    // بررسی وضعیت خود محصول
+    if ($product->status == 0) {
+        return back()->with('error', 'این محصول در حال حاضر غیرفعال است.');
+    }
+
+    // بررسی موجودی محصول
+    if ($product->inventory <= 0) {
+        return back()->with('error', 'این محصول در حال حاضر ناموجود است.');
+    }
+
+    $cartData = [
+        'user_id' => auth()->id(),
+        'product_id' => $product->id,
+        'quantity' => 1
+    ];
+
+    // اگر از طریق همکاری اضافه شده باشد
+    if ($request->partner_product_id && $request->partner_store_id) {
+        $cartData['partner_product_id'] = $request->partner_product_id;
+        $cartData['partner_store_id'] = $request->partner_store_id;
+    }
+
+    Cart::create($cartData);
+
+    return back()->with('success', 'محصول به سبد خرید اضافه شد.');
+}
+
+
+
 
 
 

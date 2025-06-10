@@ -45,7 +45,7 @@
                 </div>
             </div>
 
-            <div class="form-actions">
+            <div class="form-actions" >
                 <button type="submit" class="btn btn-submit">ذخیره کاربر</button>
                 <a href="{{ route('panel.user.index') }}" class="btn btn-cancel">لغو</a>
             </div>

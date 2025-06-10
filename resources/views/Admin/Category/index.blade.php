@@ -35,6 +35,7 @@
                 @if(Auth::user()->role == 'super_admin')
                 <th>مغازه</th>
                 @endif
+                <th>تاریخ ثبت</th>
                 <th>وضعیت</th>
                 <th>عملیات</th>
             </tr>
@@ -47,6 +48,7 @@
                 @if(Auth::user()->role == 'super_admin')
                 <td>{{ $category->store ? $category->store->name : 'N/A' }}</td>
                 @endif
+                <td>{{ \Morilog\Jalali\Jalalian::fromDateTime($category->created_at)->format('Y/m/d H:i') }}</td>
                 <td class="text-center">
                     <span class="badge badge-{{ $category->status == '1' ? 'success' : 'danger' }}">
                         {{ $category->status == '1' ? 'فعال' : 'غیرفعال' }}

@@ -15,7 +15,7 @@
                 <th>شناسه</th>
                 <th>لینک</th>
                 <th>عکس</th>
-
+<th> تاریخ ثبت</th>
                 <th>عملیات</th>
             </tr>
         </thead>
@@ -26,7 +26,7 @@
                 <td>{{ $slider->url }}</td>
                 <td><span><img src="{{asset("AdminAssets/Slider-image/".$slider->image)}}" width="70px" ></span></td>
 
-
+<td>{{ \Morilog\Jalali\Jalalian::fromDateTime($slider->created_at)->format('Y/m/d H:i') }}</td>
                 <td class="action-buttons">
 
                     <a href="#"

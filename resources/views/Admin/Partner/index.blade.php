@@ -14,6 +14,7 @@
                 <th>شناسه</th>
                 <th>فروشگاه اصلی</th>
                 <th>فروشگاه همکار</th>
+                <th>تاریخ ثبت</th>
                 <th>وضعیت</th>
                 <th>عملیات</th>
             </tr>
@@ -24,6 +25,7 @@
                 <td>{{ $partner->id }}</td>
                 <td>{{ $partner->store->name }}</td>
                 <td>{{ $partner->partnerStore->name }}</td>
+         <td>{{ \Morilog\Jalali\Jalalian::fromDateTime($partner->created_at)->format('Y/m/d H:i') }}</td>
         <td class="text-center">
     @if($partner->status == 0)
         <span class="badge badge-warning">در انتظار تایید</span>
@@ -33,7 +35,7 @@
         <span class="badge badge-danger">رد شده</span>
     @endif
     <br>
-  
+
 </td>
 
                 <td class="action-buttons">
@@ -72,21 +74,21 @@
         </form>
     @endif
 @endif
-                    
-                    @if(auth()->user()->role === 'super_admin' || 
-                        auth()->user()->store_id === $partner->store_id || 
+
+                    @if(auth()->user()->role === 'super_admin' ||
+                        auth()->user()->store_id === $partner->store_id ||
                         auth()->user()->store_id === $partner->partner_store_id)
 
                         <form action="{{ route('panel.partner.delete', $partner->id) }}" method="POST" style="display: inline;" >
-                        <a href="#" 
-                       class="btn btn-sm" 
-                       style="color: red;" 
-                       title="حذف" 
-                       onclick="event.preventDefault(); if(confirm('آیا از حذف این همکاری مطمئن هستید؟')) { 
+                        <a href="#"
+                       class="btn btn-sm"
+                       style="color: red;"
+                       title="حذف"
+                       onclick="event.preventDefault(); if(confirm('آیا از حذف این همکاری مطمئن هستید؟')) {
                            document.getElementById('delete-form-{{ $partner->id }}').submit(); }">
                         <i class="fas fa-trash-alt"></i>
                     </a>
-                 
+
                     <form id="delete-form-{{ $partner->id }}" action="{{ route('panel.partner.delete', $partner->id) }}" method="POST" style="display: none;">
                         @csrf
                         @method('DELETE')

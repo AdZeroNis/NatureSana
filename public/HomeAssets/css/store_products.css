@@ -54,6 +54,7 @@
     justify-content: space-between;
     direction: rtl;
     position: relative;
+    padding-top: 48px;
 }
 
 .product-card:hover {
@@ -126,6 +127,7 @@ font-family: 'Iranian Sans', sans-serif;
 .product-badge .badge {
     font-size: 0.75rem;
     padding: 0.35em 0.65em;
+        margin-right: 38px; 
 }
 
 /* تنظیمات ریسپانسیو */

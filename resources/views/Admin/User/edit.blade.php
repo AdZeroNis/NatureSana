@@ -13,7 +13,7 @@
                     <option value="0" {{ $user->status == 0 ? 'selected' : '' }}>غیرفعال</option>
                 </select>
             </div>
-            <div class="form-actions">
+            <div class="form-actions" style="margin-right: 211px !important ;">
                 <button type="submit" class="btn btn-submit">ویرایش کاربر</button>
             </div>
         </form>

@@ -10,6 +10,7 @@ class OrderItem extends Model
     protected $fillable = [
     'order_id',
     'product_id',
+    'quantity',
     'seller_store_id',
     'owner_store_id',
     'seller_share',
@@ -26,4 +27,16 @@ class OrderItem extends Model
     {
         return $this->belongsTo(Product::class);
     }
+    // در مدل OrderItem
+public function sellerStore()
+{
+    return $this->belongsTo(Store::class, 'seller_store_id');
+}
+
+public function ownerStore()
+{
+    return $this->belongsTo(Store::class, 'owner_store_id');
+}
+
+
 }

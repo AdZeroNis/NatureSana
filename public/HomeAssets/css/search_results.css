@@ -1,116 +1,24 @@
-.container {
-    max-width: 1300px;
-    margin: 0 auto;
-    padding: 0 1.5rem;
-    direction: rtl;
-}
-
-.py-5 {
-    padding-top: 3rem !important;
-    padding-bottom: 3rem !important;
-}
-
-/* استایل فیلترها */
-.filter-card {
-    background: white;
-    border-radius: 15px;
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.filter-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
-}
-
-.filter-header {
-    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-    color: white;
-    padding: 1rem;
-    border-radius: 15px 15px 0 0;
-    text-align: center;
-}
-
-.filter-header h5 {
-    font-family: 'Iranian Sans', sans-serif;
-    font-size: 1.5rem;
-}
-
-.card-body {
-    padding: 1.5rem;
-}
-
-.form-group {
-    margin-bottom: 1.5rem;
-}
-
-.form-group label {
-    font-family: 'Iranian Sans', sans-serif;
-    font-weight: bold;
-    color: var(--text-color);
-    margin-bottom: 0.5rem;
-    display: block;
-}
-
-.form-control {
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    padding: 0.75rem;
-    font-family: 'Iranian Sans', sans-serif;
-    font-size: 1rem;
-    color: var(--text-color);
-}
-
-.form-control:focus {
-    outline: none;
-    border-color: var(--accent-color);
-    box-shadow: 0 0 5px rgba(216, 27, 96, 0.3);
-}
-
-.filter-btn {
-    background: var(--accent-color);
-    color: white;
-    border: none;
-    padding: 0.75rem 1.5rem;
-    border-radius: 25px;
-    cursor: pointer;
-    font-family: 'Iranian Sans', sans-serif;
-    font-size: 1rem;
-    transition: background 0.3s ease;
-    width: 100%;
-    text-align: center;
-}
-
-.filter-btn:hover {
-    background: var(--secondary-color);
-}
-
-/* عنوان نتایج جستجو */
-.search-title {
-font-family: 'Iranian Sans', sans-serif;
-    font-size: 1.8rem;
-    color: var(--primary-color);
-    margin-bottom: 2rem;
-}
-
 /* استایل بخش‌های نتایج */
 .result-section {
     background: white;
     border-radius: 15px;
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
+    margin-bottom: 2rem;
+    overflow: hidden; /* برای گوشه‌های گرد هدر */
 }
 
 .result-section:hover {
     transform: translateY(-5px);
-    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 14px 35px rgba(0, 0, 0, 0.18);
 }
 
 .result-header {
-    padding: 1rem;
+    padding: 1.2rem;
     border-radius: 15px 15px 0 0;
     color: white;
     text-align: center;
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
 }
 
 .products-header {
@@ -131,108 +39,169 @@ font-family: 'Iranian Sans', sans-serif;
 
 .result-header h5 {
     font-family: 'Iranian Sans', sans-serif;
-    font-size: 1.5rem;
+    font-size: 1.6rem;
+    margin: 0;
+    font-weight: bold;
 }
 
 .result-body {
-    padding: 1.5rem;
+    padding: 2rem;
+}
+
+/* عنوان نتایج جستجو */
+.search-title {
+    font-family: 'Iranian Sans', sans-serif;
+    font-size: 2rem;
+    color: var(--primary-color);
+    margin-bottom: 2.5rem;
+    text-align: right;
+    font-weight: bold;
+    position: relative;
+    padding-right: 1.5rem;
+}
+
+.search-title::before {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 50%;
+    width: 5px;
+    height: 60%;
+    background: var(--accent-color);
+    transform: translateY(-50%);
+    border-radius: 5px;
 }
 
 /* استایل گرید محصولات */
 .product-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 1.5rem;
+    gap: 2rem;
     direction: rtl;
 }
 
 .product-card {
     background: white;
-    border-radius: 15px;
-    padding: 1rem;
+    border-radius: 12px;
+    padding: 1.5rem;
     text-align: center;
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    direction: rtl;
     position: relative;
+    overflow: hidden;
 }
 
 .product-card:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+    transform: translateY(-8px);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
 }
 
 .product-card img {
     width: 100%;
-    height: 150px;
+    height: 180px;
     object-fit: cover;
     border-radius: 10px;
-    margin-bottom: 0.75rem;
+    margin-bottom: 1rem;
+    transition: transform 0.3s ease;
+}
+
+.product-card:hover img {
+    transform: scale(1.05); /* زوم ملایم هنگام هاور */
 }
 
 .product-card h3 {
     font-family: 'Iranian Sans', sans-serif;
-    font-size: 1.1rem;
+    font-size: 1.2rem;
     margin: 0.5rem 0;
     color: var(--text-color);
+    font-weight: bold;
 }
 
 .product-card p {
+    font-family: 'Iranian Sans', sans-serif;
     font-size: 1rem;
-    color: var(--text-color);
-    margin-bottom: 0.75rem;
+    color: #6c757d;
+    margin-bottom: 1rem;
 }
 
 .product-card button {
     background: var(--accent-color);
     color: white;
     border: none;
-    padding: 0.5rem 1rem;
+    padding: 0.6rem 1.5rem;
     border-radius: 25px;
     cursor: pointer;
     font-family: 'Iranian Sans', sans-serif;
-    font-size: 0.9rem;
-    transition: background 0.3s ease;
+    font-size: 0.95rem;
+    font-weight: bold;
+    transition: background 0.3s ease, transform 0.2s ease;
 }
 
 .product-card button:hover {
     background: var(--secondary-color);
+    transform: translateY(-2px);
 }
 
 .product-meta small {
     font-family: 'Iranian Sans', sans-serif;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
+    color: #6c757d;
 }
 
 .product-badge .badge {
-    font-size: 0.75rem;
-    padding: 0.35em 0.65em;
+    font-size: 0.8rem;
+    padding: 0.4em 0.8em;
+    background: var(--accent-color);
+    color: white;
+    border-radius: 12px;
+    position: absolute;
+    top: 10px;
+    right: 10px;
 }
 
 /* استایل دسته‌بندی‌ها */
 .list-group {
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
+    gap: 0.75rem;
 }
 
 .list-group-item {
     background: #f9f9f9;
     border: none;
-    border-radius: 8px;
-    padding: 1rem;
+    border-radius: 10px;
+    padding: 1.2rem;
     font-family: 'Iranian Sans', sans-serif;
     font-size: 1rem;
     color: var(--text-color);
-    transition: background 0.3s ease;
+    transition: background 0.3s ease, transform 0.3s ease;
+    position: relative;
+    overflow: hidden;
 }
 
 .list-group-item:hover {
-    background: #e0e0e0;
-    color: var(--primary-color);
+    background: var(--accent-color);
+    color: white;
+    transform: translateX(5px); /* حرکت ملایم به سمت چپ */
+}
+
+.list-group-item::before {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 50%;
+    width: 4px;
+    height: 100%;
+    background: var(--primary-color);
+    transform: translateY(-50%);
+    transition: background 0.3s ease;
+}
+
+.list-group-item:hover::before {
+    background: white;
 }
 
 /* استایل مقالات */
@@ -240,6 +209,11 @@ font-family: 'Iranian Sans', sans-serif;
     padding-bottom: 1.5rem;
     margin-bottom: 1.5rem;
     border-bottom: 1px solid #e0e0e0;
+    transition: transform 0.3s ease;
+}
+
+.article-item:hover {
+    transform: translateY(-3px);
 }
 
 .article-item:last-child {
@@ -248,9 +222,11 @@ font-family: 'Iranian Sans', sans-serif;
 
 .article-item h5 a {
     font-family: 'Iranian Sans', sans-serif;
-    font-size: 1.3rem;
+    font-size: 1.4rem;
     color: var(--primary-color);
     text-decoration: none;
+    font-weight: bold;
+    transition: color 0.3s ease;
 }
 
 .article-item h5 a:hover {
@@ -261,25 +237,39 @@ font-family: 'Iranian Sans', sans-serif;
     font-family: 'Iranian Sans', sans-serif;
     font-size: 1rem;
     color: #6c757d;
+    line-height: 1.6;
 }
 
 .article-item small {
     font-family: 'Iranian Sans', sans-serif;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
+    color: #999;
 }
 
 /* استایل فروشگاه‌ها */
 .store-card {
-    padding: 0.5rem;
-    text-align: right;
+    display: flex;
+    align-items: center;
+    padding: 1rem;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+    margin-bottom: 1rem;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.store-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
 }
 
 .store-image {
-    width: 70px;
-    height: 70px;
+    width: 80px;
+    height: 80px;
     object-fit: cover;
     border-radius: 50%;
-    margin-left: 1rem;
+    margin-left: 1.5rem;
+    border: 2px solid #e0e0e0;
 }
 
 .store-info {
@@ -288,16 +278,17 @@ font-family: 'Iranian Sans', sans-serif;
 
 .store-info .card-title {
     font-family: 'Iranian Sans', sans-serif;
-    font-size: 1.2rem;
+    font-size: 1.3rem;
     color: var(--text-color);
     margin-bottom: 0.5rem;
+    font-weight: bold;
 }
 
 .store-info .card-text {
     font-family: 'Iranian Sans', sans-serif;
-    font-size: 0.9rem;
+    font-size: 0.95rem;
     color: #6c757d;
-    margin-bottom: 1rem;
+    line-height: 1.5;
 }
 
 /* دکمه‌های مشاهده */
@@ -305,12 +296,13 @@ font-family: 'Iranian Sans', sans-serif;
     background: var(--accent-color);
     color: white;
     border: none;
-    padding: 0.5rem 1rem;
+    padding: 0.6rem 1.5rem;
     border-radius: 25px;
     cursor: pointer;
     font-family: 'Iranian Sans', sans-serif;
-    font-size: 0.9rem;
-    transition: background 0.3s ease;
+    font-size: 0.95rem;
+    font-weight: bold;
+    transition: background 0.3s ease, transform 0.2s ease;
     display: inline-block;
     text-align: center;
     text-decoration: none;
@@ -318,78 +310,76 @@ font-family: 'Iranian Sans', sans-serif;
 
 .result-btn:hover {
     background: var(--secondary-color);
+    transform: translateY(-2px);
 }
 
 /* پیام بدون نتیجه */
 .no-results {
     background: #fff3cd;
     color: #856404;
-    padding: 1.5rem;
+    padding: 2rem;
     border-radius: 15px;
     text-align: center;
     font-family: 'Iranian Sans', sans-serif;
-    font-size: 1.1rem;
+    font-size: 1.2rem;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+    margin: 2rem 0;
 }
 
 /* ریسپانسیو */
 @media (max-width: 1024px) {
-    .row {
-        flex-direction: column;
-    }
-
-    .col-md-3, .col-md-9 {
-        width: 100%;
-    }
-
-    .col-md-3 {
-        margin-bottom: 2rem;
-    }
-
     .product-grid {
         grid-template-columns: repeat(2, 1fr);
+    }
+
+    .search-title {
+        font-size: 1.8rem;
     }
 }
 
 @media (max-width: 768px) {
-    .col-md-4, .col-md-6 {
-        flex: 0 0 50%;
-        max-width: 50%;
-    }
-
     .product-grid {
         grid-template-columns: repeat(2, 1fr);
     }
 
     .product-card img, .store-image {
-        height: 120px;
-        width: 120px;
+        height: 140px;
+        width: 100%;
     }
 
     .product-card h3, .store-info .card-title {
-        font-size: 1rem;
+        font-size: 1.1rem;
     }
 
     .article-item h5 a {
-        font-size: 1.2rem;
+        font-size: 1.3rem;
+    }
+
+    .result-body {
+        padding: 1.5rem;
     }
 }
 
 @media (max-width: 480px) {
-    .col-md-4, .col-md-6 {
-        flex: 0 0 100%;
-        max-width: 100%;
-    }
-
     .product-grid {
         grid-template-columns: 1fr;
     }
 
     .product-card img, .store-image {
-        height: 150px;
-        width: 150px;
+        height: 160px;
+        width: 100%;
     }
 
     .search-title {
-        font-size: 1.5rem;
+        font-size: 1.6rem;
+    }
+
+    .result-header h5 {
+        font-size: 1.4rem;
+    }
+
+    .store-image {
+        width: 60px;
+        height: 60px;
     }
 }

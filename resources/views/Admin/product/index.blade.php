@@ -33,6 +33,7 @@
                 <th>شناسه</th>
                 <th>نام</th>
                 <th>فروشگاه</th>
+                <th>تاریخ ثبت</th>
                 <th>وضعیت</th>
                 <th>عملیات</th>
             </tr>
@@ -43,6 +44,7 @@
                 <td>{{ $product->id }}</td>
                 <td>{{ $product->name }}</td>
                 <td>{{ $product->store->name ?? 'ندارد' }}</td>
+                <td>{{ \Morilog\Jalali\Jalalian::fromDateTime($product->created_at)->format('Y/m/d H:i') }}</td>
                 <td class="text-center">
                     <span class="badge badge-{{ $product->status == '1' ? 'success' : 'danger' }}">
                         {{ $product->status == '1' ? 'فعال' : 'غیرفعال' }}

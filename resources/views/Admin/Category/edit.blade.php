@@ -24,7 +24,7 @@
                 </select>
             </div>
 
-            <div class="form-actions">
+            <div class="form-actions" style="margin-right: 211px !important ;">
                 <button type="submit" class="btn btn-submit">ویرایش دسته‌بندی</button>
             </div>
         </form>

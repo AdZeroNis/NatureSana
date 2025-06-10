@@ -5,6 +5,17 @@
     @include('Home.layouts.header')
 
 <section class="single-product-section">
+        @if(session('success'))
+        <div class="alert alert-success" style="color: green; background-color: #e6ffe6; padding: 15px; border-radius: 5px; margin: 15px auto; width: 100%; max-width: 1000px; text-align: center;">
+            {{ session('success') }}
+        </div>
+    @endif
+
+    @if(session('error'))
+        <div class="alert alert-danger" style="color: red; background-color: #ffe6e6; padding: 15px; border-radius: 5px; margin: 15px auto; width: 100%; max-width: 1000px; text-align: center;">
+            {{ session('error') }}
+        </div>
+    @endif
     <div class="container">
         <div class="product-header">
             <h1>{{ $product->name }}</h1>
@@ -39,11 +50,7 @@
                 <div class="info-row">
     <span class="label"><i class="fas fa-handshake"></i> همکاری:</span>
     <span class="value">
-        @if($referralStore)
-            {{ $referralStore->name }}
-        @else
-            بدون همکاری
-        @endif
+
     </span>
 </div>
 
@@ -51,16 +58,37 @@
                     <span class="label"><i class="fas fa-align-right"></i> توضیحات:</span>
                     <span class="value">{{ $product->description ?: 'بدون توضیحات' }}</span>
                 </div>
-                @if ($product->inventory > 0)
-                <form action="{{ route('cart.add', $product->id) }}" method="POST" class="add-to-cart-form">
-    @csrf
-@if(isset($partnerId) && !empty($partnerId))
-    <input type="hidden" name="partner_product_id" value="{{ $partnerId }}">
-@endif
-    <button type="submit" class="add-to-cart-btn">افزودن به سبد خرید</button>
-</form>
+@if ($product->inventory > 0 && $product->status == 1 && $product->store->status == 1)
+    @php
+        $partnerProduct = $product->sharedPartnerships->first();
+        $partnerStoreActive = true;
+
+        if ($partnerProduct) {
+            $partnerStore = \App\Models\Store::find($partnerProduct->partner_store_id);
+            $partnerStoreActive = $partnerStore && $partnerStore->status == 1;
+        }
+    @endphp
+
+    @if(!$partnerProduct || ($partnerProduct && $partnerStoreActive))
+        <form action="{{ route('cart.add', $product->id) }}" method="POST" class="add-to-cart-form">
+            @csrf
+            @if($partnerProduct)
+                <input type="hidden" name="partner_product_id" value="{{ $partnerProduct->pivot->id }}">
+                <input type="hidden" name="partner_store_id" value="{{ $partnerProduct->partner_store_id }}">
+            @endif
+            <button type="submit" class="add-to-cart-btn">افزودن به سبد خرید</button>
+        </form>
+    @else
+        <button class="add-to-cart-btn" disabled>فروشگاه شریک غیرفعال است</button>
+    @endif
 @else
-    <button class="add-to-cart-btn" disabled>ناموجود</button>
+    @if($product->store->status == 0)
+        <button class="add-to-cart-btn" disabled>فروشگاه غیرفعال است</button>
+    @elseif($product->status == 0)
+        <button class="add-to-cart-btn" disabled>محصول غیرفعال است</button>
+    @else
+        <button class="add-to-cart-btn" disabled>ناموجود</button>
+    @endif
 @endif
 
 

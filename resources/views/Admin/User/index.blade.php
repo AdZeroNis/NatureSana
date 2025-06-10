@@ -41,6 +41,7 @@
                 <th>نام</th>
                 <th>شماره تماس</th>
                 <th>نقش</th>
+                <th>تاریخ ثبت</th>
                 <th>وضعیت</th>
                 <th>عملیات</th>
             </tr>
@@ -58,6 +59,7 @@
                 @elseif($user->role == 'user')
                     <td>کاربر</td>
                 @endif
+                <td>{{ \Morilog\Jalali\Jalalian::fromDateTime($user->created_at)->format('Y/m/d H:i') }}</td>
                 <td class="text-center">
                     <span class="badge badge-{{ $user->status == '1' ? 'success' : 'danger' }}">
                         {{ $user->status == '1' ? 'فعال' : 'غیرفعال' }}
@@ -71,11 +73,11 @@
         <a href="{{ route('panel.user.edit', $user->id) }}" class="btn btn-sm" style="color: hotpink;" title="ویرایش">
             <i class="fas fa-edit"></i>
         </a>
-        <a href="#" 
-           class="btn btn-sm" 
-           style="color: red;" 
-           title="حذف" 
-           onclick="event.preventDefault(); if(confirm('آیا از حذف این کاربر مطمئن هستید؟')) { 
+        <a href="#"
+           class="btn btn-sm"
+           style="color: red;"
+           title="حذف"
+           onclick="event.preventDefault(); if(confirm('آیا از حذف این کاربر مطمئن هستید؟')) {
                document.getElementById('delete-form-{{ $user->id }}').submit(); }">
             <i class="fas fa-trash-alt"></i>
         </a>

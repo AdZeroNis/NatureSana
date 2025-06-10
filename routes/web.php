@@ -17,7 +17,10 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\StorePartnerController;
 use App\Http\Controllers\Auth\PasswordResetController;
 use App\Http\Controllers\Admin\CartController as AdminCartController;
+use App\Http\Controllers\Admin\OrderController as AdminOrderController;
+use App\Http\Controllers\Admin\ReportController;
 use App\Http\Controllers\Home\ArticleCommentController;
+use App\Http\Controllers\Home\OrderController;
 use App\Http\Controllers\Home\PaymentController;
 use App\Http\Controllers\Home\ProductCommentController;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
@@ -49,20 +52,22 @@ Route::namespace("home")->group(function () {
         Route::post('/article/{article}/comment', [ArticleCommentController::class, 'store'])->name('article.comment.store');
         Route::post('/article/comment/{comment}/reply', [ArticleCommentController::class, 'reply'])->name('article.comment.reply');
 
-     Route::prefix('cart')->group(function () {
-   Route::match(['get', 'post'], '/add/{product}', [CartController::class, 'store'])->name('cart.add');
-    Route::get('/', [CartController::class, 'showCart'])->name('cart.showCart');
-   Route::delete('cart/delete/{cartItem}',[CartController::class , 'delete'])->name('cart.delete');
-   Route::patch('/cart/update/{id}', [CartController::class, 'update'])->name('cart.update');
+        Route::prefix('cart')->group(function () {
+            Route::match(['get', 'post'], '/add/{product}', [CartController::class, 'store'])->name('cart.add');
+            Route::get('/', [CartController::class, 'showCart'])->name('cart.showCart');
+            Route::delete('cart/delete/{cartItem}', [CartController::class, 'delete'])->name('cart.delete');
+            Route::patch('/cart/update/{id}', [CartController::class, 'update'])->name('cart.update');
 
-        Route::prefix('payment')->group(function () {
-    Route::get('/payment', [PaymentController::class, 'payment'])->name('payment');
-    Route::post('/payment/submit', [PaymentController::class, 'submitPayment'])->name('payment.submit'); // پردازش پرداخت
+            Route::prefix('payment')->group(function () {
+                Route::get('/payment', [PaymentController::class, 'payment'])->name('payment');
+                Route::post('/payment/submit', [PaymentController::class, 'submitPayment'])->name('payment.submit'); // پردازش پرداخت
+            });
+        });
+        Route::prefix('order')->group(function () {
 
-
-
-});
-
+            Route::get('/orders', [OrderController::class, 'index'])->name('order.index');
+            Route::get('/orders/{id}', [OrderController::class, 'show'])->name('order.show');
+        });
     });
 });
 
@@ -194,12 +199,21 @@ Route::prefix('panel')->middleware(['auth', AdminAccess::class])->group(function
         Route::post('/panel/partner/{partner}/products', [StorePartnerController::class, 'storePartnerProducts'])->name('panel.partner.products.store');
     });
     Route::prefix('order')->group(function () {
-        Route::get('/', [OrderController::class, 'index'])->name('panel.order.index');
+        Route::get('/', [AdminOrderController::class, 'index'])->name('panel.order.index');
+        Route::put('/orders/{order}/status', [AdminOrderController::class, 'updateStatus'])->name('panel.order.updateStatus');
+        Route::delete('/delete/{id}', [AdminOrderController::class, 'destroy'])->name('panel.order.delete');
+        Route::get('/show/{id}', [AdminOrderController::class, 'show'])->name('panel.order.show');
     });
     Route::prefix('cart')->group(function () {
         Route::get('/', [AdminCartController::class, 'index'])->name('panel.cart.index');
         Route::delete('/delete/{id}', [AdminCartController::class, 'destroy'])->name('panel.cart.delete');
         Route::get('/show/{id}', [AdminCartController::class, 'show'])->name('panel.cart.show');
     });
-});
+     Route::prefix('report')->group(function () {
+        Route::get('/', [ReportController::class, 'index'])->name('panel.report.index');
+        Route::get('/store', [ReportController::class, 'storeReport'])->name('panel.report.store');
+         Route::get('/show/{id}', [ReportController::class, 'show'])->name('panel.report.show');
+
+    });
+  
 });

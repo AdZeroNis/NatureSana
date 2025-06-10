@@ -7,9 +7,10 @@
         <thead>
             <tr>
                 <th>شناسه</th>
-                <th>نام</th>
+                <th>نام محصول</th>
+                <th>کاربر</th>
                 <th>فروشگاه</th>
-                <th> تایخ ثبت</th>
+                <th>تاریخ ثبت</th>
                 <th>عملیات</th>
             </tr>
         </thead>
@@ -18,38 +19,35 @@
             <tr>
                 <td>{{ $cart->id }}</td>
                 <td>{{ $cart->product->name }}</td>
+                <td>{{ $cart->user->name ?? 'نامشخص' }}</td>
                 <td>{{ $cart->product->store->name ?? 'ندارد' }}</td>
                 <td>{{ \Morilog\Jalali\Jalalian::fromDateTime($cart->created_at)->format('Y/m/d H:i') }}</td>
-            <td class="action-buttons">
-    <a href="{{ route('panel.cart.show', $cart->id) }}" class="btn btn-sm" style="color: #007bff;" title="جزئیات">
-        <i class="fas fa-eye"></i>
-    </a>
+                <td class="action-buttons">
+                    <a href="{{ route('panel.cart.show', $cart->id) }}" class="btn btn-sm" style="color: #007bff;" title="جزئیات">
+                        <i class="fas fa-eye"></i>
+                    </a>
 
-    <a href="#"
-       class="btn btn-sm"
-       style="color: red;"
-       title="حذف"
-           onclick="event.preventDefault(); if(confirm('آیا از حذف این سبد خرید مطمئن هستید؟')) {
-               document.getElementById('delete-form-{{ $cart->id }}').submit(); }">
-            <i class="fas fa-trash-alt"></i>
-        </a>
+                    <a href="#"
+                       class="btn btn-sm"
+                       style="color: red;"
+                       title="حذف"
+                       onclick="event.preventDefault(); if(confirm('آیا از حذف این سبد خرید مطمئن هستید؟')) {
+                           document.getElementById('delete-form-{{ $cart->id }}').submit(); }">
+                        <i class="fas fa-trash-alt"></i>
+                    </a>
 
-        <form id="delete-form-{{ $cart->id }}" action="{{ route('panel.cart.delete', $cart->id) }}" method="POST" style="display: none;">
-            @csrf
-            @method('DELETE')
-        </form>
-    
-</td>
-
+                    <form id="delete-form-{{ $cart->id }}" action="{{ route('panel.cart.delete', $cart->id) }}" method="POST" style="display: none;">
+                        @csrf
+                        @method('DELETE')
+                    </form>
+                </td>
             </tr>
             @empty
             <tr>
-                <td colspan="4" class="text-center">هیچ سبد خریدی یافت نشد</td>
+                <td colspan="6" class="text-center">هیچ سبد خریدی یافت نشد</td>
             </tr>
             @endforelse
         </tbody>
     </table>
 </section>
-
-
 @endsection

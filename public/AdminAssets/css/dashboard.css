@@ -1,0 +1,66 @@
+
+.dashboard {
+    max-width: 1300px;
+    margin: 10rem auto;
+    padding: 0px 10.5rem;
+    direction: rtl;
+}
+
+.cards-containerr {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: center;
+    gap: 1.5rem;
+}
+
+.cardd {
+    min-width: 200px;
+    max-width: 300px;
+    flex: 1;
+    padding: 1.5rem;
+    text-align: center;
+    border-radius: 15px;
+    transition: all 0.3s ease;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+    color: white;
+}
+
+.cardd:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.products-cardd {
+    background: linear-gradient(135deg, #43a047, #81c784); /* Green gradient for products */
+}
+
+.stores-cardd {
+    background: linear-gradient(135deg, #1976d2, #64b5f6); /* Blue gradient for stores */
+}
+
+.articles-cardd {
+    background: linear-gradient(135deg, #f39c12, #f7c576); /* Orange gradient for articles */
+}
+
+.users-cardd {
+    background: linear-gradient(135deg, #8e44ad, #c39bd3); /* Purple gradient for users */
+}
+
+.cardd h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.2rem;
+    margin: 0;
+}
+
+.cardd p {
+    font-family: 'Arial', sans-serif;
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin: 0;
+}

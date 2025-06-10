@@ -15,7 +15,7 @@ class DashboardController extends Controller
     public function index()
     {
         $user = auth()->user();
-    
+
         if ($user->role === 'super_admin') {
             $usersCount = User::count();
             $productsCount = Product::count();
@@ -30,7 +30,7 @@ class DashboardController extends Controller
         } else {
             return redirect()->route('login')->with('error', 'شما دسترسی لازم را ندارید.');
         }
-    
+
         return view('Admin.Dashboard.dashboard', [
             'usersCount' => $usersCount,
             'productsCount' => $productsCount,
@@ -39,6 +39,6 @@ class DashboardController extends Controller
             'user' => $user,
         ]);
     }
-    
-    
+
+
 }

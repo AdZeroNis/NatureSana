@@ -32,9 +32,12 @@ class Product extends Model
     {
         return $this->hasMany(OrderItem::class);
     }
+// در مدل Product
 public function sharedPartnerships()
 {
-    return $this->belongsToMany(StorePartner::class, 'partner_selected_products', 'product_id', 'store_partner_id');
+    return $this->belongsToMany(StorePartner::class, 'partner_products', 'product_id', 'store_partner_id')
+                ->withPivot('id')
+                ->withTimestamps();
 }
 
 }

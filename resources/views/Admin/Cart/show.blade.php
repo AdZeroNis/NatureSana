@@ -28,7 +28,31 @@
 
             <div class="product-info">
                 <div class="info-group">
-                    <h3>اطلاعات اصلی</h3>
+                    <h3>اطلاعات کاربر</h3>
+                    <div class="info-row">
+                        <span class="label">نام کاربر:</span>
+                        <span class="value">{{ $user->name ?? 'نامشخص' }}</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="label">ایمیل:</span>
+                        <span class="value">{{ $user->email ?? 'نامشخص' }}</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="label">نقش:</span>
+                        <span class="value">
+                            @if($user->role == 'admin')
+                                مدیر
+                            @elseif($user->role == 'super_admin')
+                                سوپر ادمین
+                            @else
+                                کاربر عادی
+                            @endif
+                        </span>
+                    </div>
+                </div>
+
+                <div class="info-group">
+                    <h3>اطلاعات محصول</h3>
                     <div class="info-row">
                         <span class="label">نام محصول:</span>
                         <span class="value">{{ $cart->product->name }}</span>
@@ -42,28 +66,19 @@
                         <span class="value">{{ $cart->product->category ? $cart->product->category->name : 'بدون دسته‌بندی' }}</span>
                     </div>
                     <div class="info-row">
-    <span class="label">فروشگاه:</span>
-    <span class="value">{{ $store->name }}</span>
-</div>
-
-@if(!is_null($partnerStoreName))
-    <div class="info-row">
-        <span class="label">فروشگاه شریک:</span>
-        <span class="value">{{ $partnerStoreName }}</span>
-    </div>
-@endif
-
-                    <div class="info-row">
-                        <span class="label">تعداد:</span>
-                        <span class="value">{{ $cart->product->inventory }}</span>
+                        <span class="label">فروشگاه:</span>
+                        <span class="value">{{ $store->name }}</span>
                     </div>
-                    <div class="info-row">
-                        <span class="label">توضیحات:</span>
-                        <span class="value">{{ $cart->product->description ?: 'بدون توضیحات' }}</span>
-                    </div>
+                    @if(!is_null($partnerStoreName))
+                        <div class="info-row">
+                            <span class="label">فروشگاه شریک:</span>
+                            <span class="value">{{ $partnerStoreName }}</span>
+                        </div>
+                    @endif
                 </div>
 
                 <div class="info-group">
+                    <h3>اطلاعات زمانی</h3>
                     <div class="info-row">
                         <span class="label">تاریخ ثبت:</span>
                         <span class="value">{{ \Morilog\Jalali\Jalalian::fromDateTime($cart->created_at)->format('Y/m/d H:i') }}</span>
@@ -77,5 +92,4 @@
         </div>
     </div>
 </section>
-
 @endsection

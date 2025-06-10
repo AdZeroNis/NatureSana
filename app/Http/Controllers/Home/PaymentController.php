@@ -32,15 +32,14 @@ class PaymentController extends Controller
 
 public function submitPayment(Request $request)
 {
-    // ... اعتبارسنجی و گرفتن آیتم‌های سبد کاربر
-    $cartItems = Cart::where('user_id', Auth::id())->with('product')->get();
+    $cartItems = Cart::where('user_id', Auth::id())
+        ->with(['product', 'partnerProduct'])
+        ->get();
 
-    // محاسبه مجموع قیمت کل
     $totalPrice = $cartItems->sum(function($item) {
         return $item->product->price * $item->quantity;
     });
 
-    // ایجاد سفارش
     $order = Order::create([
         'user_id' => Auth::id(),
         'address' => $request->input('address'),
@@ -51,18 +50,16 @@ public function submitPayment(Request $request)
     foreach ($cartItems as $item) {
         $product = $item->product;
 
-        $ownerStoreId = $product->store_id;        // مالک اصلی محصول
-        $sellerStoreId = $item->partner_product_id; // فروشگاه ارجاع دهنده از سبد خرید
+        $ownerStoreId = $product->store_id;
+       $sellerStoreId = $item->partner_store_id; // به‌جای گرفتن از relation مستقیم
+
 
         $totalItemPrice = $product->price * $item->quantity + 50000;
 
-        // اگر فروشنده مشخص بود و با مالک متفاوت بود، تقسیم سهم کنیم
         if ($sellerStoreId && $sellerStoreId != $ownerStoreId) {
-            // تقسیم سهم: 80٪ مالک - 20٪ فروشنده
             $ownerShare = $totalItemPrice * 0.8;
             $sellerShare = $totalItemPrice * 0.2;
         } else {
-            // فروش مستقیم مالک
             $ownerShare = $totalItemPrice;
             $sellerShare = null;
             $sellerStoreId = null;
@@ -78,8 +75,6 @@ public function submitPayment(Request $request)
             'owner_share' => $ownerShare,
             'seller_share' => $sellerShare,
         ]);
-
-        $product->decrement('inventory', $item->quantity);
     }
 
     Cart::where('user_id', Auth::id())->delete();
