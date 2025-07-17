@@ -50,20 +50,7 @@
 | سبد خرید | ![سبد خرید](screenshots/cart.png) |
 | پنل مدیریت فروشگاه | ![پنل فروشگاه](screenshots/store-admin.png) |
 
-📌 تصاویر را در پوشه `screenshots/` داخل ریشه پروژه قرار دهید.
 
 ---
 
-## 📁 نصب و راه‌اندازی
 
-برای راه‌اندازی پروژه در محیط محلی:
-
-```bash
-git clone https://github.com/your-username/naturesana.git
-cd naturesana
-composer install
-cp .env.example .env
-php artisan key:generate
-php artisan migrate --seed
-npm install && npm run build
-php artisan serve
