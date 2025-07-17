@@ -34,8 +34,7 @@
 - Laravel 11
 - MySQL
 - Blade Template Engine
-- Bootstrap / TailwindCSS (بسته به تنظیمات شما)
-- Vite
+- Bootstrap 
 
 ---
 
