@@ -61,6 +61,11 @@ public function store(Request $request)
 
     $storeId = Auth::user()->role === 'super_admin' ? $request->store_id : Auth::user()->store_id;
 
+    // جلوگیری از همکاری یک فروشگاه با خودش
+    if ($storeId == $request->partner_store_id) {
+        return back()->withErrors(['partner_store_id' => 'فروشگاه نمی‌تواند با خودش همکاری کند.'])->withInput();
+    }
+
     // جلوگیری از تکراری بودن همکاری
     $exists = StorePartner::where('store_id', $storeId)
         ->where('partner_store_id', $request->partner_store_id)
@@ -75,11 +80,12 @@ public function store(Request $request)
         'store_id' => $storeId,
         'partner_store_id' => $request->partner_store_id,
         'status' => 0,  // درخواست در انتظار تایید
-        'created_by_admin' => Auth::user()->role === 'super_admin',  // آیا توسط سوپر ادمین ایجاد شده
+        'created_by_admin' => Auth::user()->role === 'super_admin',
     ]);
 
     return redirect()->route('panel.partner.index')->with('success', 'درخواست همکاری ارسال شد. منتظر تایید فروشگاه اصلی باشید.');
 }
+
 public function update(Request $request, $id)
 {
     $partner = StorePartner::findOrFail($id);
@@ -148,12 +154,14 @@ public function show($id)
         ]);
     }
 
-    // دریافت محصولات بر اساس اینکه کاربر مالک کدام فروشگاه است
-    if ($isMainStore) {
-        $productsToShow = $partner->partnerStore->products;
-    } else {
-        $productsToShow = $partner->store->products;
-    }
+   if ($isPartnerStore) {
+    // همکار می‌تواند محصولات فروشگاه اصلی را ببیند و انتخاب کند
+    $productsToShow = $partner->store->products;
+} else {
+    // فروشگاه اصلی فقط محصولات خودش را می‌بیند و نمی‌تواند محصولی از همکار انتخاب کند
+    $productsToShow = $partner->store->products; // فقط محصولات خودش را نمایش بده
+}
+
 
     return view('Admin.Partner.show', [
         'partner' => $partner,
@@ -184,7 +192,8 @@ public function storePartnerProducts(Request $request, $partnerId)
 
     $productIds = $validated['product_ids'] ?? [];
 
-    $partner->sharedProducts()->sync($productIds);
+    $partner->sharedProducts()->syncWithoutDetaching($productIds);
+
 
     return redirect()->route('panel.partner.show', $partnerId)
         ->with('success', 'تغییرات محصولات با موفقیت ذخیره شدند.');

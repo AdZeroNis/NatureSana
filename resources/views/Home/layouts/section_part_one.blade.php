@@ -15,11 +15,10 @@
                     </a>
                 </div>
             @endforeach
+            
         </div>
 
-        <!-- Navigation buttons -->
-        <div class="swiper-button-prev"></div>
-        <div class="swiper-button-next"></div>
+
 
         <!-- Pagination dots -->
         <div class="swiper-pagination"></div>

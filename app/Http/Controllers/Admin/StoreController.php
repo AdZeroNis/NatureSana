@@ -46,13 +46,22 @@ class StoreController extends Controller
         }
 
         // اعتبارسنجی داده‌های ورودی
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'address' => 'required|string|max:255',
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'phone_number' => 'required|string|max:20',
-        ]);
-
+$request->validate([
+    'name' => 'required|string|max:255',
+    'address' => 'required|string|max:255',
+    'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+    'phone_number' => ['required', 'regex:/^09\d{9}$/'], // شماره موبایل ایرانی
+    'productTypes' => 'required|string|min:5',
+], [
+    // پیام‌های سفارشی خطاها
+    'name.required' => 'لطفاً نام فروشگاه را وارد کنید.',
+    'address.required' => 'لطفاً آدرس فروشگاه را وارد کنید.',
+    'image.required' => 'لطفاً تصویر فروشگاه را انتخاب کنید.',
+    'phone_number.required' => 'لطفاً شماره تماس را وارد کنید.',
+    'phone_number.regex' => 'شماره موبایل باید با 09 شروع شده و 11 رقم باشد.',
+    'productTypes.required' => 'لطفاً توضیحات محصولات را وارد کنید.',
+    'productTypes.min' => 'توضیحات باید حداقل 5 کاراکتر باشد.',
+]);
         // آپلود تصویر
         $imageName = time() . '.' . $request->image->extension();
         $request->image->move(public_path('AdminAssets/Store-image'), $imageName);

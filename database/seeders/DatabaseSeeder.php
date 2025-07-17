@@ -22,7 +22,7 @@ class DatabaseSeeder extends Seeder
             'phone' => '09336892362',
             'status' => 1,
             'role' => 'super_admin',
-            'password' => 123456,
+            'password' => 'superadmin123',
             'email_verified_at'=>now(),
             'is_verified'=> 1
         ]);

@@ -45,12 +45,12 @@ class AuthController extends Controller
     {
         $user = auth()->user();
         $code = sprintf('%04d', random_int(0, 9999));
-        
+
         $user->verification_code = $code;
         $user->verification_code_expires_at = now()->addMinutes(10);
         $user->save();
 
-        Mail::raw("کد تایید جدید شما: {$code}\n\nاین کد تا 10 دقیقه معتبر است.", function($message) use ($user) {
+        Mail::raw("کد تایید جدید شما: {$code}\n\nاین کد تا 10 دقیقه معتبر است.", function ($message) use ($user) {
             $message->to($user->email)
                 ->subject('کد تایید سایت گیاهان دارویی');
         });
@@ -65,14 +65,20 @@ class AuthController extends Controller
     {
         return view('Auth.auth');
     }
-    public function register(Request $request){
+    public function register(Request $request)
+    {
 
         $request->validate([
             "name" => "required",
-            "email" => "required",
-            "phone" => "required",
-            "password" => "required|min:6",
-  
+            'email' => ['required', 'email'],
+            'phone' => ['required', 'regex:/^09\d{9}$/'],
+          'password' => [
+    'required',
+    'min:6',
+    'regex:/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d@$!%*#?&]{6,}$/'
+],
+
+
         ]);
 
         $emailUser = User::where("email", $request->email)->first();
@@ -88,7 +94,7 @@ class AuthController extends Controller
 
             $user = User::create($dataForm);
             Auth::login($user);
-            
+
             // Generate and send verification code
             $code = sprintf('%04d', random_int(0, 9999));
             $user->verification_code = $code;
@@ -96,7 +102,7 @@ class AuthController extends Controller
             $user->save();
 
             // Send email with code
-            Mail::raw("کد تایید شما: {$code}\n\nاین کد تا 10 دقیقه معتبر است.", function($message) use ($user) {
+            Mail::raw("کد تایید شما: {$code}\n\nاین کد تا 10 دقیقه معتبر است.", function ($message) use ($user) {
                 $message->to($user->email)
                     ->subject('کد تایید سایت گیاهان دارویی');
             });
@@ -109,36 +115,39 @@ class AuthController extends Controller
     public function login(Request $request)
     {
         $request->validate([
-            "email" => "required",
-            "password" => "required",
+           'email' => ['required', 'email'],
+           'password' => ['required']
         ]);
-    
+
         $user = User::where("email", $request->email)->first();
-    
+
         if ($user && Hash::check($request->password, $user->password)) {
             // Check if email is verified
             if (!$user->hasVerifiedEmail()) {
                 return redirect()->route("login")->with('error', "لطفا ابتدا ایمیل خود را تایید کنید");
             }
-            
+
             Auth::login($user);
             return redirect()->route("home");
         } else {
             return redirect()->route("login")->with('error', "ایمیل یا رمز عبور اشتباه است");
         }
     }
-    
-    public function logout(Request $request){
+
+    public function logout(Request $request)
+    {
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
         return redirect()->route("home");
     }
-    public function profile(){
+    public function profile()
+    {
         $user = auth()->user();
         return view("Auth.profile", compact('user'));
     }
-    public function edit(){
+    public function edit()
+    {
         $user = auth()->user();
         return view("Auth.edit", compact('user'));
     }
@@ -158,7 +167,7 @@ class AuthController extends Controller
             'email' => $request->email,
             'phone' => $request->phone,
         ]);
-    
+
         $user->address()->updateOrCreate(
             ['user_id' => $user->id],
             [
@@ -170,16 +179,19 @@ class AuthController extends Controller
 
         return redirect()->back()
             ->with('success', 'پروفایل با موفقیت به‌روزرسانی شد');
-
-
     }
     public function updatePassword(Request $request)
     {
         $request->validate([
             'current_password' => 'required',
-            'new_password' => 'required|min:6|confirmed',
-            'new_password_confirmation' => 'required',
-        ]);
+            'new_password' =>  ['required','confirmed', 'min:6', 'regex:/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d@$!%*#?&]{6,}$/'],
+            'new_password_confirmation' =>  ['required', 'min:6', 'regex:/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d@$!%*#?&]{6,}$/'],
+        ], [
+    // پیام‌های سفارشی خطاها
+    'new_password_confirmation.required' => 'لطفاً  رمز عبور مجدد را وارد کنید.',
+    'current_password.required' => 'رمز عبور فعلی را وارد کنید'
+]);
+
 
         $user = Auth::user();
         if (!Hash::check($request->current_password, $user->password)) {

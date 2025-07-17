@@ -60,7 +60,7 @@ class PasswordResetController extends Controller
     public function verifyCode(Request $request)
     {
         $request->validate([
-            'email' => 'required|email',
+            'email' => ['required', 'email'],
             'token' => 'required',
             'code' => 'required|string|size:4'
         ]);
@@ -94,9 +94,9 @@ class PasswordResetController extends Controller
     public function reset(Request $request)
     {
         $request->validate([
-            'email' => 'required|email',
+              'email' => ['required', 'email'],
             'token' => 'required',
-            'password' => 'required|min:8|confirmed'
+             'password' => ['required','confirmed', 'min:6', 'regex:/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d@$!%*#?&]{6,}$/']
         ]);
 
         $reset = DB::table('password_resets')

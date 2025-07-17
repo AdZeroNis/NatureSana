@@ -13,7 +13,28 @@
     padding: 0;
     box-sizing: border-box;
 }
+.d-none {
+    display: none;
+}
+#showAllProductsBtn {
+        background: var(--accent-color);
+        color: white;
+        border: none;
+        padding: 0.75rem 1.5rem;
+        border-radius: 25px;
+        cursor: pointer;
+        font-family: 'Arial', sans-serif;
+        font-size: 1rem;
+        transition: background 0.3s ease;
+        display: inline-block;
+        text-decoration: none;
+        text-align: center;
+        margin-top: 1rem;
+    }
 
+    #showAllProductsBtn:hover {
+        background: var(--secondary-color);
+    }
 body {
     font-family: 'Iranian Sans', sans-serif;
     line-height: 1.8;

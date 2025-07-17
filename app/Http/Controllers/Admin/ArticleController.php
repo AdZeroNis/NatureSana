@@ -13,14 +13,14 @@ class ArticleController extends Controller
     public function index()
     {
       $user = Auth::user();
-       
+
       if($user->role == 'super_admin')
       {
-        $articles = Article::all();
-    
+        $articles = Article::orderBy('created_at', 'desc')->get();
+
       }
       else{
-        $articles = Article::where('user_id',$user->id)->get();
+        $articles = Article::where('user_id',$user->id)->orderBy('created_at', 'desc')->get();;
       }
 
       return view('Admin.Article.index', compact('articles'));
@@ -52,7 +52,7 @@ class ArticleController extends Controller
         ]);
 
         return redirect()->route('panel.article.index')->with('success', 'مقاله با موفقیت اضافه شد');
-    }   
+    }
 
     public function edit($id)
     {
@@ -62,27 +62,27 @@ class ArticleController extends Controller
 
     public function update(Request $request, $id)
     {
-       
+
         $article = Article::find($id);
 
 
         $dataForm = $request->except('image');
-    
-    
+
+
         if ($request->hasFile('image')) {
             $imageName = time() . "." . $request->image->extension();
             $request->image->move(public_path("AdminAssets/Article-image"), $imageName);
             $dataForm['image'] = $imageName;
-    
-    
+
+
             $picture = public_path("AdminAssets/Article-image/") . $article->image;
             if (File::exists($picture)) {
                 File::delete($picture);
             }
         }
-    
+
         $article->update($dataForm);
-    
+
         return redirect()->route('panel.article.index')
             ->with('success', 'مقاله با موفقیت ویرایش شد');
     }
@@ -93,10 +93,10 @@ class ArticleController extends Controller
            $picture = public_path("AdminAssets/Article-image/") . $article->image;
            if(File::exists($picture))
            {
-               File::delete($picture);  
+               File::delete($picture);
            }
          $article->delete();
-    
+
          return redirect()->route("panel.article.index")->with('success', 'مقاله با موفقیت حذف شد');;
     }
 
@@ -104,12 +104,12 @@ class ArticleController extends Controller
     public function filter(Request $request)
     {
      $query = Article::query();
-     
+
      // جستجو بر اساس نام
      if ($request->filled('search')) {
          $query->where('title', 'like', '%' . $request->search . '%');
      }
- 
+
      // فیلتر بر اساس وضعیت فعال/غیرفعال
      if ($request->filled('status')) {
          if ($request->status === 'active') {
@@ -118,11 +118,11 @@ class ArticleController extends Controller
              $query->where('status', 0);
          }
      }
- 
- 
- 
+
+
+
      $articles = $query->latest()->paginate(10);
- 
+
      return view('Admin.Article.index', [
          'articles' => $articles,
          'search' => $request->search,

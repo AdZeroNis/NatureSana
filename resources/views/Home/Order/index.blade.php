@@ -30,7 +30,7 @@
             <p><strong>محصولات:</strong></p>
             <ul>
                 @foreach ($order->orderItems as $item)
-                    <li>{{ $item->product->name }} (تعداد: {{ $item->quantity }})</li>
+                    <li>{{ $item->product->name }}</li>
                 @endforeach
             </ul>
         </div>

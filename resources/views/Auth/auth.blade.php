@@ -9,15 +9,22 @@
 
         <div class="auth-form login active">
             <h2>ورود به حساب کاربری</h2>
-            @if(session('error'))
-                <div class="alert alert-danger">
-                    {{ session('error') }}
-                </div>
-            @endif
+            @if (session('error'))
+    <div class="alert alert-danger">
+        {{ session('error') }}
+    </div>
+@endif
+
             <form action="{{ route('login.submit') }}" method="POST">
                 @csrf
-                <input type="email" name="email" placeholder="ایمیل" required>
-                <input type="password" name="password" placeholder="رمز عبور" required>
+                <input type="text" name="email" placeholder="ایمیل"  autocomplete="off" >
+                @error('email')
+    <div class="alert alert-danger">{{ $message }}</div>
+@enderror
+                <input type="password" name="password" placeholder="رمز عبور"  autocomplete="off" >
+                @error('password')
+    <div class="alert alert-danger">{{ $message }}</div>
+@enderror
                 <button type="submit">ورود</button>
                 <div class="auth-links">
                     <a href="{{ route('password.request') }}">فراموشی رمز عبور</a>
@@ -27,26 +34,28 @@
 
         <div class="auth-form register">
             <h2>ثبت‌نام</h2>
-            @if(session('error'))
-                <div class="alert alert-danger">
-                    {{ session('error') }}
-                </div>
-            @endif
-            @if($errors->any())
-                <div class="alert alert-danger">
-                    <ul>
-                        @foreach($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
-                </div>
-            @endif
+            
             <form action="{{ route('register.submit') }}" method="POST">
                 @csrf
-                <input type="text" name="name" placeholder="نام کامل" required>
-                <input type="email" name="email" placeholder="ایمیل" required>
-                <input type="tel" name="phone" placeholder="شماره تماس" required>
-                <input type="password" name="password" placeholder="رمز عبور" required>
+                <input type="text" name="name" placeholder="نام کامل"   autocomplete="off">
+@error('name')
+    <div class="alert alert-danger">{{ $message }}</div>
+@enderror
+<input type="text" name="email" placeholder="ایمیل"  autocomplete="off">
+@error('email')
+    <div class="alert alert-danger">{{ $message }}</div>
+@enderror
+
+<input type="tel" name="phone" placeholder="شماره تماس"  autocomplete="off">
+@error('phone')
+    <div class="alert alert-danger">{{ $message }}</div>
+@enderror
+
+<input type="password" name="password" placeholder="رمز عبور" >
+@error('password')
+    <div class="alert alert-danger">{{ $message }}</div>
+@enderror
+
                 <button type="submit">ثبت‌نام</button>
             </form>
         </div>

@@ -23,7 +23,7 @@ class StorePartnerProduct extends Model
 
 public function storePartner()
 {
-    return $this->belongsTo(Store::class, 'store_partner_id');
+    return $this->belongsTo(StorePartner::class, 'store_partner_id');
 }
 
 }

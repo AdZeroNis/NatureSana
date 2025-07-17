@@ -2,10 +2,9 @@
     <nav>
         <div class="logo">NatureSana </div>
         <ul id="nav-menu">
-                <li><a href="#shop" title="محصولات">محصولات</a></li>
-            <li><a href="{{ route('article.index') }}" title="مقالات">مقالات</a></li>
+            {{-- <li><a href="{{ route('article.index') }}" title="مقالات">مقالات</a></li> --}}
             <li>    <a href="{{ route('cart.showCart') }}" title="سبد خرید">
-        <i class="fas fa-shopping-cart"></i></a></li>
+        <i > سبد خرید</i></a></li>
 
             <li class="user-dropdown">
                 @auth

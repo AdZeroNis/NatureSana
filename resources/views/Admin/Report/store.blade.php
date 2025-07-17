@@ -22,9 +22,46 @@
             <label for="order_id" class="form-label">کد سفارش</label>
             <input type="text" name="order_id" id="order_id" class="form-control" value="{{ request('order_id') }}">
         </div>
-        <div class="col-md-3 d-flex align-items-end">
-            <button type="submit" class="btn btn-add w-100">گزارش‌گیری</button>
-        </div>
+        @if(auth()->user()->role == 'super_admin')
+<div class="row mb-4">
+    <div class="col-md-12">
+        <h4>فیلتر پیشرفته (سوپر ادمین)</h4>
+        <form method="GET" class="row g-3">
+            <div class="col-md-3">
+                <label for="store_id" class="form-label">مغازه</label>
+                <select name="store_id" id="store_id" class="form-control">
+                    <option value="">همه مغازه‌ها</option>
+                    @foreach($stores as $store)
+                        <option value="{{ $store->id }}" {{ request('store_id') == $store->id ? 'selected' : '' }}>
+                            {{ $store->name }}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label for="category_id" class="form-label">دسته بندی</label>
+                <select name="category_id" id="category_id" class="form-control">
+                    <option value="">همه دسته‌ها</option>
+                    @if(request('store_id'))
+                        @foreach($categories as $category)
+                            <option value="{{ $category->id }}" {{ request('category_id') == $category->id ? 'selected' : '' }}>
+                                {{ $category->name }}
+                            </option>
+                        @endforeach
+                    @endif
+                </select>
+            </div>
+
+            <div class="col-md-3 d-flex align-items-end">
+                <button type="submit" class="btn btn-primary">اعمال فیلتر</button>
+            </div>
+        </form>
+    </div>
+</div>
+@endif
+
+
+
     </form>
     </div>
 
@@ -206,6 +243,7 @@
     font-size: 1rem;
     font-weight: bold;
     transition: background 0.3s ease, transform 0.2s ease;
+    
 }
 
 .add-item .btn-add:hover {

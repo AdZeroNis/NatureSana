@@ -22,7 +22,14 @@
         <input type="hidden" name="email" value="{{ $email }}">
         <input type="hidden" name="token" value="{{ $token }}">
         <div class="code-inputs">
-            <input type="text" name="code" maxlength="6" placeholder="کد تایید را وارد کنید" required>
+            <input type="text" name="code" maxlength="6"  style="width: 100%;
+    padding: 0.75rem;
+    margin: 0.5rem 0;
+    border: 1px solid #ddd;
+    border-radius: 25px;
+    font-family: 'Vazir', sans-serif;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;">
         </div>
         <button type="submit">تایید کد</button>
     </form>

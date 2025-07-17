@@ -14,12 +14,15 @@ use App\Models\StorePartnerProduct;
 
 class HomeController extends Controller
 {
-    public function home() {
+    public function home(Request $request) {
+     $showAll = $request->has('all');
         $latestItems = [
-            'products' => Product::where('status', 1)
-                                  ->orderBy('created_at', 'desc')
-                                  ->take(10)
-                                  ->get(),
+          'products' => Product::where('status', 1)
+                              ->orderBy('created_at', 'desc')
+                              ->when(!$showAll, function ($query) {
+                                  return $query->take(8);
+                              })
+                              ->get(),
 
             'stores' => Store::where('status', 1)
                               ->take(5)
@@ -28,6 +31,13 @@ class HomeController extends Controller
             'sliders' => Slider::orderBy('created_at', 'desc')
                                 ->take(3)
                                 ->get(),
+
+            'articles'=> Article::where('status', 1)
+                              ->orderBy('created_at', 'desc')
+                              ->when(!$showAll, function ($query) {
+                                  return $query->take(8);
+                              })
+                              ->get(),
         ];
 
         return view('Home.index', compact('latestItems'));

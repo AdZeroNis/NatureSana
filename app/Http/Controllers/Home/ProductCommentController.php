@@ -37,7 +37,7 @@ class ProductCommentController extends Controller
 
     public function reply(Request $request, ProductCommentModel $comment)
     {
-      
+
         $reply = new ProductCommentModel([
             'content' => $request->content,
             'user_id' => Auth::id(),
@@ -65,17 +65,22 @@ class ProductCommentController extends Controller
 
         return view('Admin.ProductComment.index', compact('comments'));
     }
-    public function destroy($id)
+   public function destroy($id)
     {
         $comment = ProductCommentModel::findOrFail($id);
-        // If this is a main comment (no parent), delete all replies first
+
+        // اگر کامنت اصلی است، همه پاسخ‌ها را حذف کن
         if (!$comment->parent_id) {
             $comment->replies()->delete();
         }
 
         $comment->delete();
+
         return redirect()->back()->with('success', 'نظر با موفقیت حذف شد');
     }
+
+ 
+
     public function show($id)
     {
         $comment = ProductCommentModel::with(['user', 'product', 'replies.user'])

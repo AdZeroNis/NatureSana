@@ -114,42 +114,42 @@
                         </div>
                     </div>
                 @else
-                    <h3>
-                        @if($isMainStore)
-                            محصولات قابل نمایش از فروشگاه همکار
-                        @elseif($isPartnerStore)
-                            محصولات قابل نمایش از فروشگاه اصلی
-                        @endif
-                    </h3>
+                    @if($isMainStore)
+                        <h3>شما اجازه مشاهده یا انتخاب محصولات فروشگاه مقابل را ندارید.</h3>
+                    @elseif($isPartnerStore)
+                        <h3>محصولات قابل نمایش از فروشگاه اصلی</h3>
 
-                    <div class="search-box mb-3">
-                        <input type="text" id="productSearch" class="form-control" placeholder="جستجوی محصول...">
-                    </div>
+                        <div class="search-box mb-3">
+                            <input type="text" id="productSearch" class="form-control" placeholder="جستجوی محصول...">
+                        </div>
 
-                    <form action="{{ route('panel.partner.products.store', $partner->id) }}" method="POST">
-                        @csrf
-                        <ul class="product-list" id="productList">
-                            @foreach($productsToShow as $index => $product)
-                                <li class="{{ $index >= 3 ? 'extra-product hidden-manual' : '' }}">
-                                    <label>
-                                        <input type="checkbox" name="product_ids[]" value="{{ $product->id }}"
-                                            {{ in_array($product->id, $sharedProducts) ? 'checked' : '' }}>
-                                        <span class="product-name">{{ $product->name }}</span> -
-                                        <span>قیمت: {{ number_format($product->price) }} تومان</span> -
-                                        <span>موجودی: {{ $product->inventory }}</span>
-                                    </label>
-                                </li>
-                            @endforeach
-                        </ul>
+                        <form action="{{ route('panel.partner.products.store', $partner->id) }}" method="POST">
+                            @csrf
+                            <ul class="product-list" id="productList">
+                                @foreach($productsToShow as $index => $product)
+                                    <li class="{{ $index >= 3 ? 'extra-product hidden-manual' : '' }}">
+                                        <label>
+                                            <input type="checkbox" name="product_ids[]" value="{{ $product->id }}"
+                                                {{ in_array($product->id, $sharedProducts) ? 'checked' : '' }}>
+                                            <span class="product-name">{{ $product->name }}</span> -
+                                            <span>قیمت: {{ number_format($product->price) }} تومان</span> -
+                                            <span>موجودی: {{ $product->inventory }}</span>
+                                        </label>
+                                    </li>
+                                @endforeach
+                            </ul>
 
-                        @if(count($productsToShow) > 3)
-                            <button type="button" id="showAllBtn" class="btn btn-secondary mt-2">مشاهده همه محصولات</button>
-                        @endif
+                            @if(count($productsToShow) > 3)
+                                <button type="button" id="showAllBtn" class="btn btn-secondary mt-2">مشاهده همه محصولات</button>
+                            @endif
 
-                        <button type="submit" class="btn btn-primary mt-3">
-                            ذخیره محصولات انتخابی
-                        </button>
-                    </form>
+                            <button type="submit" class="btn btn-primary mt-3">
+                                ذخیره محصولات انتخابی
+                            </button>
+                        </form>
+                    @else
+                        <p>شما اجازه مشاهده یا انتخاب محصولات فروشگاه مقابل را ندارید.</p>
+                    @endif
                 @endif
             </div>
             @endif

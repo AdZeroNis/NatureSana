@@ -23,7 +23,7 @@
         <div class="article-meta">
                 <span><i class="fas fa-user"></i> نویسنده: {{  $article->user->name}}</span>
                 <span><i class="fas fa-calendar-alt"></i> {{ $article->published_at ? \Morilog\Jalali\Jalalian::fromDateTime($article->published_at)->format('Y/m/d') : \Morilog\Jalali\Jalalian::fromDateTime($article->created_at)->format('Y/m/d') }}</span>
-                
+
             </div>
         <div class="article-content">
             {!! $article->content !!}
@@ -48,7 +48,7 @@
                 @endif
             </div>
 
-         
+
         <!-- لیست نظرات -->
 
 <div class="comments-list">
@@ -142,7 +142,7 @@
             @endif
         </div>
     @empty
-        <p>هنوز نظری برای این محصول ثبت نشده است.</p>
+        <p>هنوز نظری برای این مقاله ثبت نشده است.</p>
     @endforelse
 </div>
         </div>
@@ -160,12 +160,12 @@ document.addEventListener('DOMContentLoaded', function () {
             const commentId = this.getAttribute('data-comment-id');
             const form = document.getElementById(`reply-form-${commentId}`);
             const isVisible = form.style.display === 'block';
-            
+
             // Hide all reply forms
             document.querySelectorAll('.reply-form').forEach(f => {
                 f.style.display = 'none';
             });
-            
+
             // Toggle the clicked form
             form.style.display = isVisible ? 'none' : 'block';
         });
@@ -178,10 +178,10 @@ document.addEventListener('DOMContentLoaded', function () {
             const commentId = this.getAttribute('data-comment-id');
             const hiddenReplies = document.getElementById(`hidden-replies-${commentId}`);
             const isVisible = hiddenReplies.style.display === 'block';
-            
+
             hiddenReplies.style.display = isVisible ? 'none' : 'block';
-            this.textContent = isVisible 
-                ? `مشاهده همه نظرات (${this.dataset.replyCount})` 
+            this.textContent = isVisible
+                ? `مشاهده همه نظرات (${this.dataset.replyCount})`
                 : 'مخفی کردن نظرات';
         });
     });

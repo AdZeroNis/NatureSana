@@ -7,10 +7,11 @@
     <div class="card">
         <form method="POST" action="{{route('panel.slider.store')}}" enctype="multipart/form-data">
             @csrf
+            
             <div class="form-group">
                 <label for="name">لینک اسلایدر </label>
                 <input type="text" name="url" id="name" class="form-control" value="" required>
-                @error('name')
+                @error('url')
                     <span class="error">{{ $message }}</span>
                 @enderror
             </div>

@@ -2,28 +2,12 @@
 
 @section('content')
     <div class="container py-5 "style="margin-left: 10rem !important">
-        @if(session('error'))
-            <div class="alert alert-danger">
-                {{ session('error') }}
-            </div>
-        @endif
 
         @if(session('success'))
             <div class="alert alert-success">
                 {{ session('success') }}
             </div>
         @endif
-
-        @if($errors->any())
-            <div class="alert alert-danger">
-                <ul>
-                    @foreach($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
-        @endif
-
       <div class="profile-section">
         <!-- هدر -->
         <div class="profile-header">
@@ -34,7 +18,7 @@
         <div class="d-flex justify-content-between secOne">
           <!-- فرم ویرایش پروفایل -->
 
-       
+
           <!-- فرم تغییر رمز عبور -->
           <div class="edit-profile-form" style="flex: 1; margin-left: 1rem">
             <h4>🔒 تغییر رمز عبور</h4>
@@ -48,8 +32,12 @@
                   name="current_password"
                   id="current_password"
                   class="form-control"
-                  required
+
                 />
+                                                @error('current_password')
+    <div class="alert alert-danger">{{ $message }}</div>
+@enderror
+
               </div>
 
               <div class="form-group">
@@ -59,8 +47,11 @@
                   name="new_password"
                   id="new_password"
                   class="form-control"
-                  required
+
                 />
+                                                @error('new_password')
+    <div class="alert alert-danger">{{ $message }}</div>
+@enderror
               </div>
 
               <div class="form-group">
@@ -70,8 +61,11 @@
                   name="new_password_confirmation"
                   id="new_password_confirmation"
                   class="form-control"
-                  required
+
                 />
+                                @error('new_password_confirmation')
+    <div class="alert alert-danger">{{ $message }}</div>
+@enderror
               </div>
 
               <button type="submit" class="save-btn">

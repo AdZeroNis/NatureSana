@@ -11,13 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('order_items', function (Blueprint $table) {
-               $table->engine = 'InnoDB';
-            $table->foreignId('seller_store_id')->nullable()->constrained('stores');
-            $table->foreignId('owner_store_id')->nullable()->constrained('stores');
-            $table->decimal('seller_share', 10, 2)->nullable();
-            $table->decimal('owner_share', 10, 2)->nullable();
-        });
+    Schema::table('order_items', function (Blueprint $table) {
+        $table->integer('quantity')->default(1)->after('product_id'); // یا هر فیلد دلخواه
+    });
     }
 
     /**

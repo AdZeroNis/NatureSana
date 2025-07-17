@@ -1,4 +1,5 @@
 <div class="search-bar">
+
     <form action="{{ route('search') }}" method="GET" class="search-form">
         <div class="search-input-group">
             <input type="text" name="search_key" placeholder="جستجوی گیاهان دارویی، مقالات و فروشگاه‌ها..." required>

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Home;
 use DB;
 use App\Models\Cart;
 use App\Models\Order;
+use App\Models\Store;
 use App\Models\Product;
 use App\Models\OrderItem;
 use App\Models\StorePartner;
@@ -23,50 +24,56 @@ public function store(Request $request, Product $product)
         'partner_store_id' => 'nullable|exists:stores,id'
     ]);
 
-    // بررسی وضعیت فروشگاه اصلی محصول
-    if ($product->store->status == 0) {
-        return back()->with('error', 'فروشگاه این محصول در حال حاضر غیرفعال است.');
+    // فروشگاه اصلی محصول
+    $mainStore = $product->store;
+
+    if (!$mainStore || $mainStore->status == 0) {
+        return back()->with('error', 'فروشگاه این محصول غیرفعال است.');
     }
 
-    // اگر محصول از طریق همکاری اضافه شده باشد، بررسی وضعیت فروشگاه شریک
+    // بررسی همکاری در جدول store_partners
+    $partnerStoreId = null;
+
     if ($request->partner_store_id) {
         $partnerStore = Store::find($request->partner_store_id);
-        if ($partnerStore->status == 0) {
-            return back()->with('error', 'فروشگاه شریک در حال حاضر غیرفعال است.');
+
+        if (!$partnerStore || $partnerStore->status == 0) {
+            return back()->with('error', 'فروشگاه شریک غیرفعال است.');
         }
+
+
+
+        $partnerStoreId = $partnerStore->id;
     }
 
-    // بررسی وضعیت خود محصول
     if ($product->status == 0) {
-        return back()->with('error', 'این محصول در حال حاضر غیرفعال است.');
+        return back()->with('error', 'محصول غیرفعال است.');
     }
 
-    // بررسی موجودی محصول
     if ($product->inventory <= 0) {
-        return back()->with('error', 'این محصول در حال حاضر ناموجود است.');
+        return back()->with('error', 'محصول ناموجود است.');
     }
 
     $cartData = [
         'user_id' => auth()->id(),
         'product_id' => $product->id,
-        'quantity' => 1
+        'quantity' => 1,
+        
     ];
 
-    // اگر از طریق همکاری اضافه شده باشد
-    if ($request->partner_product_id && $request->partner_store_id) {
-        $cartData['partner_product_id'] = $request->partner_product_id;
-        $cartData['partner_store_id'] = $request->partner_store_id;
+    if ($partnerStoreId) {
+        $cartData['partner_store_id'] = $partnerStoreId;
+
+        // اگر partner_product_id هم ارسال شده بود
+        if ($request->partner_product_id) {
+            $cartData['partner_product_id'] = $request->partner_product_id;
+        }
     }
 
     Cart::create($cartData);
 
     return back()->with('success', 'محصول به سبد خرید اضافه شد.');
 }
-
-
-
-
-
 
 public function showCart()
 {

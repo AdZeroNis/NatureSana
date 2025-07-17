@@ -25,26 +25,26 @@ class SliderController extends Controller
         return view('Admin.Slider.create');
     }
     public function store(Request $request)
-    {      
+    {
             $request->validate([
                 'url' => 'required|string|max:255',
-                'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048'
+                'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:5048'
             ]);
 
             if ($request->hasFile('image')) {
                 $imageName = time() . '.' . $request->image->extension();
                 $request->image->move(public_path('AdminAssets/Slider-image'), $imageName);
-                
+
                 $dataForm = $request->all();
                 $dataForm['image'] = $imageName;
                 $dataForm['admin_id'] = Auth::id();
 
                 Slider::create($dataForm);
-                
+
                 return redirect()->route('panel.slider.index')
                     ->with('success', 'اسلایدر با موفقیت اضافه شد');
             }
-            
+
             return back()->with('error', 'لطفا یک تصویر انتخاب کنید');
     }
     public function destroy($id)

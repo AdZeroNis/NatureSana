@@ -21,7 +21,6 @@ return new class extends Migration
             $table->string('status')->default(1);
             $table->foreignId('category_id')->constrained('categories');
             $table->text('image');
-
             $table->foreignId('store_id')->constrained('stores')->cascadeOnDelete();
             $table->timestamps();
         });

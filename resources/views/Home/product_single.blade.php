@@ -54,10 +54,11 @@
     </span>
 </div>
 
-                <div class="info-row">
-                    <span class="label"><i class="fas fa-align-right"></i> توضیحات:</span>
-                    <span class="value">{{ $product->description ?: 'بدون توضیحات' }}</span>
-                </div>
+              <div class="info-row">
+    <span class="label"><i class="fas fa-align-right"></i> توضیحات:</span>
+    <span class="value" style="white-space: pre-line;">{{ $product->description ?: 'بدون توضیحات' }}</span>
+</div>
+
 @if ($product->inventory > 0 && $product->status == 1 && $product->store->status == 1)
     @php
         $partnerProduct = $product->sharedPartnerships->first();

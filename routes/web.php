@@ -43,6 +43,7 @@ Route::namespace("home")->group(function () {
     Route::get('/category/{id}/products', [HomeController::class, 'showCategoryProducts'])->name('category.products');
     Route::get('/store/{id}/products', [HomeController::class, 'showStoreProducts'])->name('store.products');
     Route::post('/store/register', [StoreController::class, 'create'])->name('store.register');
+    
     // All routes require authentication and verification
     Route::middleware(['auth', 'verified'])->group(function () {
         // نظرات محصولات
@@ -213,7 +214,10 @@ Route::prefix('panel')->middleware(['auth', AdminAccess::class])->group(function
         Route::get('/', [ReportController::class, 'index'])->name('panel.report.index');
         Route::get('/store', [ReportController::class, 'storeReport'])->name('panel.report.store');
          Route::get('/show/{id}', [ReportController::class, 'show'])->name('panel.report.show');
+Route::get('/admin/get-categories-by-store/{store_id}', [ReportController::class, 'getCategoriesByStore']);
+
+
 
     });
-  
+
 });

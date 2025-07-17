@@ -252,6 +252,7 @@ tr:hover {
     cursor: pointer;
     font-family: 'Vazir', sans-serif;
     transition: background 0.3s ease;
+    margin-top: 11px;
 }
 
 .add-item button:hover {

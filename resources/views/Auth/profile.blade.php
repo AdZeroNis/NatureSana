@@ -36,7 +36,7 @@
                             <div class="info-row">
                                 <p class="user-phone"><i class="fas fa-map-marker-alt"></i> آدرس 3: {{ auth()->user()->address->address_three }}</p>
                             </div>
-                            @endif  
+                            @endif
                     <p class="user-join-date"><i class="fas fa-calendar-alt"></i> تاریخ عضویت: {{ \Morilog\Jalali\Jalalian::fromDateTime(auth()->user()->created_at)->format('Y/m/d') }}</p>
                     <a href="{{ route('edit.profile') }}" class="edit-btn">✏️ ویرایش پروفایل</a>
                 </div>
